@@ -3,7 +3,7 @@ package caceresenzo.apps.boxplay.factory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import caceresenzo.apps.boxplay.models.adult.AdultVideo;
+import caceresenzo.apps.boxplay.models.premium.adult.AdultVideo;
 import caceresenzo.libs.cryptography.Base64;
 
 public class AdultFactory extends AbstractFactory {

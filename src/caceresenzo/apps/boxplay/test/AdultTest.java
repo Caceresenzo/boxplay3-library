@@ -8,7 +8,7 @@ import java.util.List;
 import caceresenzo.apps.boxplay.factory.AdultFactory;
 import caceresenzo.apps.boxplay.factory.AdultFactory.AdultFactoryListener;
 import caceresenzo.apps.boxplay.factory.AdultFactory.VideoOrigin;
-import caceresenzo.apps.boxplay.models.adult.AdultVideo;
+import caceresenzo.apps.boxplay.models.premium.adult.AdultVideo;
 import caceresenzo.libs.io.IOUtils;
 import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.logger.Logger;

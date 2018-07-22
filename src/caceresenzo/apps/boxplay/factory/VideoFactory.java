@@ -8,11 +8,11 @@ import java.util.Map.Entry;
 
 import caceresenzo.apps.boxplay.models.element.enums.ElementLanguage;
 import caceresenzo.apps.boxplay.models.element.enums.FileType;
-import caceresenzo.apps.boxplay.models.video.VideoFile;
-import caceresenzo.apps.boxplay.models.video.VideoGroup;
-import caceresenzo.apps.boxplay.models.video.VideoSeason;
-import caceresenzo.apps.boxplay.models.video.enums.VideoFileType;
-import caceresenzo.apps.boxplay.models.video.enums.VideoType;
+import caceresenzo.apps.boxplay.models.store.video.VideoFile;
+import caceresenzo.apps.boxplay.models.store.video.VideoGroup;
+import caceresenzo.apps.boxplay.models.store.video.VideoSeason;
+import caceresenzo.apps.boxplay.models.store.video.enums.VideoFileType;
+import caceresenzo.apps.boxplay.models.store.video.enums.VideoType;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.parse.ParseUtils;
 

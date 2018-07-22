@@ -1,9 +1,6 @@
 package caceresenzo.apps.boxplay.test;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,10 +9,10 @@ import java.util.Map;
 
 import caceresenzo.apps.boxplay.factory.VideoFactory;
 import caceresenzo.apps.boxplay.factory.VideoFactory.VideoFactoryListener;
-import caceresenzo.apps.boxplay.models.video.VideoFile;
-import caceresenzo.apps.boxplay.models.video.VideoGroup;
-import caceresenzo.apps.boxplay.models.video.VideoSeason;
-import caceresenzo.apps.boxplay.models.video.enums.VideoFileType;
+import caceresenzo.apps.boxplay.models.store.video.VideoFile;
+import caceresenzo.apps.boxplay.models.store.video.VideoGroup;
+import caceresenzo.apps.boxplay.models.store.video.VideoSeason;
+import caceresenzo.apps.boxplay.models.store.video.enums.VideoFileType;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.json.parser.JsonParser;

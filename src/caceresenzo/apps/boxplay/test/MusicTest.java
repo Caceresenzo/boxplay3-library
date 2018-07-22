@@ -8,9 +8,9 @@ import java.util.Map;
 
 import caceresenzo.apps.boxplay.factory.MusicFactory;
 import caceresenzo.apps.boxplay.factory.MusicFactory.MusicFactoryListener;
-import caceresenzo.apps.boxplay.models.music.MusicAlbum;
-import caceresenzo.apps.boxplay.models.music.MusicFile;
-import caceresenzo.apps.boxplay.models.music.MusicGroup;
+import caceresenzo.apps.boxplay.models.store.music.MusicAlbum;
+import caceresenzo.apps.boxplay.models.store.music.MusicFile;
+import caceresenzo.apps.boxplay.models.store.music.MusicGroup;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.json.parser.JsonParser;

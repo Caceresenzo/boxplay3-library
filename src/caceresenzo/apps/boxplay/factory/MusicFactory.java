@@ -8,12 +8,12 @@ import java.util.Map.Entry;
 
 import caceresenzo.apps.boxplay.models.element.enums.ElementLanguage;
 import caceresenzo.apps.boxplay.models.element.enums.FileType;
-import caceresenzo.apps.boxplay.models.music.MusicAlbum;
-import caceresenzo.apps.boxplay.models.music.MusicFile;
-import caceresenzo.apps.boxplay.models.music.MusicGroup;
-import caceresenzo.apps.boxplay.models.music.enums.MusicAuthorType;
-import caceresenzo.apps.boxplay.models.music.enums.MusicGenre;
-import caceresenzo.apps.boxplay.models.music.enums.MusicRessourceType;
+import caceresenzo.apps.boxplay.models.store.music.MusicAlbum;
+import caceresenzo.apps.boxplay.models.store.music.MusicFile;
+import caceresenzo.apps.boxplay.models.store.music.MusicGroup;
+import caceresenzo.apps.boxplay.models.store.music.enums.MusicAuthorType;
+import caceresenzo.apps.boxplay.models.store.music.enums.MusicGenre;
+import caceresenzo.apps.boxplay.models.store.music.enums.MusicRessourceType;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.parse.ParseUtils;
 
