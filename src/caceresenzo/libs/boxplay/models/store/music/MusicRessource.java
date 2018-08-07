@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import caceresenzo.libs.boxplay.models.element.MusicElement;
 import caceresenzo.libs.boxplay.models.element.enums.ElementLanguage;
+import caceresenzo.libs.boxplay.models.element.implementations.MusicElement;
 import caceresenzo.libs.boxplay.models.store.music.enums.MusicGenre;
 import caceresenzo.libs.boxplay.models.store.music.enums.MusicRessourceType;
 import caceresenzo.libs.boxplay.models.store.music.utils.MusicClassificator;
 
 public class MusicRessource extends MusicElement {
 	
+	public static final String IDENTIFIER_BASE = "%s//%s/%s";
+	
 	protected final String localIdentifier;
-	protected String title, imageUrl, imageHdUrl, releaseDateString;
+	protected String title, releaseDateString;
 	protected MusicGroup parentGroup;
 	protected MusicRessourceType musicRessourceType;
 	protected ElementLanguage language;
@@ -37,32 +39,6 @@ public class MusicRessource extends MusicElement {
 	
 	public String getTitle() {
 		return title;
-	}
-	
-	public MusicRessource withImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-		return this;
-	}
-	
-	public String getImageUrl() {
-		return imageUrl;
-	}
-	
-	public MusicRessource withImageHdUrl(String imageHdUrl) {
-		this.imageHdUrl = imageHdUrl;
-		return this;
-	}
-	
-	public String getImageHdUrl() {
-		return imageHdUrl;
-	}
-	
-	public String getHighestImageUrl() {
-		if (imageHdUrl != null) {
-			return imageHdUrl;
-		}
-		
-		return imageUrl;
 	}
 	
 	public MusicRessource withReleaseDateString(String releaseDateString) {
@@ -170,7 +146,7 @@ public class MusicRessource extends MusicElement {
 	
 	@Override
 	public String toString() {
-		return parentGroup.toString() + "//" + musicRessourceType.toString().toLowerCase() + "/" + localIdentifier;
+		return String.format(IDENTIFIER_BASE, parentGroup.toString(), musicRessourceType.toString().toLowerCase(), localIdentifier);
 	}
 	
 }

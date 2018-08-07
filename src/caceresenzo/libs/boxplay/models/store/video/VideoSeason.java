@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import caceresenzo.libs.boxplay.models.element.VideoElement;
+import caceresenzo.libs.boxplay.models.element.implementations.VideoElement;
 
 public class VideoSeason extends VideoElement {
 	

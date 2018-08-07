@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import caceresenzo.libs.boxplay.models.element.MusicElement;
 import caceresenzo.libs.boxplay.models.element.enums.ElementLanguage;
+import caceresenzo.libs.boxplay.models.element.implementations.MusicElement;
 import caceresenzo.libs.boxplay.models.store.music.enums.MusicAuthorType;
 
 public class MusicGroup extends MusicElement {
 	
-	private String display, imageUrl, imageHdUrl, defaultImageUrl;
+	public static final String IDENTIFIER_BASE = "music:group//";
+	
+	private String display;
 	private ElementLanguage language;
 	private MusicAuthorType musicAuthorType;
 	private boolean recommended = false, downloadable = true;
@@ -20,7 +22,7 @@ public class MusicGroup extends MusicElement {
 	public MusicGroup(String identifier) {
 		super(identifier);
 		
-		register(display = toString(), this);
+		applyIdentifier(this);
 	}
 	
 	public MusicGroup withDisplay(String display) {
@@ -29,34 +31,11 @@ public class MusicGroup extends MusicElement {
 	}
 	
 	public String getDisplay() {
+		if (display == null) {
+			display = toString();
+		}
+		
 		return display;
-	}
-	
-	public MusicGroup withImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-		return this;
-	}
-	
-	public String getImageUrl() {
-		return imageUrl;
-	}
-	
-	public MusicGroup withImageHdUrl(String imageHdUrl) {
-		this.imageHdUrl = imageHdUrl;
-		return this;
-	}
-	
-	public String getImageHdUrl() {
-		return imageHdUrl;
-	}
-	
-	public MusicGroup withDefaultImageUrl(String defaultImageUrl) {
-		this.defaultImageUrl = defaultImageUrl;
-		return this;
-	}
-	
-	public String getDefaultImageUrl() {
-		return defaultImageUrl;
 	}
 	
 	public MusicGroup withLanguage(ElementLanguage language) {
@@ -143,11 +122,11 @@ public class MusicGroup extends MusicElement {
 	
 	@Override
 	public String toString() {
-		return "music:group//" + identifier;
+		return IDENTIFIER_BASE + identifier;
 	}
 	
 	public static MusicGroup instance(String name) {
-		String identifier = "music:group//" + name;
+		String identifier = IDENTIFIER_BASE + name;
 		
 		if (INSTANCES.containsKey(identifier) && INSTANCES.get(identifier) != null) {
 			return (MusicGroup) INSTANCES.get(identifier);

@@ -7,12 +7,14 @@ import caceresenzo.libs.boxplay.models.store.music.enums.MusicRessourceType;
 
 public class MusicAlbum extends MusicRessource {
 	
+	
+	
 	private List<MusicFile> musics;
 	
 	public MusicAlbum(MusicGroup parentGroup, String title) {
 		super(parentGroup, title, MusicRessourceType.ALBUM);
 		
-		register(toString(), this);
+		applyIdentifier(this);
 	}
 	
 	public MusicAlbum withMusics(List<MusicFile> musics) {

@@ -63,7 +63,7 @@ public class MusicFactory extends AbstractFactory {
 			// TODO: Parsing informations
 			// List<String> videoInformations = ParseUtils.parseList(videoDataArrayEntry.get("informations"), new ArrayList<String>());
 			
-			MusicGroup group = MusicGroup //
+			MusicGroup group = (MusicGroup) MusicGroup //
 					.instance(groupIdentifier) //
 					.withDisplay(groupDisplay) //
 					.withAuthors(groupAuthor) //
@@ -105,12 +105,12 @@ public class MusicFactory extends AbstractFactory {
 										.instance(group, ressourceIdentifier) //
 										.withTitle(albumName) //
 										.withAuthors(albumAuthor) //
-										.withImageUrl(albumImageUrl) //
-										.withImageHdUrl(albumImageHdUrl) //
 										.withReleaseDateString(albumReleaseDateString) //
 										.withLanguage(albumLanguage == null ? groupLanguage : albumLanguage) //
 										.withGenres(albumGenres) //
 										.isAvailable(available) //
+										.withImageUrl(albumImageUrl) //
+										.withImageHdUrl(albumImageHdUrl) //
 								;
 								
 								albums.add(album);
@@ -159,9 +159,9 @@ public class MusicFactory extends AbstractFactory {
 		MusicFile music = ((MusicFile) MusicFile //
 				.instance(parentAlbum, trackId, identifier) //
 				.withTitle(title) //
+				.isAvailable(available) //
 				.withImageUrl(imageUrl) //
 				.withImageHdUrl(imageHdUrl) //
-				.isAvailable(available) //
 		) //
 				.withUrl(url) //
 				.withDurationString(durationString);

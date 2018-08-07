@@ -13,13 +13,6 @@ public class MusicFile extends MusicRessource {
 			if (file1.getTrackId() == -1 || file2.getTrackId() == -1) {
 				return file1.getTitle().compareTo(file2.getTitle());
 			} else {
-				// if (file1.getTrackId() > file2.getTrackId()) {
-				// return +1;
-				// } else if (file1.getTrackId() < file2.getTrackId()) {
-				// return -1;
-				// } else {
-				// return 0;
-				// }
 				return file1.getTrackId() - file2.getTrackId();
 			}
 		}

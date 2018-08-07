@@ -2,8 +2,8 @@ package caceresenzo.libs.boxplay.models.store.video;
 
 import java.util.Comparator;
 
-import caceresenzo.libs.boxplay.models.element.VideoElement;
 import caceresenzo.libs.boxplay.models.element.enums.ElementLanguage;
+import caceresenzo.libs.boxplay.models.element.implementations.VideoElement;
 import caceresenzo.libs.boxplay.models.store.video.enums.VideoFileType;
 import caceresenzo.libs.boxplay.models.store.video.enums.VideoType;
 

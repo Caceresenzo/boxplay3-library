@@ -3,7 +3,7 @@ package caceresenzo.libs.boxplay.models.server;
 import java.util.Comparator;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.models.element.ServerElement;
+import caceresenzo.libs.boxplay.models.element.implementations.ServerElement;
 
 public class ServerHosting extends ServerElement {
 	

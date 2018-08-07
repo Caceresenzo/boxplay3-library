@@ -1,7 +1,7 @@
 package caceresenzo.libs.boxplay.models.premium.adult;
 
 import caceresenzo.libs.boxplay.factory.AdultFactory.VideoOrigin;
-import caceresenzo.libs.boxplay.models.element.AdultElement;
+import caceresenzo.libs.boxplay.models.element.implementations.AdultElement;
 import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.parse.ParseUtils;
 
