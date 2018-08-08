@@ -3,14 +3,24 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.culture.searchngo.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
+import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 
+/**
+ * Provider class
+ * 
+ * This is an abstract class that need to be extend. Once extend, do all your data-gathering for SEARCHING ONLY in the {@link #processWork(String)} function
+ * 
+ * @author Enzo CACERES
+ */
 public abstract class SearchAndGoProvider {
 	
 	private final String siteName, siteUrl;
 	private final ProviderSearchCapability searchCapability;
 	
 	private final ProviderHelper helper;
+	
+	private boolean autosort;
 	
 	/**
 	 * Constructor
@@ -26,6 +36,8 @@ public abstract class SearchAndGoProvider {
 		this.searchCapability = createSearchCapability();
 		
 		this.helper = new ProviderHelper(this);
+		
+		this.autosort = true;
 	}
 	
 	/**
@@ -63,7 +75,27 @@ public abstract class SearchAndGoProvider {
 	 * @return A map containing all result found. The map's key is the unique identifier, and the value is the result
 	 * 
 	 */
-	public abstract Map<String, SearchAndGoResult> work(String searchQuery);
+	public Map<String, SearchAndGoResult> work(String searchQuery) {
+		Map<String, SearchAndGoResult> workmap = work(searchQuery);
+		
+		if (isAutosortEnabled()) {
+			ResultScoreSorter.sortWorkmap(workmap, searchQuery, getHelper().getSearchEngine());
+		}
+		
+		return workmap;
+	}
+	
+	/**
+	 * Abstract function to ovveride, please don't call this function directly, autosort will not be supported
+	 * 
+	 * More info at {@link #work(String)}
+	 * 
+	 * @param searchQuery
+	 *            User query
+	 * @return A map containing all result found.
+	 * 
+	 */
+	protected abstract Map<String, SearchAndGoResult> processWork(String searchQuery);
 	
 	/**
 	 * Overridable, return an empty map for the work method
@@ -110,26 +142,139 @@ public abstract class SearchAndGoProvider {
 	}
 	
 	/**
+	 * Get if the auto-sort is enabled or not
+	 * 
+	 * @return True or false
+	 */
+	public boolean isAutosortEnabled() {
+		return autosort;
+	}
+	
+	/**
+	 * Enable auto-sorting
+	 */
+	public void autosort() {
+		autosort(true);
+	}
+	
+	/**
+	 * Enable or disable auto-sorting
+	 * 
+	 * Default: TRUE
+	 * 
+	 * @param autosort
+	 *            New value
+	 */
+	public void autosort(boolean autosort) {
+		this.autosort = autosort;
+	}
+	
+	/**
 	 * Create a new provider context
 	 * 
 	 * @param className
 	 *            Class of the provider
 	 * @return A new context of the provider asked
 	 * @throws IllegalArgumentException
-	 *             If the target class hasn't been found
+	 *             If any error append
 	 */
 	public static SearchAndGoProvider createContext(Class<? extends SearchAndGoProvider> clazz) {
 		try {
 			return clazz.newInstance();
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			throw new IllegalArgumentException(exception);
 		}
-		
-		throw new IllegalArgumentException("SearchAndGoProvider not found.");
 	}
 	
+	/**
+	 * Get a static helper, but without all feature like cache
+	 * 
+	 * @return A freshly helper instance
+	 */
 	public static ProviderHelper getStaticHelper() {
 		return new ProviderHelper();
+	}
+	
+	/**
+	 * To String
+	 */
+	@Override
+	public String toString() {
+		return "SearchAndGoProvider[siteName=" + siteName + ", siteUrl=" + siteUrl + ", searchCapability=" + searchCapability + ", helper=" + helper + "]";
+	}
+	
+	/**
+	 * Item information class
+	 * 
+	 * It contain, a full regex match, an url, and a name
+	 */
+	protected static class ResultItem {
+		private String match, url, name, description, genre, view;
+		
+		/**
+		 * Create new instance of a ResultItem
+		 * 
+		 * This constructor don't have description, genre, and view
+		 * 
+		 * @param match
+		 *            Full matcher match
+		 * @param url
+		 *            Url found
+		 * @param name
+		 *            Name found
+		 */
+		public ResultItem(String match, String url, String name) {
+			this(match, url, name, null, null, null);
+		}
+		
+		/**
+		 * Create new instance of a ResultItem
+		 * 
+		 * @param match
+		 *            Full matcher match
+		 * @param url
+		 *            Url found
+		 * @param name
+		 *            Name found
+		 * @param description
+		 *            Description found (or not)
+		 * @param genre
+		 *            Genre list found (or not)
+		 * @param view
+		 *            View count found (or not)
+		 */
+		public ResultItem(String match, String url, String name, String description, String genre, String view) {
+			this.match = match;
+			this.url = url;
+			this.name = name;
+			this.description = description;
+			this.genre = genre;
+			this.view = view;
+		}
+		
+		public String getMatch() {
+			return match;
+		}
+		
+		public String getUrl() {
+			return url;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public String getDescription() {
+			return description;
+		}
+		
+		public String getGenre() {
+			return genre;
+		}
+		
+		public String getView() {
+			return view;
+		}
 	}
 	
 }

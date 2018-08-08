@@ -5,11 +5,19 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
 import caceresenzo.libs.network.Downloader;
 
+/**
+ * Helper class to provide content more quickly
+ * 
+ * @author Enzo CACERES
+ */
 public class ProviderHelper {
 	
 	private SearchAndGoProvider parentProvider;
+	
+	private SearchEngine searchEngine;
 	
 	private Map<Object, Object> cache;
 	
@@ -24,13 +32,25 @@ public class ProviderHelper {
 	 * Create a contextualized helper
 	 * 
 	 * @param parentProvider
+	 *            ParentHelper used to create this helper
 	 */
 	public ProviderHelper(SearchAndGoProvider parentProvider) {
 		this.parentProvider = parentProvider;
 		
+		this.searchEngine = new SearchEngine();
+		
 		if (parentProvider != null) {
 			this.cache = new HashMap<>();
 		}
+	}
+	
+	/**
+	 * Return local Search Engine instance
+	 * 
+	 * @return An instance
+	 */
+	public SearchEngine getSearchEngine() {
+		return searchEngine;
 	}
 	
 	/**
@@ -104,13 +124,34 @@ public class ProviderHelper {
 	}
 	
 	/**
+	 * Some string found online are html-encoded, use this function to decode a string
+	 * 
+	 * @param source
+	 *            The source string
+	 * @return Escaped string
+	 */
+	public String escapeHtmlSpecialCharactere(String source) {
+		return source; // TODO: Finish this function
+	}
+	
+	/**
 	 * Internal function to throw an exception if the parent provider is null
 	 * 
+	 * @throws IllegalArgumentException
+	 *             if no valid parent provider is available
 	 */
 	private void checkProviderValidity() {
 		if (parentProvider == null) {
 			throw new IllegalArgumentException("This method can't be used without a parent provider");
 		}
+	}
+	
+	/**
+	 * To String
+	 */
+	@Override
+	public String toString() {
+		return "ProviderHelper[cache.size=" + cache.size() + "]";
 	}
 	
 }

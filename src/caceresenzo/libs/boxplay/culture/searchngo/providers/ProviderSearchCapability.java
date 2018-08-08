@@ -29,20 +29,22 @@ public class ProviderSearchCapability {
 	}
 	
 	/**
-	 * 
+	 * Search if a array of capabilities is available in this instance
 	 * 
 	 * @param array
-	 * @return
+	 *            The capabilities
+	 * @return True or false
 	 */
 	public boolean search(SearchCapability[] array) {
 		return search(Arrays.asList(array));
 	}
 	
 	/**
-	 * 
+	 * Search if a list of capabilities is available in this instance
 	 * 
 	 * @param list
-	 * @return
+	 *            The capabilities
+	 * @return True or false
 	 */
 	public boolean search(List<SearchCapability> list) {
 		for (SearchCapability searchCapability : list) {
@@ -55,12 +57,22 @@ public class ProviderSearchCapability {
 	}
 	
 	/**
+	 * Search if the capability is available in this instance
 	 * 
 	 * @param capability
-	 * @return
+	 *            The capability
+	 * @return True or false
 	 */
 	public boolean search(SearchCapability capability) {
 		return capabilities.contains(capability);
+	}
+	
+	/**
+	 * To string method
+	 */
+	@Override
+	public String toString() {
+		return "ProviderSearchCapability[capabilities=" + capabilities + "]";
 	}
 	
 	/**

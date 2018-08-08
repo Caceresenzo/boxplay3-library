@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.culture.searchngo.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
-import caceresenzo.libs.cryptography.CloudflareUtils;
+import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.cryptography.CloudflareUtils;
 
-public class JetAnimeSearchAndGoProvider extends SearchAndGoProvider {
+public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 	
 	private final String imageUrlFormat;
 	
-	public JetAnimeSearchAndGoProvider() {
+	public JetAnimeSearchAndGoAnimeProvider() {
 		super("JetAnime", "https://www.jetanime.co");
 		
 		imageUrlFormat = getSiteUrl() + "/assets/imgs/%s.jpg";
@@ -32,7 +32,7 @@ public class JetAnimeSearchAndGoProvider extends SearchAndGoProvider {
 	}
 	
 	@Override
-	public Map<String, SearchAndGoResult> work(String searchQuery) {
+	public Map<String, SearchAndGoResult> processWork(String searchQuery) {
 		Map<String, SearchAndGoResult> result = createEmptyResultMap();
 		
 		String html = getHelper().downloadPageCache(getSiteUrl());
@@ -41,31 +41,16 @@ public class JetAnimeSearchAndGoProvider extends SearchAndGoProvider {
 			return result;
 		}
 		
-		List<JetAnimeItem> animeItems = extractAnimeFromHtml(html);
+		List<JetAnimeItem> resultItems = extractAnimeFromHtml(html);
 		
-		for (JetAnimeItem animeItem : animeItems) {
+		for (JetAnimeItem animeItem : resultItems) {
 			String url = animeItem.getUrl();
 			String imageUrl = String.format(imageUrlFormat, url.replaceAll("(\\/anime\\/|\\/)", ""));
 			String name = animeItem.getName();
 			
-			boolean canPut = true;
-			
-			if (!(searchQuery == null || searchQuery.isEmpty())) {
-				String[] parts = searchQuery.toUpperCase().split(" ");
-				
-				boolean match = true;
-				for (String part : parts) {
-					if (!name.toUpperCase().contains(part)) {
-						match = false;
-						break;
-					}
-				}
-				
-				canPut = match;
-			}
-			
-			if (canPut) {
-				result.put(url, new SearchAndGoResult(this, animeItem.getName(), url, imageUrl, SearchCapability.ANIME));
+			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);
+			if (score != 0) {
+				result.put(url, new SearchAndGoResult(this, animeItem.getName(), url, imageUrl, SearchCapability.ANIME).score(score));
 			}
 		}
 		
@@ -113,39 +98,13 @@ public class JetAnimeSearchAndGoProvider extends SearchAndGoProvider {
 	}
 	
 	/**
-	 * Item information class
+	 * See {@link ResultItem}
 	 * 
-	 * It contain, a full regex match, an url, and a name
+	 * @author Enzo CACERES
 	 */
-	public static class JetAnimeItem {
-		private String match, url, name;
-		
-		/**
-		 * Create new instance of a JetAnimeItem
-		 * 
-		 * @param match
-		 *            Full matcher match
-		 * @param url
-		 *            Url found
-		 * @param name
-		 *            Name found
-		 */
+	public static class JetAnimeItem extends ResultItem {
 		public JetAnimeItem(String match, String url, String name) {
-			this.match = match;
-			this.url = url;
-			this.name = name;
-		}
-		
-		public String getMatch() {
-			return match;
-		}
-		
-		public String getUrl() {
-			return url;
-		}
-		
-		public String getName() {
-			return name;
+			super(match, url, name);
 		}
 	}
 	
