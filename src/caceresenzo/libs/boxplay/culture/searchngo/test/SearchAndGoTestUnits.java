@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider.MangaLelItem;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
@@ -27,13 +31,16 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "tomo";
+		private static final String QUERY = "boku";
 		
 		public static void main(String[] args) {
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
 			providers.add(ProviderManager.JETANIME.create());
-			// providers.add(ProviderManager.MANGALEL.create());
+			providers.add(ProviderManager.MANGALEL.create());
+			
+			// Logger.info(ProviderManager.JETANIME.create().ADDITIONAL_DATA_CORRESPONDANCE);
+			// Logger.info(ProviderManager.MANGALEL.create().ADDITIONAL_DATA_CORRESPONDANCE);
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
 			
@@ -45,7 +52,6 @@ public class SearchAndGoTestUnits {
 					
 					for (Entry<String, SearchAndGoResult> entry : workmap.entrySet()) {
 						results.add(entry.getValue());
-						// resultsNames.add(entry.getValue().getName());
 						Logger.info("------------------------------------------------------------ %s %s", entry.getValue().score(), entry.getValue().getName());
 					}
 				}
@@ -62,6 +68,18 @@ public class SearchAndGoTestUnits {
 				Logger.$(" " + result.getUrl());
 				Logger.$(" " + result.getName());
 				Logger.$(" " + result.getBestImageUrl());
+				
+				if (result.getParentProvider() instanceof JetAnimeSearchAndGoAnimeProvider) {
+					Logger.$("");
+					Logger.$(" DATA:");
+					
+					List<AdditionalResultData> additionalResultDatas = result.getParentProvider().fetchMoreData(result);
+					for (AdditionalResultData additionalData : additionalResultDatas) {
+						Logger.$(" - TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.getData());
+					}
+				}
+				
+				Logger.$(" ------------------------------------- ");
 				
 				// System.out.println(String.format("names.add(\"%s\");", result.getName()));
 			}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
@@ -34,7 +35,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 	
 	@Override
 	public Map<String, SearchAndGoResult> processWork(String searchQuery) {
-		Map<String, SearchAndGoResult> result = createEmptyResultMap();
+		Map<String, SearchAndGoResult> result = createEmptyWorkMap();
 		
 		String html = getHelper().downloadPageCache(listApiUrl);
 		
@@ -43,7 +44,6 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		}
 		
 		List<MangaLelItem> resultItems = extractAnimeFromHtml(html);
-		// Logger.info("resultItems: " + resultItems.size());
 		
 		for (MangaLelItem mangaLelItem : resultItems) {
 			String url = mangaLelItem.getUrl();
@@ -57,6 +57,21 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	protected List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result) {
+		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
+		
+		// String html = getHelper().downloadPageCache(getS);
+		//
+		// if (html == null) {
+		// return result;
+		// }
+		//
+		// String htmlContainer = extractInformationContainer(html);
+		
+		return additionals;
 	}
 	
 	/**

@@ -15,6 +15,8 @@ import caceresenzo.libs.network.Downloader;
  */
 public class ProviderHelper {
 	
+	protected static ProviderHelper STATIC_HELPER = new ProviderHelper();
+	
 	private SearchAndGoProvider parentProvider;
 	
 	private SearchEngine searchEngine;
@@ -67,7 +69,7 @@ public class ProviderHelper {
 	public String downloadPageCache(String url) {
 		checkProviderValidity();
 		
-		if (parentProvider.isCacheSupported() && cache.containsKey(url)) {
+		if (parentProvider.isCacheSupported() && cache.containsKey(url) && cache.get(url) != null) {
 			return (String) cache.get(url);
 		}
 		

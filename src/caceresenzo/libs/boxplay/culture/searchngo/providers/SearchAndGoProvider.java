@@ -1,10 +1,16 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
 
 /**
  * Provider class
@@ -14,6 +20,8 @@ import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
  * @author Enzo CACERES
  */
 public abstract class SearchAndGoProvider {
+	
+	protected final Map<ResultDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new LinkedHashMap<>();
 	
 	private final String siteName, siteUrl;
 	private final ProviderSearchCapability searchCapability;
@@ -76,11 +84,23 @@ public abstract class SearchAndGoProvider {
 	 * 
 	 */
 	public Map<String, SearchAndGoResult> work(String searchQuery) {
-		Map<String, SearchAndGoResult> workmap = work(searchQuery);
+		Map<String, SearchAndGoResult> workmap;
+		
+		ProviderCallback.onProviderSearchStarting(this);
+		
+		try {
+			workmap = processWork(searchQuery);
+		} catch (Exception exception) {
+			ProviderCallback.onProviderFailed(this, exception);
+			return createEmptyWorkMap();
+		}
 		
 		if (isAutosortEnabled()) {
+			ProviderCallback.onProviderSorting(this);
 			ResultScoreSorter.sortWorkmap(workmap, searchQuery, getHelper().getSearchEngine());
 		}
+		
+		ProviderCallback.onProviderSearchFinished(this, workmap);
 		
 		return workmap;
 	}
@@ -95,17 +115,60 @@ public abstract class SearchAndGoProvider {
 	 * @return A map containing all result found.
 	 * 
 	 */
-	protected abstract Map<String, SearchAndGoResult> processWork(String searchQuery);
+	protected abstract Map<String, SearchAndGoResult> processWork(String searchQuery) throws Exception;
 	
 	/**
-	 * Overridable, return an empty map for the work method
+	 * Return an empty map for the {@link #work(String)} method
 	 * 
 	 * Default is an LinkedHashMap because it will kept the same order
 	 * 
 	 * @return An empty map
 	 */
-	protected Map<String, SearchAndGoResult> createEmptyResultMap() {
+	protected static Map<String, SearchAndGoResult> createEmptyWorkMap() {
 		return new LinkedHashMap<>();
+	}
+	
+	/**
+	 * Allow ui to get move data about a result
+	 * 
+	 * @param result
+	 *            Target result
+	 * @return A list of data, sorted by cardinal enum
+	 */
+	public List<AdditionalResultData> fetchMoreData(SearchAndGoResult result) {
+		List<AdditionalResultData> additionals = processFetchMoreData(result);
+		
+		if (isAutosortEnabled()) {
+			additionals.sort(new Comparator<AdditionalResultData>() {
+				@Override
+				public int compare(AdditionalResultData additionalResultData1, AdditionalResultData additionalResultData2) {
+					return additionalResultData1.getType().ordinal() - additionalResultData2.getType().ordinal();
+				}
+			});
+		}
+		
+		return additionals;
+	}
+	
+	/**
+	 * Abstract function to ovveride, please don't call this function directly, autosort will not be supported
+	 * 
+	 * More info at {@link #fetchMoreData(String)}
+	 * 
+	 * 
+	 * @param result
+	 *            Target result
+	 * @return A list of data
+	 */
+	protected abstract List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result);
+	
+	/**
+	 * Return an empty list for the {@link #fetchMoreData(SearchAndGoResult)} method
+	 * 
+	 * @return An empty list
+	 */
+	protected static List<AdditionalResultData> createEmptyAdditionalResultDataList() {
+		return new ArrayList<>();
 	}
 	
 	/**
@@ -119,6 +182,11 @@ public abstract class SearchAndGoProvider {
 		return false;
 	}
 	
+	/**
+	 * Return if the site support cache, TRUE by default
+	 * 
+	 * @return If the cache is supported
+	 */
 	public boolean isCacheSupported() {
 		return true;
 	}
@@ -186,13 +254,36 @@ public abstract class SearchAndGoProvider {
 		}
 	}
 	
+	public static Map<String, SearchAndGoResult> provide(List<SearchAndGoProvider> providers, String query, boolean autosort) throws Exception {
+		ProviderCallback.onSearchStarting();
+		
+		Map<String, SearchAndGoResult> workmap = createEmptyWorkMap();
+		
+		try {
+			for (SearchAndGoProvider provider : providers) {
+				workmap.putAll(provider.work(query));
+			}
+		} catch (Exception exception) {
+			ProviderCallback.onSearchFail(exception);
+			throw exception;
+		}
+		
+		if (autosort) {
+			ResultScoreSorter.sortWorkmap(workmap, query, new SearchEngine());
+		}
+		
+		ProviderCallback.onSearchFinished(workmap);
+		
+		return workmap;
+	}
+	
 	/**
 	 * Get a static helper, but without all feature like cache
 	 * 
 	 * @return A freshly helper instance
 	 */
 	public static ProviderHelper getStaticHelper() {
-		return new ProviderHelper();
+		return ProviderHelper.STATIC_HELPER;
 	}
 	
 	/**
