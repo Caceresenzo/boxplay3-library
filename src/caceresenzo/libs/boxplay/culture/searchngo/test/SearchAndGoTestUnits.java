@@ -39,12 +39,13 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "ko";
+		private static final String QUERY = "Arifureta Shokugyou de Sekai Saikyou";
 		
 		public static void main(String[] args) {
+			// redirectConsoleOutput();
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
-			providers.add(ProviderManager.JETANIME.create());
+			// providers.add(ProviderManager.JETANIME.create());
 			providers.add(ProviderManager.MANGALEL.create());
 			
 			// Logger.info(ProviderManager.JETANIME.create().ADDITIONAL_DATA_CORRESPONDANCE);
@@ -90,6 +91,8 @@ public class SearchAndGoTestUnits {
 				Logger.$(" ------------------------------------- ");
 				
 				// System.out.println(String.format("names.add(\"%s\");", result.getName()));
+				
+				// System.exit(0);
 			}
 			
 			Logger.$("    ");

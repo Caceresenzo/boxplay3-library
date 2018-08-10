@@ -10,14 +10,30 @@ import java.util.regex.Matcher;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.RatingResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
 public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
+	
+	protected final Map<ResultDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(ResultDataType.class);
+	
+	public static final String ADDITIONAL_DATA_KEY_NAME = "h2";
+	public static final String ADDITIONAL_DATA_KEY_OTHER_NAME = "Autres noms";
+	public static final String ADDITIONAL_DATA_KEY_STATUS = "Statut";
+	public static final String ADDITIONAL_DATA_KEY_TYPE = "Type";
+	public static final String ADDITIONAL_DATA_KEY_TRADUCTION_TEAM = "Team";
+	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur\\(s\\)";
+	public static final String ADDITIONAL_DATA_KEY_ARTISTS = "Artist\\(s\\)";
+	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date de sortie";
+	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Catégories";
+	public static final String ADDITIONAL_DATA_KEY_VIEWS = "Vues";
+	public static final String ADDITIONAL_DATA_KEY_RATING = "Note";
 	
 	private final String listApiUrl;
 	private final String imageUrlFormat;
@@ -30,15 +46,15 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.NAME, ADDITIONAL_DATA_KEY_NAME); // Not usable in a loop
 		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.OTHER_NAME, ADDITIONAL_DATA_KEY_OTHER_NAME);
-		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS); // Not usable in a loop
 		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.TYPE, ADDITIONAL_DATA_KEY_TYPE);
-		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
-		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
-		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.ARTISTS, ADDITIONAL_DATA_KEY_ARTISTS);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(ResultDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(ResultDataType.ARTISTS, ADDITIONAL_DATA_KEY_ARTISTS);
 		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
-		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS); // Not usable in a loop
 		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.VIEWS, ADDITIONAL_DATA_KEY_VIEWS);
-		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RATING, ADDITIONAL_DATA_KEY_RATING);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RATING, ADDITIONAL_DATA_KEY_RATING); // Not usable in a loop
 	}
 	
 	@Override
@@ -77,18 +93,6 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		return result;
 	}
 	
-	public static final String ADDITIONAL_DATA_KEY_NAME = "h2";
-	public static final String ADDITIONAL_DATA_KEY_OTHER_NAME = "Autres noms";
-	public static final String ADDITIONAL_DATA_KEY_STATUS = "Statut";
-	public static final String ADDITIONAL_DATA_KEY_TYPE = "Type";
-	public static final String ADDITIONAL_DATA_KEY_TRADUCTION_TEAM = "Team";
-	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur\\(s\\)";
-	public static final String ADDITIONAL_DATA_KEY_ARTISTS = "Artist\\(s\\)";
-	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date de sortie";
-	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Catégories";
-	public static final String ADDITIONAL_DATA_KEY_VIEWS = "Vues";
-	public static final String ADDITIONAL_DATA_KEY_RATING = "Note";
-	
 	@Override
 	protected List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result) {
 		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
@@ -121,12 +125,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		/**
 		 * Item that need to be url-extracted (html element <a>)
 		 */
-		Map<ResultDataType, String> correspondanceToUrlExtract = new EnumMap<>(ResultDataType.class);
-		correspondanceToUrlExtract.put(ResultDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
-		correspondanceToUrlExtract.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
-		correspondanceToUrlExtract.put(ResultDataType.ARTISTS, ADDITIONAL_DATA_KEY_ARTISTS);
-		
-		for (Entry<ResultDataType, String> entry : correspondanceToUrlExtract.entrySet()) {
+		for (Entry<ResultDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.entrySet()) {
 			ResultDataType type = entry.getKey();
 			String dataKey = entry.getValue();
 			
@@ -169,6 +168,21 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 			}
 			
 			additionals.add(new AdditionalResultData(ResultDataType.STATUS, categories));
+		}
+		
+		// RATING
+		String extractedRatingHtmlContainer = extractCommonData(ADDITIONAL_DATA_KEY_RATING, htmlContainer);
+		
+		if (extractedRatingHtmlContainer != null) {
+			final String extractRatingValueRegex = "\\<meta\\sitemprop=\\\"%s\\\"\\scontent[\\s]*=[\\s]*\\\"[\\s]*([\\d\\.]*)[\\s]*\\\"\\>";
+			
+			float average = ParseUtils.parseFloat(getHelper().extract(String.format(extractRatingValueRegex, "average"), extractedRatingHtmlContainer), RatingResultData.NO_VALUE);
+			int best = ParseUtils.parseInt(getHelper().extract(String.format(extractRatingValueRegex, "best"), extractedRatingHtmlContainer), RatingResultData.NO_VALUE);
+			int votes = ParseUtils.parseInt(getHelper().extract(String.format(extractRatingValueRegex, "votes"), extractedRatingHtmlContainer), RatingResultData.NO_VALUE);
+			
+			if (average != RatingResultData.NO_VALUE && best != RatingResultData.NO_VALUE && votes != RatingResultData.NO_VALUE) {
+				additionals.add(new AdditionalResultData(ResultDataType.RATING, new RatingResultData(average, best, votes)));
+			}
 		}
 		
 		return additionals;

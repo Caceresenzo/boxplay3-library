@@ -2,6 +2,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
  */
 public abstract class SearchAndGoProvider {
 	
-	protected final Map<ResultDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new LinkedHashMap<>();
+	protected final Map<ResultDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new EnumMap<>(ResultDataType.class);
 	
 	private final String siteName, siteUrl;
 	private final ProviderSearchCapability searchCapability;

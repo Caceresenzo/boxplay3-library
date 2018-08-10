@@ -1,11 +1,13 @@
 package caceresenzo.libs.boxplay.culture.searchngo.data.models;
 
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
+
 /**
  * Holder class to contain an url and a name of a Category
  * 
  * @author Enzo CACERES
  */
-public class CategoryResultData {
+public class CategoryResultData implements DisplayableString {
 	
 	private final String url, name;
 	
@@ -53,7 +55,12 @@ public class CategoryResultData {
 	public String getName() {
 		return name;
 	}
-
+	
+	@Override
+	public String convertToDisplayableString() {
+		return getName();
+	}
+	
 	/**
 	 * To String
 	 */

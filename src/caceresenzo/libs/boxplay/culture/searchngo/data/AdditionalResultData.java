@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.CategoryResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.UrlResultData;
 
 /**
  * Holder class to hold data for a common result
@@ -82,10 +81,8 @@ public class AdditionalResultData {
 				
 				converted += toString + (iterator.hasNext() ? DATA_SEPARATOR : "");
 			}
-		} else if (data instanceof CategoryResultData) {
-			converted = ((CategoryResultData) data).getName();
-		} else if (data instanceof UrlResultData) {
-			converted = ((UrlResultData) data).getString();
+		} else if (data instanceof DisplayableString) {
+			converted = ((DisplayableString) data).convertToDisplayableString();
 		} else {
 			converted = (String) data;
 		}
@@ -113,6 +110,12 @@ public class AdditionalResultData {
 	@Override
 	public String toString() {
 		return "AdditionalResultData[type=" + type + ", data=" + data + "]";
+	}
+	
+	public static interface DisplayableString {
+		
+		String convertToDisplayableString();
+		
 	}
 	
 }
