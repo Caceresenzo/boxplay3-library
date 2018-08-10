@@ -73,8 +73,8 @@ public class AdditionalResultData {
 				Object next = iterator.next();
 				String toString;
 				
-				if (next instanceof CategoryResultData) {
-					toString = ((CategoryResultData) next).getName();
+				if (next instanceof DisplayableString) {
+					toString = ((DisplayableString) next).convertToDisplayableString();
 				} else {
 					toString = String.valueOf(next);
 				}

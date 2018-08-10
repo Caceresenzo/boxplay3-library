@@ -69,7 +69,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 		
 		for (JetAnimeItem animeItem : resultItems) {
 			String url = getSiteUrl() + animeItem.getUrl();
-			String imageUrl = String.format(imageUrlFormat, url.replaceAll("(\\/anime\\/|\\/)", ""));
+			String imageUrl = String.format(imageUrlFormat, animeItem.getUrl().replaceAll("(\\/anime\\/|\\/)", ""));
 			String name = animeItem.getName();
 			
 			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);

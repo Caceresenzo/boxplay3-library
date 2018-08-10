@@ -167,7 +167,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 				categories.add(new CategoryResultData(matcher.group(1), AdditionalResultData.escapeHtmlChar(matcher.group(2))));
 			}
 			
-			additionals.add(new AdditionalResultData(ResultDataType.STATUS, categories));
+			additionals.add(new AdditionalResultData(ResultDataType.GENDERS, categories));
 		}
 		
 		// RATING
