@@ -1,15 +1,21 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
-import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.string.StringUtils;
 
 public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 	
@@ -21,6 +27,18 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		
 		listApiUrl = getSiteUrl() + "/changeMangaList?type=text";
 		imageUrlFormat = getSiteUrl() + "//uploads/manga/%s/cover/cover_250x350.jpg";
+		
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.NAME, ADDITIONAL_DATA_KEY_NAME); // Not usable in a loop
+		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.OTHER_NAME, ADDITIONAL_DATA_KEY_OTHER_NAME);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.TYPE, ADDITIONAL_DATA_KEY_TYPE);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.ARTISTS, ADDITIONAL_DATA_KEY_ARTISTS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.VIEWS, ADDITIONAL_DATA_KEY_VIEWS);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RATING, ADDITIONAL_DATA_KEY_RATING);
 	}
 	
 	@Override
@@ -59,17 +77,99 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		return result;
 	}
 	
+	public static final String ADDITIONAL_DATA_KEY_NAME = "h2";
+	public static final String ADDITIONAL_DATA_KEY_OTHER_NAME = "Autres noms";
+	public static final String ADDITIONAL_DATA_KEY_STATUS = "Statut";
+	public static final String ADDITIONAL_DATA_KEY_TYPE = "Type";
+	public static final String ADDITIONAL_DATA_KEY_TRADUCTION_TEAM = "Team";
+	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur\\(s\\)";
+	public static final String ADDITIONAL_DATA_KEY_ARTISTS = "Artist\\(s\\)";
+	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date de sortie";
+	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Catégories";
+	public static final String ADDITIONAL_DATA_KEY_VIEWS = "Vues";
+	public static final String ADDITIONAL_DATA_KEY_RATING = "Note";
+	
 	@Override
 	protected List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result) {
 		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
 		
-		// String html = getHelper().downloadPageCache(getS);
-		//
-		// if (html == null) {
-		// return result;
-		// }
-		//
-		// String htmlContainer = extractInformationContainer(html);
+		String html = getHelper().downloadPageCache(result.getUrl());
+		String htmlContainer = extractInformationContainer(html);
+		
+		if (html == null || html.isEmpty() || htmlContainer == null || htmlContainer.isEmpty()) {
+			return additionals;
+		}
+		
+		/**
+		 * Common
+		 */
+		for (Entry<ResultDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
+			ResultDataType type = entry.getKey();
+			String dataKey = entry.getValue();
+			
+			String extractedData = extractCommonData(dataKey, htmlContainer);
+			
+			if (extractedData != null) {
+				if (type.equals(ResultDataType.TYPE)) {
+					extractedData = StringUtils.capitalize(extractedData);
+				}
+				
+				additionals.add(new AdditionalResultData(type, extractedData.trim()));
+			}
+		}
+		
+		/**
+		 * Item that need to be url-extracted (html element <a>)
+		 */
+		Map<ResultDataType, String> correspondanceToUrlExtract = new EnumMap<>(ResultDataType.class);
+		correspondanceToUrlExtract.put(ResultDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
+		correspondanceToUrlExtract.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
+		correspondanceToUrlExtract.put(ResultDataType.ARTISTS, ADDITIONAL_DATA_KEY_ARTISTS);
+		
+		for (Entry<ResultDataType, String> entry : correspondanceToUrlExtract.entrySet()) {
+			ResultDataType type = entry.getKey();
+			String dataKey = entry.getValue();
+			
+			String extractedHtmlElementData = extractCommonData(dataKey, htmlContainer);
+			
+			if (extractedHtmlElementData != null) {
+				UrlResultData extractedUrlData = getHelper().extractUrlFromHtml(extractedHtmlElementData);
+				
+				additionals.add(new AdditionalResultData(type, extractedUrlData));
+			}
+		}
+		
+		/**
+		 * Other
+		 */
+		// NAME
+		String extratedNameData = getHelper().extract("\\<h2\\sclass=\\\"widget-title\\\"\\sstyle=\\\"display:\\sinline-block;\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/h2\\>", html);
+		
+		if (extratedNameData != null) {
+			additionals.add(new AdditionalResultData(ResultDataType.NAME, extratedNameData));
+		}
+		
+		// STATUS
+		String extractedStatusData = getHelper().extractStringFromHtml("span", extractCommonData(ADDITIONAL_DATA_KEY_STATUS, htmlContainer));
+		
+		if (extractedStatusData != null) {
+			additionals.add(new AdditionalResultData(ResultDataType.STATUS, extractedStatusData));
+		}
+		
+		// GENDERS
+		String extractedGendersData = extractCommonData(ADDITIONAL_DATA_KEY_GENDERS, htmlContainer);
+		
+		if (extractedGendersData != null) {
+			Matcher matcher = getHelper().regex(UrlResultData.EXTRATION_REGEX_FROM_HTML, extractedGendersData);
+			
+			List<CategoryResultData> categories = new ArrayList<>();
+			
+			while (matcher.find()) {
+				categories.add(new CategoryResultData(matcher.group(1), AdditionalResultData.escapeHtmlChar(matcher.group(2))));
+			}
+			
+			additionals.add(new AdditionalResultData(ResultDataType.STATUS, categories));
+		}
 		
 		return additionals;
 	}
@@ -91,6 +191,30 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		}
 		
 		return items;
+	}
+	
+	/**
+	 * On Manga-LEL, that will extract a container string that is a dl div shit in html containing all information about the manga
+	 * 
+	 * @param html
+	 *            The downloaded html of a manga page
+	 * @return A string containing all information in html
+	 */
+	public static String extractInformationContainer(String html) {
+		return getStaticHelper().extract("\\<dl\\sclass=\\\"dl-horizontal\\\"\\>(.*?)\\<\\/dl\\>", html);
+	}
+	
+	/**
+	 * Extract common data on the Manga-LEL page
+	 * 
+	 * @param dataKey
+	 *            Something like "Type" or "Team", a key that will used as a line identifier
+	 * @param htmlContainer
+	 *            A html container, source of data
+	 * @return Some extracted data, null if not found
+	 */
+	public static String extractCommonData(String dataKey, String htmlContainer) {
+		return getStaticHelper().extract(String.format("\\<dt\\>[\\s\\t\\n]*%s[\\s\\t\\n]*\\<\\/dt\\>[\\s\\t\\n]*\\<dd\\>[\\s\\t\\n]*(.*?)[\\s\\t\\n]*\\<\\/dd\\>", dataKey), htmlContainer);
 	}
 	
 	/**

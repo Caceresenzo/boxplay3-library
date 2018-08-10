@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
@@ -41,7 +42,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
 		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.STUDIOS, ADDITIONAL_DATA_KEY_STUDIOS);
 		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RESUME, ADDITIONAL_DATA_KEY_RESUME);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RESUME, ADDITIONAL_DATA_KEY_RESUME); // Not usable in a loop
 	}
 	
 	@Override
@@ -95,10 +96,6 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 			ResultDataType type = entry.getKey();
 			String dataKey = entry.getValue();
 			
-			if (type.equals(ResultDataType.RESUME)) {
-				continue;
-			}
-			
 			String extractedData = extractCommonData(dataKey, htmlContainer);
 			
 			if (extractedData != null) {
@@ -106,12 +103,12 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 				Object formattedData = trimExtractedData;
 				
 				if (type.equals(ResultDataType.GENDERS) && trimExtractedData.contains(",")) {
-					List<String> strings = new ArrayList<>();
+					List<CategoryResultData> categories = new ArrayList<>();
 					for (String split : trimExtractedData.split(",")) {
-						strings.add(split.trim());
+						categories.add(new CategoryResultData(split));
 					}
 					
-					formattedData = strings;
+					formattedData = categories;
 				}
 				
 				additionals.add(new AdditionalResultData(type, formattedData));
@@ -179,13 +176,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 			return null;
 		}
 		
-		Matcher matcher = getStaticHelper().regex("\\<div\\sclass=\\\"clearfix\\\"\\>(.*?)\\<\\/div\\>", html);
-		
-		if (matcher.find()) {
-			return matcher.group(1);
-		}
-		
-		return null;
+		return getStaticHelper().extract("\\<div\\sclass=\\\"clearfix\\\"\\>(.*?)\\<\\/div\\>", html);
 	}
 	
 	/**
@@ -198,13 +189,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 	 * @return Some extracted data, null if not found
 	 */
 	public static String extractCommonData(String dataKey, String htmlContainer) {
-		Matcher matcher = getStaticHelper().regex(String.format("\\<p\\>\\<span\\sclass=\\\"bold\\\"\\>%s\\<\\/span\\>[\\s]*(.*?)[\\s]*\\<\\/p\\>", dataKey), htmlContainer);
-		
-		if (matcher.find()) {
-			return matcher.group(1);
-		}
-		
-		return null;
+		return getStaticHelper().extract(String.format("\\<p\\>\\<span\\sclass=\\\"bold\\\"\\>%s\\<\\/span\\>[\\s]*(.*?)[\\s]*\\<\\/p\\>", dataKey), htmlContainer);
 	}
 	
 	/**
@@ -215,13 +200,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 	 * @return Extracted resume, null if not found
 	 */
 	public static String extractResumeData(String htmlContainer) {
-		Matcher matcher = getStaticHelper().regex(String.format("\\<span\\sclass=\\\"bold\\\">%s\\<\\/span\\>[\\s]*(.*?)[\\s]*\\z", ADDITIONAL_DATA_KEY_RESUME), htmlContainer);
-		
-		if (matcher.find()) {
-			return matcher.group(1);
-		}
-		
-		return null;
+		return getStaticHelper().extract(String.format("\\<span\\sclass=\\\"bold\\\">%s\\<\\/span\\>[\\s]*(.*?)[\\s]*\\z", ADDITIONAL_DATA_KEY_RESUME), htmlContainer);
 	}
 	
 	/**

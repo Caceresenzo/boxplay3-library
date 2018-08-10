@@ -1,5 +1,8 @@
 package caceresenzo.libs.boxplay.culture.searchngo.test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,9 +13,6 @@ import java.util.Map.Entry;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider.MangaLelItem;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
@@ -29,9 +29,17 @@ public class SearchAndGoTestUnits {
 		;
 	}
 	
+	public static void redirectConsoleOutput() {
+		try {
+			System.setOut(new PrintStream(new FileOutputStream(new File("info.log")), true, "UTF-8"));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "boku";
+		private static final String QUERY = "ko";
 		
 		public static void main(String[] args) {
 			List<SearchAndGoProvider> providers = new ArrayList<>();
@@ -64,20 +72,20 @@ public class SearchAndGoTestUnits {
 			}
 			
 			for (SearchAndGoResult result : results) {
-				Logger.$(result.getType() + " [%s]", result.score());
-				Logger.$(" " + result.getUrl());
-				Logger.$(" " + result.getName());
-				Logger.$(" " + result.getBestImageUrl());
+				Logger.$(result.getType() + " [search score: %s]", result.score());
+				Logger.$("\t" + result.getUrl());
+				Logger.$("\t" + result.getName());
+				Logger.$("\t" + result.getBestImageUrl());
 				
-				if (result.getParentProvider() instanceof JetAnimeSearchAndGoAnimeProvider) {
-					Logger.$("");
-					Logger.$(" DATA:");
-					
-					List<AdditionalResultData> additionalResultDatas = result.getParentProvider().fetchMoreData(result);
-					for (AdditionalResultData additionalData : additionalResultDatas) {
-						Logger.$(" - TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.getData());
-					}
+				// if (result.getParentProvider() instanceof JetAnimeSearchAndGoAnimeProvider) {
+				Logger.$("");
+				Logger.$("\tDATA:");
+				
+				List<AdditionalResultData> additionalResultDatas = result.getParentProvider().fetchMoreData(result);
+				for (AdditionalResultData additionalData : additionalResultDatas) {
+					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
 				}
+				// }
 				
 				Logger.$(" ------------------------------------- ");
 				
