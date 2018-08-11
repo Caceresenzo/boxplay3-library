@@ -3,6 +3,8 @@ package caceresenzo.libs.boxplay.culture.searchngo.data;
 import java.util.Iterator;
 import java.util.List;
 
+import caceresenzo.libs.boxplay.culture.searchngo.content.ContentViewerType;
+
 /**
  * Holder class to hold data for a common result
  * 
@@ -12,38 +14,38 @@ public class AdditionalResultData {
 	
 	public static final String DATA_SEPARATOR = ", ";
 	
-	private final ResultDataType type;
+	private final AdditionalDataType type;
 	private final Object data;
 	
 	/**
-	 * Constructor, create a new instance with the object only, {@link ResultDataType} will be interpreted as {@link ResultDataType#NULL}
+	 * Constructor, create a new instance with the object only, {@link AdditionalDataType} will be interpreted as {@link AdditionalDataType#NULL}
 	 * 
 	 * @param data
 	 *            Your data
 	 */
 	public AdditionalResultData(Object data) {
-		this(ResultDataType.NULL, data);
+		this(AdditionalDataType.NULL, data);
 	}
 	
 	/**
-	 * Constructor, create a new instance with a {@link ResultDataType} and an object
+	 * Constructor, create a new instance with a {@link AdditionalDataType} and an object
 	 * 
 	 * @param type
-	 *            Your {@link ResultDataType}
+	 *            Your {@link AdditionalDataType}
 	 * @param data
 	 *            Your data, and if this is an instance of string, auto escaping will be applied
 	 */
-	public AdditionalResultData(ResultDataType type, Object data) {
+	public AdditionalResultData(AdditionalDataType type, Object data) {
 		this.type = type;
 		this.data = data instanceof String ? escapeHtmlChar(String.valueOf(data)) : data;
 	}
 	
 	/**
-	 * Get the {@link ResultDataType} of this result
+	 * Get the {@link AdditionalDataType} of this result
 	 * 
 	 * @return The type
 	 */
-	public ResultDataType getType() {
+	public AdditionalDataType getType() {
 		return type;
 	}
 	
@@ -113,6 +115,12 @@ public class AdditionalResultData {
 	public static interface DisplayableString {
 		
 		String convertToDisplayableString();
+		
+	}
+	
+	public static interface ViewableContent {
+		
+		ContentViewerType getContentViewerType();
 		
 	}
 	

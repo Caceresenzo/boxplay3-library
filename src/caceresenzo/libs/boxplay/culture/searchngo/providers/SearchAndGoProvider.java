@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
@@ -22,7 +22,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
  */
 public abstract class SearchAndGoProvider {
 	
-	protected final Map<ResultDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new EnumMap<>(ResultDataType.class);
+	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new EnumMap<>(AdditionalDataType.class);
 	
 	private final String siteName, siteUrl;
 	private final ProviderSearchCapability searchCapability;
@@ -130,7 +130,7 @@ public abstract class SearchAndGoProvider {
 	}
 	
 	/**
-	 * Allow ui to get move data about a result
+	 * Allow ui to get more data about a result
 	 * 
 	 * @param result
 	 *            Target result
@@ -162,6 +162,42 @@ public abstract class SearchAndGoProvider {
 	 * @return A list of data
 	 */
 	protected abstract List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result);
+	
+	/**
+	 * Allow ui to get more content about a result
+	 * 
+	 * @param result
+	 *            Target result
+	 * @return A list of data, sorted by cardinal enum
+	 */
+	public List<AdditionalResultData> fetchContent(SearchAndGoResult result) {
+		List<AdditionalResultData> additionals = processFetchContent(result);
+		
+		if (isAutosortEnabled()) {
+			additionals.sort(getContentComparator());
+		}
+		
+		return additionals;
+	}
+	
+	/**
+	 * Abstract function to ovveride, please don't call this function directly, autosort will not be supported
+	 * 
+	 * More info at {@link #fetchContent(String)}
+	 * 
+	 * 
+	 * @param result
+	 *            Target result
+	 * @return A list of data
+	 */
+	protected abstract List<AdditionalResultData> processFetchContent(SearchAndGoResult result);
+	
+	/**
+	 * Return the comparator for sorting more content items
+	 * 
+	 * @return Custom comparator
+	 */
+	protected abstract Comparator<AdditionalResultData> getContentComparator();
 	
 	/**
 	 * Return an empty list for the {@link #fetchMoreData(SearchAndGoResult)} method

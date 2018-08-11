@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
@@ -40,7 +40,7 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "Ari";
+		private static final String QUERY = "one piece";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -88,6 +88,14 @@ public class SearchAndGoTestUnits {
 					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
 				}
 				// }
+				
+				Logger.$("");
+				Logger.$("\tDATA:");
+				
+				List<AdditionalResultData> additionalContentDatas = result.getParentProvider().fetchContent(result);
+				for (AdditionalResultData additionalData : additionalContentDatas) {
+					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
+				}
 				
 				Logger.$(" ------------------------------------- ");
 				
@@ -160,12 +168,11 @@ public class SearchAndGoTestUnits {
 	public static class AndroidI18nExporter {
 		
 		public static void main(String[] args) {
-			for (ResultDataType resultType : ResultDataType.values()) {
+			for (AdditionalDataType resultType : AdditionalDataType.values()) {
 				System.out.println(String.format("<string name=\"boxplay_culture_searchngo_search_result_data_type_%s\">%s</string>", resultType.toString().toLowerCase(), resultType.toString()));
 			}
 			
-			
-			for (ResultDataType resultType : ResultDataType.values()) {
+			for (AdditionalDataType resultType : AdditionalDataType.values()) {
 				System.out.println(String.format("enumCacheTranslation.put(ResultDataType.%s, boxPlayActivity.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.toString(), resultType.toString().toLowerCase()));
 			}
 		}

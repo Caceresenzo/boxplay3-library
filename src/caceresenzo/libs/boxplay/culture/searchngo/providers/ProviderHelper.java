@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.UrlResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
 import caceresenzo.libs.network.Downloader;
 

@@ -1,14 +1,16 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
@@ -34,14 +36,14 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 		
 		imageUrlFormat = getSiteUrl() + "/assets/imgs/%s.jpg";
 		
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.NAME, ADDITIONAL_DATA_KEY_NAME);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.ORIGINAL_NAME, ADDITIONAL_DATA_KEY_ORIGINAL_NAME);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.ALTERNATIVE_NAME, ADDITIONAL_DATA_KEY_ALTERNATIVE_NAME);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.STUDIOS, ADDITIONAL_DATA_KEY_STUDIOS);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.NAME, ADDITIONAL_DATA_KEY_NAME);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.ORIGINAL_NAME, ADDITIONAL_DATA_KEY_ORIGINAL_NAME);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.ALTERNATIVE_NAME, ADDITIONAL_DATA_KEY_ALTERNATIVE_NAME);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.STUDIOS, ADDITIONAL_DATA_KEY_STUDIOS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RESUME, ADDITIONAL_DATA_KEY_RESUME); // Not usable in a loop
 	}
 	
@@ -92,8 +94,8 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 			return additionals;
 		}
 		
-		for (Entry<ResultDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
-			ResultDataType type = entry.getKey();
+		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
+			AdditionalDataType type = entry.getKey();
 			String dataKey = entry.getValue();
 			
 			String extractedData = extractCommonData(dataKey, htmlContainer);
@@ -102,10 +104,15 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 				String trimExtractedData = extractedData.trim();
 				Object formattedData = trimExtractedData;
 				
-				if (type.equals(ResultDataType.GENDERS) && trimExtractedData.contains(",")) {
+				if (type.equals(AdditionalDataType.GENDERS) && trimExtractedData.contains(",")) {
 					List<CategoryResultData> categories = new ArrayList<>();
-					for (String split : trimExtractedData.split(",")) {
-						categories.add(new CategoryResultData(split));
+					
+					if (trimExtractedData.contains(",")) {
+						for (String split : trimExtractedData.split(",")) {
+							categories.add(new CategoryResultData(split));
+						}
+					} else {
+						categories.add(new CategoryResultData(trimExtractedData));
 					}
 					
 					formattedData = categories;
@@ -118,10 +125,48 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 		String extractedResumeData = extractResumeData(htmlContainer);
 		
 		if (extractedResumeData != null) {
-			additionals.add(new AdditionalResultData(ResultDataType.RESUME, extractedResumeData.trim()));
+			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResumeData.trim()));
 		}
 		
 		return additionals;
+	}
+	
+	@Override
+	protected List<AdditionalResultData> processFetchContent(SearchAndGoResult result) {
+		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
+		
+		String html = getHelper().downloadPageCache(result.getUrl());
+		
+		if (html == null || html.isEmpty()) {
+			return additionals;
+		}
+		
+		Matcher containerMatcher = getHelper().regex("\\<div\\sid=\\\"collapsecategory[\\d]*\\\"\\sclass=\\\"panel-collapse\\scollapse\\s(in)*\\\"\\srole=\\\"tabpanel\\\"\\saria-labelledby=\\\"category[\\d]*\\\"\\>(.*?)\\<\\/div\\>", html);
+		
+		while (containerMatcher.find()) {
+			String htmlContainer = containerMatcher.group(2);
+			
+			Matcher itemMatcher = getHelper().regex("\\<a\\sclass=\\\"list-group-item[\\s]*[active]*\\\"\\shref=\\\"(.*?)\\\"\\>[\\s\\t\\n]*(\\<i.*?\\>\\<\\/i\\>)*[\\s]*(.*?)[\\s]*\\<\\/a\\>", htmlContainer);
+			
+			while (itemMatcher.find()) {
+				String url = getSiteUrl() + itemMatcher.group(1);
+				String video = itemMatcher.group(3);
+				
+				additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new VideoItemResultData(url, video)));
+			}
+		}
+		
+		return additionals;
+	}
+	
+	@Override
+	protected Comparator<AdditionalResultData> getContentComparator() {
+		return new Comparator<AdditionalResultData>() {
+			@Override
+			public int compare(AdditionalResultData o1, AdditionalResultData o2) {
+				return 0;
+			}
+		};
 	}
 	
 	/**

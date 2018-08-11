@@ -3,7 +3,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers;
 import java.util.Arrays;
 import java.util.List;
 
-import caceresenzo.libs.boxplay.culture.searchngo.viewer.ViewerType;
+import caceresenzo.libs.boxplay.culture.searchngo.content.ContentViewerType;
 
 /**
  * Class for holding information about the capacity and the capability of a provider
@@ -83,15 +83,15 @@ public class ProviderSearchCapability {
 	 * @author Enzo CACERES
 	 */
 	public static enum SearchCapability {
-		ANIME(ViewerType.VIDEO), //
-		SERIES(ViewerType.VIDEO), //
-		MANGA(ViewerType.IMAGE), //
-		MOVIE(ViewerType.VIDEO), //
+		ANIME(ContentViewerType.VIDEO), //
+		SERIES(ContentViewerType.VIDEO), //
+		MANGA(ContentViewerType.IMAGE), //
+		MOVIE(ContentViewerType.VIDEO), //
 		DEFAULT(null); //
 		
-		private ViewerType viewerType;
+		private ContentViewerType viewerType;
 		
-		private SearchCapability(ViewerType viewerType) {
+		private SearchCapability(ContentViewerType viewerType) {
 			this.viewerType = viewerType;
 		}
 		
@@ -100,7 +100,7 @@ public class ProviderSearchCapability {
 		 * 
 		 * @return The ViewerType
 		 */
-		public ViewerType getViewerType() {
+		public ContentViewerType getViewerType() {
 			return viewerType;
 		}
 	}

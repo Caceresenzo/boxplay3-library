@@ -1,4 +1,4 @@
-package caceresenzo.libs.boxplay.culture.searchngo.data.models;
+package caceresenzo.libs.boxplay.culture.searchngo.data.models.additional;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 

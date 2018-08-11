@@ -1,17 +1,19 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.CategoryResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.RatingResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.UrlResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.RatingResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
@@ -21,7 +23,7 @@ import caceresenzo.libs.string.StringUtils;
 
 public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 	
-	protected final Map<ResultDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(ResultDataType.class);
+	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
 	
 	public static final String ADDITIONAL_DATA_KEY_NAME = "h2";
 	public static final String ADDITIONAL_DATA_KEY_OTHER_NAME = "Autres noms";
@@ -46,15 +48,15 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		imageUrlFormat = getSiteUrl() + "//uploads/manga/%s/cover/cover_250x350.jpg";
 		
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.NAME, ADDITIONAL_DATA_KEY_NAME); // Not usable in a loop
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.OTHER_NAME, ADDITIONAL_DATA_KEY_OTHER_NAME);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.OTHER_NAME, ADDITIONAL_DATA_KEY_OTHER_NAME);
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS); // Not usable in a loop
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.TYPE, ADDITIONAL_DATA_KEY_TYPE);
-		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(ResultDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
-		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(ResultDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
-		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(ResultDataType.ARTISTS, ADDITIONAL_DATA_KEY_ARTISTS);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.TYPE, ADDITIONAL_DATA_KEY_TYPE);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.ARTISTS, ADDITIONAL_DATA_KEY_ARTISTS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS); // Not usable in a loop
-		ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.VIEWS, ADDITIONAL_DATA_KEY_VIEWS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.VIEWS, ADDITIONAL_DATA_KEY_VIEWS);
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.RATING, ADDITIONAL_DATA_KEY_RATING); // Not usable in a loop
 	}
 	
@@ -108,14 +110,14 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		/**
 		 * Common
 		 */
-		for (Entry<ResultDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
-			ResultDataType type = entry.getKey();
+		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
+			AdditionalDataType type = entry.getKey();
 			String dataKey = entry.getValue();
 			
 			String extractedData = extractCommonData(dataKey, htmlContainer);
 			
 			if (extractedData != null) {
-				if (type.equals(ResultDataType.TYPE)) {
+				if (type.equals(AdditionalDataType.TYPE)) {
 					extractedData = StringUtils.capitalize(extractedData);
 				}
 				
@@ -126,8 +128,8 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		/**
 		 * Item that need to be url-extracted (html element <a>)
 		 */
-		for (Entry<ResultDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.entrySet()) {
-			ResultDataType type = entry.getKey();
+		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.entrySet()) {
+			AdditionalDataType type = entry.getKey();
 			String dataKey = entry.getValue();
 			
 			String extractedHtmlElementData = extractCommonData(dataKey, htmlContainer);
@@ -146,14 +148,14 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		String extratedNameData = getHelper().extract("\\<h2\\sclass=\\\"widget-title\\\"\\sstyle=\\\"display:\\sinline-block;\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/h2\\>", html);
 		
 		if (extratedNameData != null) {
-			additionals.add(new AdditionalResultData(ResultDataType.NAME, extratedNameData));
+			additionals.add(new AdditionalResultData(AdditionalDataType.NAME, extratedNameData));
 		}
 		
 		// STATUS
 		String extractedStatusData = getHelper().extractStringFromHtml("span", extractCommonData(ADDITIONAL_DATA_KEY_STATUS, htmlContainer));
 		
 		if (extractedStatusData != null) {
-			additionals.add(new AdditionalResultData(ResultDataType.STATUS, extractedStatusData));
+			additionals.add(new AdditionalResultData(AdditionalDataType.STATUS, extractedStatusData));
 		}
 		
 		// GENDERS
@@ -168,7 +170,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 				categories.add(new CategoryResultData(matcher.group(1), AdditionalResultData.escapeHtmlChar(matcher.group(2))));
 			}
 			
-			additionals.add(new AdditionalResultData(ResultDataType.GENDERS, categories));
+			additionals.add(new AdditionalResultData(AdditionalDataType.GENDERS, categories));
 		}
 		
 		// RATING
@@ -182,7 +184,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 			int votes = ParseUtils.parseInt(getHelper().extract(String.format(extractRatingValueRegex, "votes"), extractedRatingHtmlContainer), RatingResultData.NO_VALUE);
 			
 			if (average != RatingResultData.NO_VALUE && best != RatingResultData.NO_VALUE && votes != RatingResultData.NO_VALUE) {
-				additionals.add(new AdditionalResultData(ResultDataType.RATING, new RatingResultData(average, best, votes)));
+				additionals.add(new AdditionalResultData(AdditionalDataType.RATING, new RatingResultData(average, best, votes)));
 			}
 		}
 		
@@ -190,10 +192,43 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		String extractedResumeData = extractResumeData(html);
 		
 		if (extractedResumeData != null) {
-			additionals.add(new AdditionalResultData(ResultDataType.RESUME, extractedResumeData));
+			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResumeData));
 		}
 		
 		return additionals;
+	}
+	
+	@Override
+	protected List<AdditionalResultData> processFetchContent(SearchAndGoResult result) {
+		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
+		
+		String html = getHelper().downloadPageCache(result.getUrl());
+		
+		if (html == null || html.isEmpty()) {
+			return additionals;
+		}
+		
+		Matcher matcher = getHelper().regex("\\<li\\sstyle=\\\"padding:\\s3px\\s0;\\\"\\sclass=\\\"volume-[\\d]*\\\"\\>[\\s\\t\\n]*\\<h5\\sclass=\\\"chapter-title-rtl\\\"\\>[\\s\\t\\n]*\\<a\\shref=\\\"(.*?)\\\">(.*?)\\<\\/a\\>.*?\\<em\\>[\\s]*(.*?)[\\s]*\\<\\/em\\>[\\s\\t\\n]*\\<\\/h5\\>[\\s\\t\\n]*\\<div\\sclass=\\\"action[\\s]*\\\"\\>[\\s\\t\\n]*\\<div.*?\\<\\/div\\>[\\s\\t\\n]*\\<\\/div\\>[\\s\\t\\n]*\\<\\/li\\>", html);
+		
+		while (matcher.find()) {
+			String url = matcher.group(1);
+			String chapter = matcher.group(2);
+			String title = matcher.group(3);
+			
+			additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(url, chapter, title)));
+		}
+		
+		return additionals;
+	}
+	
+	@Override
+	protected Comparator<AdditionalResultData> getContentComparator() {
+		return new Comparator<AdditionalResultData>() {
+			@Override
+			public int compare(AdditionalResultData o1, AdditionalResultData o2) {
+				return 0;
+			}
+		};
 	}
 	
 	/**
