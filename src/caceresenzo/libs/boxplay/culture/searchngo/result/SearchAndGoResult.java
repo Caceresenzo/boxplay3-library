@@ -44,6 +44,22 @@ public class SearchAndGoResult extends Imagable {
 	 *            Url found (used as a key for exemple)
 	 * @param imageUrl
 	 *            Directly add a image url
+	 */
+	public SearchAndGoResult(SearchAndGoProvider parentProvider, String name, String url, String imageUrl) {
+		this(parentProvider, name, url, imageUrl, SearchCapability.DEFAULT);
+	}
+	
+	/**
+	 * Create a new {@link SearchAndGoResult} instance
+	 * 
+	 * @param parentProvider
+	 *            Parent {@link SearchAndGoProvider} used to create this item
+	 * @param name
+	 *            Name (to display)
+	 * @param url
+	 *            Url found (used as a key for exemple)
+	 * @param imageUrl
+	 *            Directly add a image url
 	 * @param type
 	 *            {@link SearchCapability] type of the result
 	 */

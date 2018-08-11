@@ -3,8 +3,6 @@ package caceresenzo.libs.boxplay.culture.searchngo.data;
 import java.util.Iterator;
 import java.util.List;
 
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.CategoryResultData;
-
 /**
  * Holder class to hold data for a common result
  * 
@@ -14,8 +12,8 @@ public class AdditionalResultData {
 	
 	public static final String DATA_SEPARATOR = ", ";
 	
-	private ResultDataType type;
-	private Object data;
+	private final ResultDataType type;
+	private final Object data;
 	
 	/**
 	 * Constructor, create a new instance with the object only, {@link ResultDataType} will be interpreted as {@link ResultDataType#NULL}
@@ -33,11 +31,11 @@ public class AdditionalResultData {
 	 * @param type
 	 *            Your {@link ResultDataType}
 	 * @param data
-	 *            Your data
+	 *            Your data, and if this is an instance of string, auto escaping will be applied
 	 */
 	public AdditionalResultData(ResultDataType type, Object data) {
 		this.type = type;
-		this.data = data;
+		this.data = data instanceof String ? escapeHtmlChar(String.valueOf(data)) : data;
 	}
 	
 	/**

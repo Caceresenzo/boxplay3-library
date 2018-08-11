@@ -34,6 +34,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Catégories";
 	public static final String ADDITIONAL_DATA_KEY_VIEWS = "Vues";
 	public static final String ADDITIONAL_DATA_KEY_RATING = "Note";
+	public static final String ADDITIONAL_DATA_KEY_RESUME = "Résumé";
 	
 	private final String listApiUrl;
 	private final String imageUrlFormat;
@@ -185,6 +186,13 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 			}
 		}
 		
+		// RESUME
+		String extractedResumeData = extractResumeData(html);
+		
+		if (extractedResumeData != null) {
+			additionals.add(new AdditionalResultData(ResultDataType.RESUME, extractedResumeData));
+		}
+		
 		return additionals;
 	}
 	
@@ -229,6 +237,17 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 	 */
 	public static String extractCommonData(String dataKey, String htmlContainer) {
 		return getStaticHelper().extract(String.format("\\<dt\\>[\\s\\t\\n]*%s[\\s\\t\\n]*\\<\\/dt\\>[\\s\\t\\n]*\\<dd\\>[\\s\\t\\n]*(.*?)[\\s\\t\\n]*\\<\\/dd\\>", dataKey), htmlContainer);
+	}
+	
+	/**
+	 * Extract the resume from the HTML MAIN PAGE, for some reason, Manga-LEL display it a different div
+	 * 
+	 * @param html
+	 *            Main (manga) page html
+	 * @return Extracted resume, null if not found
+	 */
+	public static String extractResumeData(String html) {
+		return getStaticHelper().extract(String.format("\\<div\\sclass=\\\"well\\\"\\>[\\s\\t\\n]*\\<h5\\>\\<strong\\>%s\\<\\/strong\\>\\<\\/h5\\>[\\s\\t\\n]*\\<p\\>[ ]*(.*?)[ ]*\\<\\/p\\>[\\s\\t\\n]*\\<\\/div\\>", ADDITIONAL_DATA_KEY_RESUME), html);
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.ResultDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
@@ -151,6 +152,21 @@ public class SearchAndGoTestUnits {
 				}
 				
 				Logger.info("QUERY: %-20s | STRING: %-50s | SCORE: %s", QUERY, string, scoreMap.get(string));
+			}
+		}
+		
+	}
+	
+	public static class AndroidI18nExporter {
+		
+		public static void main(String[] args) {
+			for (ResultDataType resultType : ResultDataType.values()) {
+				System.out.println(String.format("<string name=\"boxplay_culture_searchngo_search_result_data_type_%s\">%s</string>", resultType.toString().toLowerCase(), resultType.toString()));
+			}
+			
+			
+			for (ResultDataType resultType : ResultDataType.values()) {
+				System.out.println(String.format("enumCacheTranslation.put(ResultDataType.%s, boxPlayActivity.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.toString(), resultType.toString().toLowerCase()));
 			}
 		}
 		
