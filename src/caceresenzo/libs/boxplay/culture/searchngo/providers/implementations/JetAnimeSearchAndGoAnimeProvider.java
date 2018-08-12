@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
@@ -17,7 +18,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.cryptography.CloudflareUtils;
 
-public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
+public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
 	protected static final String ADDITIONAL_DATA_KEY_NAME = "Nom:";
 	protected static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Nom original:";
@@ -167,6 +168,11 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider {
 				return 0;
 			}
 		};
+	}
+	
+	@Override
+	public String extractVideoUrl(VideoItemResultData videoItemResult) {
+		return null;
 	}
 	
 	/**
