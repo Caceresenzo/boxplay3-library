@@ -7,16 +7,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
+import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
+import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.cryptography.CloudflareUtils;
+import caceresenzo.libs.http.client.webb.Webb;
+import caceresenzo.libs.http.client.webb.WebbConstante;
 
 public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
@@ -164,7 +167,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	protected Comparator<AdditionalResultData> getContentComparator() {
 		return new Comparator<AdditionalResultData>() {
 			@Override
-			public int compare(AdditionalResultData o1, AdditionalResultData o2) {
+			public int compare(AdditionalResultData result1, AdditionalResultData result2) {
 				return 0;
 			}
 		};
@@ -172,7 +175,22 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	
 	@Override
 	public String extractVideoUrl(VideoItemResultData videoItemResult) {
-		return null;
+		Webb webb = Webb.create();
+		webb.setDefaultHeader(Webb.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);
+		
+		String openloadIframeHtml = webb //
+				.post(videoItemResult.getUrl()) //
+				.header("X-Requested-With", "XMLHttpRequest") //
+				.header("Content-Type", "application/x-www-form-urlencoded") //
+				.param("c", "b") //
+				.ensureSuccess() //
+				.asString().getBody(); //
+		
+		if (openloadIframeHtml == null) {
+			return null;
+		}
+		
+		return HtmlCommonExtractor.extractIframeUrlFromHtml(openloadIframeHtml);
 	}
 	
 	/**

@@ -59,24 +59,39 @@ public class ProviderHelper {
 	}
 	
 	/**
+	 * See {@link #downloadPageCache(String, Map)} for more info
+	 * 
+	 * With this function, parameters will be null
+	 * 
+	 * @param url
+	 *            Target url
+	 * @return Page content
+	 */
+	public String downloadPageCache(String url) {
+		return downloadPageCache(url, null);
+	}
+	
+	/**
 	 * Allow you to get a cache version if the parent provider support it
 	 * 
 	 * If the page is missing from the cache, it will be added when il will be download for the first time
 	 * 
 	 * @param url
 	 *            Target url
-	 * @return Target content
+	 * @param parameters
+	 *            Custom parameters, ignored if null
+	 * @return Page content
 	 * @throws IllegalArgumentException
 	 *             If the parent provider is null (like in static mode)
 	 */
-	public String downloadPageCache(String url) {
+	public String downloadPageCache(String url, Map<String, String> parameters) {
 		checkProviderValidity();
 		
 		if (parentProvider.isCacheSupported() && cache.containsKey(url) && cache.get(url) != null) {
 			return (String) cache.get(url);
 		}
 		
-		String content = downloadPage(url);
+		String content = downloadPage(url, parameters);
 		
 		if (parentProvider.isCacheSupported()) {
 			cache.put(url, content);
@@ -86,17 +101,32 @@ public class ProviderHelper {
 	}
 	
 	/**
+	 * See {@link #downloadPage(String, Map)} for more info
+	 * 
+	 * With this function, parameters will be null
+	 * 
+	 * @param url
+	 *            Target url
+	 * @return Page content
+	 */
+	public String downloadPage(String url) {
+		return downloadPage(url, null);
+	}
+	
+	/**
 	 * Download a page content
 	 * 
 	 * If any error append when downloading, it will be just ignored, and will return null
 	 * 
 	 * @param url
 	 *            Target url
-	 * @return Target content
+	 * @param parameters
+	 *            Custom parameters, ignored if null
+	 * @return Page content
 	 */
-	public String downloadPage(String url) {
+	public String downloadPage(String url, Map<String, String> parameters) {
 		try {
-			return Downloader.webget(url, Charset.forName("UTF-8"));
+			return Downloader.webget(url, parameters, Charset.forName("UTF-8"));
 		} catch (Exception exception) {
 			return null;
 		}
@@ -215,6 +245,15 @@ public class ProviderHelper {
 		if (parentProvider == null) {
 			throw new IllegalArgumentException("This method can't be used without a parent provider");
 		}
+	}
+	
+	/**
+	 * Get the instance of the static helper
+	 * 
+	 * @return Static helper
+	 */
+	public static ProviderHelper getStaticHelper() {
+		return STATIC_HELPER;
 	}
 	
 	/**

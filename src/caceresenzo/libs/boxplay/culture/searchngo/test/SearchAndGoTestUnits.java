@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
@@ -74,6 +76,8 @@ public class SearchAndGoTestUnits {
 			}
 			
 			for (SearchAndGoResult result : results) {
+				SearchAndGoProvider provider = result.getParentProvider();
+				
 				Logger.$(result.getType() + " [search score: %s]", result.score());
 				Logger.$("\t" + result.getUrl());
 				Logger.$("\t" + result.getName());
@@ -83,8 +87,8 @@ public class SearchAndGoTestUnits {
 				Logger.$("");
 				Logger.$("\tDATA:");
 				
-				List<AdditionalResultData> additionalResultDatas = result.getParentProvider().fetchMoreData(result);
-				for (AdditionalResultData additionalData : additionalResultDatas) {
+				List<AdditionalResultData> additionalResult = result.getParentProvider().fetchMoreData(result);
+				for (AdditionalResultData additionalData : additionalResult) {
 					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
 				}
 				// }
@@ -92,9 +96,14 @@ public class SearchAndGoTestUnits {
 				Logger.$("");
 				Logger.$("\tDATA:");
 				
-				List<AdditionalResultData> additionalContentDatas = result.getParentProvider().fetchContent(result);
-				for (AdditionalResultData additionalData : additionalContentDatas) {
+				List<AdditionalResultData> additionalContent = result.getParentProvider().fetchContent(result);
+				for (AdditionalResultData additionalData : additionalContent) {
 					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
+					
+					if (provider instanceof IVideoContentProvider && additionalData.getData() instanceof VideoItemResultData) {
+						Logger.$("IVideoContentProvider: " + ((IVideoContentProvider) provider).extractVideoUrl((VideoItemResultData) additionalData.getData()));
+						Logger.$("");
+					}
 				}
 				
 				Logger.$(" ------------------------------------- ");
