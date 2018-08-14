@@ -24,7 +24,7 @@ public class ExtractionLogger {
 		this.name = extractorName;
 		this.content = "";
 		
-		appendln("EXTRACTOR: " + name).sparator().appendln("Extraction log: ").sparator();
+		appendln("EXTRACTOR: " + name).separator().appendln("Extraction log: ").separator();
 	}
 	
 	/**
@@ -32,7 +32,7 @@ public class ExtractionLogger {
 	 * 
 	 * @return Itself
 	 */
-	public ExtractionLogger sparator() {
+	public ExtractionLogger separator() {
 		return appendln().appendln(SEPARATOR).appendln();
 	}
 	

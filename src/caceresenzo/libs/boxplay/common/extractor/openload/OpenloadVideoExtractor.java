@@ -2,7 +2,7 @@ package caceresenzo.libs.boxplay.common.extractor.openload;
 
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
 
 /**
@@ -10,7 +10,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
  * 
  * @author Enzo CACERES
  */
-public abstract class OpenloadVideoExtractor extends ContentExtractor {
+public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	
 	public static final String CODE_EXECUTOR_JS_FUNCTION_NAME = "myFunction";
 	
@@ -19,20 +19,19 @@ public abstract class OpenloadVideoExtractor extends ContentExtractor {
 	 */
 	public static final String REGEX_DOM_DATA_EXTRACTOR = "\\<div\\sclass=\\\"\\\"\\sstyle=\\\"display:none;\\\"\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sid=\\\"(.*?)\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sclass=\\\"\\\"\\sid=\\\"DtsBlkVFQx\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]\\<\\/div\\>";
 	
-	/**
-	 * Main function to extract a direct video link from a openload site
-	 * 
-	 * NEED A SEPARATED THREAD, this code lock itself because it needs to, so please execute it in another thread
-	 * 
-	 * @param url
-	 *            Target openload video
-	 * @return A direct video url
-	 */
-	public String extractDirectVideoUrl(String url) {
+	@Override
+	public String extractDirectVideoUrl(String url, VideoContentExtractorProgressCallback progressCallback) {
+		if (progressCallback != null) {
+			progressCallback.onDownloadingUrl(url);
+		}
+		
 		String openloadHtml = downloadTargetPage(url);
 		
 		waitUntilUnlock();
 		
+		if (progressCallback != null) {
+			progressCallback.onExtractingLink();
+		}
 		injectJsCode(createJsCodeExecutor(openloadHtml));
 		
 		waitUntilUnlock();
@@ -41,6 +40,9 @@ public abstract class OpenloadVideoExtractor extends ContentExtractor {
 		
 		waitUntilUnlock();
 		
+		if (progressCallback != null) {
+			progressCallback.onFormattingResult();
+		}
 		return String.format("https://openload.co/stream/%s?mime=true", getOpenloadKey(resolvedHtml));
 	}
 	

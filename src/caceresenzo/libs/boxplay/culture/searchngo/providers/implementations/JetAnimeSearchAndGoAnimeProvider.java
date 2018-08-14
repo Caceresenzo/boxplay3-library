@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
+import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
+import caceresenzo.libs.boxplay.common.extractor.openload.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -156,7 +158,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 				String url = getSiteUrl() + itemMatcher.group(1);
 				String video = itemMatcher.group(3);
 				
-				additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new VideoItemResultData(url, video)));
+				additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new VideoItemResultData(this, url, video)));
 			}
 		}
 		
@@ -178,19 +180,31 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		Webb webb = Webb.create();
 		webb.setDefaultHeader(Webb.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);
 		
-		String openloadIframeHtml = webb //
-				.post(videoItemResult.getUrl()) //
-				.header("X-Requested-With", "XMLHttpRequest") //
-				.header("Content-Type", "application/x-www-form-urlencoded") //
-				.param("c", "b") //
-				.ensureSuccess() //
-				.asString().getBody(); //
+		String openloadIframeHtml = null;
+		
+		try {
+			openloadIframeHtml = webb //
+					.post(videoItemResult.getUrl()) //
+					.header("X-Requested-With", "XMLHttpRequest") //
+					.header("Content-Type", "application/x-www-form-urlencoded") //
+					.param("c", "b") //
+					.ensureSuccess() //
+					.asString().getBody(); //
+		} catch (Exception exception) {
+			return null;
+		}
 		
 		if (openloadIframeHtml == null) {
 			return null;
 		}
 		
 		return HtmlCommonExtractor.extractIframeUrlFromHtml(openloadIframeHtml);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
+		return new Class[] { OpenloadVideoExtractor.class };
 	}
 	
 	/**
