@@ -1,7 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +79,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 			return result;
 		}
 		
-		List<MangaLelItem> resultItems = extractAnimeFromHtml(html);
+		List<MangaLelItem> resultItems = extractMangaFromHtml(html);
 		
 		for (MangaLelItem mangaLelItem : resultItems) {
 			String url = mangaLelItem.getUrl();
@@ -221,16 +220,6 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 		return additionals;
 	}
 	
-	@Override
-	protected Comparator<AdditionalResultData> getContentComparator() {
-		return new Comparator<AdditionalResultData>() {
-			@Override
-			public int compare(AdditionalResultData o1, AdditionalResultData o2) {
-				return 0;
-			}
-		};
-	}
-	
 	/**
 	 * Extract all Manga present on the website
 	 * 
@@ -238,10 +227,10 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 	 *            The downloaded html of anypage
 	 * @return A list of {@link MangaLelItem} that you can work with. That contain the full match, the url, and the name
 	 */
-	public static List<MangaLelItem> extractAnimeFromHtml(String html) {
+	public static List<MangaLelItem> extractMangaFromHtml(String html) {
 		List<MangaLelItem> items = new ArrayList<>();
 		
-		final Matcher matcher = getStaticHelper().regex("\\<a\\shref=\\\"(.*?)\\\"\\sclass=\\\"alpha-link\\\"\\>[\\s\\t\\n]*\\<h6\\sstyle=\\\".*?\\\"\\>(.*?)\\<\\/h6\\>[\\s\\t\\n]*\\<\\/a\\>", html);
+		Matcher matcher = getStaticHelper().regex("\\<a\\shref=\\\"(.*?)\\\"\\sclass=\\\"alpha-link\\\"\\>[\\s\\t\\n]*\\<h6\\sstyle=\\\".*?\\\"\\>(.*?)\\<\\/h6\\>[\\s\\t\\n]*\\<\\/a\\>", html);
 		
 		while (matcher.find()) {
 			items.add(new MangaLelItem(matcher.group(0).trim(), matcher.group(1).trim(), getStaticHelper().escapeHtmlSpecialCharactere(matcher.group(2).trim())));

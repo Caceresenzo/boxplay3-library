@@ -166,16 +166,6 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	}
 	
 	@Override
-	protected Comparator<AdditionalResultData> getContentComparator() {
-		return new Comparator<AdditionalResultData>() {
-			@Override
-			public int compare(AdditionalResultData result1, AdditionalResultData result2) {
-				return 0;
-			}
-		};
-	}
-	
-	@Override
 	public String extractVideoUrl(VideoItemResultData videoItemResult) {
 		Webb webb = Webb.create();
 		webb.setDefaultHeader(Webb.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);

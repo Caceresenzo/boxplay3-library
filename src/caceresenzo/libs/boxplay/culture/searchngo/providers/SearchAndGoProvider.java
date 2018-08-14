@@ -198,7 +198,14 @@ public abstract class SearchAndGoProvider {
 	 * 
 	 * @return Custom comparator
 	 */
-	protected abstract Comparator<AdditionalResultData> getContentComparator();
+	protected Comparator<AdditionalResultData> getContentComparator() {
+		return new Comparator<AdditionalResultData>() {
+			@Override
+			public int compare(AdditionalResultData result1, AdditionalResultData result2) {
+				return 0;
+			}
+		};
+	}
 	
 	/**
 	 * Return an empty list for the {@link #fetchMoreData(SearchAndGoResult)} method
@@ -338,7 +345,23 @@ public abstract class SearchAndGoProvider {
 	 * It contain, a full regex match, an url, and a name
 	 */
 	protected static class ResultItem {
-		private String match, url, name, description, genre, view;
+		private String match, url, name, imageUrl, description, genre, view;
+		
+		/**
+		 * Create new instance of a ResultItem
+		 * 
+		 * This constructor don't have imageUrl, description, genre, and view
+		 * 
+		 * @param match
+		 *            Full matcher match
+		 * @param url
+		 *            Url found
+		 * @param name
+		 *            Name found
+		 */
+		public ResultItem(String match, String url, String name) {
+			this(match, url, name, null, null, null, null);
+		}
 		
 		/**
 		 * Create new instance of a ResultItem
@@ -351,9 +374,11 @@ public abstract class SearchAndGoProvider {
 		 *            Url found
 		 * @param name
 		 *            Name found
+		 * @param imageUrl
+		 *            Image url found
 		 */
-		public ResultItem(String match, String url, String name) {
-			this(match, url, name, null, null, null);
+		public ResultItem(String match, String url, String name, String imageUrl) {
+			this(match, url, name, imageUrl, null, null, null);
 		}
 		
 		/**
@@ -365,6 +390,8 @@ public abstract class SearchAndGoProvider {
 		 *            Url found
 		 * @param name
 		 *            Name found
+		 * @param imageUrl
+		 *            Image url found (or not)
 		 * @param description
 		 *            Description found (or not)
 		 * @param genre
@@ -372,10 +399,11 @@ public abstract class SearchAndGoProvider {
 		 * @param view
 		 *            View count found (or not)
 		 */
-		public ResultItem(String match, String url, String name, String description, String genre, String view) {
+		public ResultItem(String match, String url, String name, String imageUrl, String description, String genre, String view) {
 			this.match = match;
 			this.url = url;
 			this.name = name;
+			this.imageUrl = imageUrl;
 			this.description = description;
 			this.genre = genre;
 			this.view = view;
@@ -391,6 +419,10 @@ public abstract class SearchAndGoProvider {
 		
 		public String getName() {
 			return name;
+		}
+		
+		public String getImageUrl() {
+			return imageUrl;
 		}
 		
 		public String getDescription() {

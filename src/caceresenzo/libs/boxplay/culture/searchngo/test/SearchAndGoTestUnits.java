@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
@@ -43,13 +45,41 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "one piece";
+		private static final String QUERY = "hello";
 		
 		public static void main(String[] args) {
+			
+			ProviderCallback.registerProviderSearchallback(new ProviderSearchCallback() {
+				
+				@Override
+				public void onProviderSorting(SearchAndGoProvider provider) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onProviderSearchStarting(SearchAndGoProvider provider) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onProviderSearchFinished(SearchAndGoProvider provider, Map<String, SearchAndGoResult> workmap) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onProviderFailed(SearchAndGoProvider provider, Exception exception) {
+					exception.printStackTrace();
+				}
+			});
+			
 			// redirectConsoleOutput();
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
-			providers.add(ProviderManager.JETANIME.create());
+			// providers.add(ProviderManager.JETANIME.create());
+			providers.add(ProviderManager.VOIRFILM_BZ.create());
 			// providers.add(ProviderManager.MANGALEL.create());
 			
 			// Logger.info(ProviderManager.JETANIME.create().ADDITIONAL_DATA_CORRESPONDANCE);

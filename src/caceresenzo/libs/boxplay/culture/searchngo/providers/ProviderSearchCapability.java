@@ -85,6 +85,7 @@ public class ProviderSearchCapability {
 	public static enum SearchCapability {
 		ANIME(ContentViewerType.VIDEO), //
 		SERIES(ContentViewerType.VIDEO), //
+		VIDEO(ContentViewerType.VIDEO), //
 		MANGA(ContentViewerType.IMAGE), //
 		MOVIE(ContentViewerType.VIDEO), //
 		DEFAULT(null); //
