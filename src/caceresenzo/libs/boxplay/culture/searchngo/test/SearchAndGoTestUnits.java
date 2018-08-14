@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +145,7 @@ public class SearchAndGoTestUnits {
 				scoreMap.put(string, score);
 			}
 			
-			names.sort(new Comparator<String>() {
+			Collections.sort(names, new Comparator<String>() {
 				@Override
 				public int compare(String o1, String o2) {
 					int compare = scoreMap.get(o2) - scoreMap.get(o1); // Sort by score

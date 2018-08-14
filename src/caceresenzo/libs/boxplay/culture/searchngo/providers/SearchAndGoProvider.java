@@ -1,14 +1,15 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
@@ -140,7 +141,7 @@ public abstract class SearchAndGoProvider {
 		List<AdditionalResultData> additionals = processFetchMoreData(result);
 		
 		if (isAutosortEnabled()) {
-			additionals.sort(new Comparator<AdditionalResultData>() {
+			Collections.sort(additionals, new Comparator<AdditionalResultData>() {
 				@Override
 				public int compare(AdditionalResultData additionalResultData1, AdditionalResultData additionalResultData2) {
 					return additionalResultData1.getType().ordinal() - additionalResultData2.getType().ordinal();
@@ -174,7 +175,7 @@ public abstract class SearchAndGoProvider {
 		List<AdditionalResultData> additionals = processFetchContent(result);
 		
 		if (isAutosortEnabled()) {
-			additionals.sort(getContentComparator());
+			Collections.sort(additionals, getContentComparator());
 		}
 		
 		return additionals;

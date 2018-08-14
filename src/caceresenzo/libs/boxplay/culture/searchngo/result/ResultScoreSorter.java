@@ -1,6 +1,7 @@
 package caceresenzo.libs.boxplay.culture.searchngo.result;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,7 +50,7 @@ public class ResultScoreSorter {
 			}
 		}
 		
-		keys.sort(new Comparator<String>() {
+		Collections.sort(keys, new Comparator<String>() {
 			@Override
 			public int compare(String key1, String key2) {
 				SearchAndGoResult result1 = workmap.get(key1);
