@@ -9,14 +9,20 @@ public enum AdditionalDataType {
 	ALTERNATIVE_NAME, //
 	OTHER_NAME, //
 	TYPE, //
+	QUALITY,
+	VERSION,
 	TRADUCTION_TEAM, //
 	GENDERS, //
 	STATUS, //
+	COUNTRY, //
+	DIRECTOR, //
 	AUTHORS, //
+	ACTORS,
 	ARTISTS, //
 	STUDIOS, //
 	RELEASE_DATE, //
 	VIEWS, //
+	DURATION, //
 	RESUME, //
 	RATING, //
 	

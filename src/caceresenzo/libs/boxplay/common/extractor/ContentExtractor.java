@@ -110,6 +110,11 @@ public abstract class ContentExtractor implements IExtractor {
 		return logger;
 	}
 	
+	/**
+	 * Base exception for any extractors sub-exception
+	 * 
+	 * @author Enzo CACERES
+	 */
 	public static class ExtractorRuntimeException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 	}

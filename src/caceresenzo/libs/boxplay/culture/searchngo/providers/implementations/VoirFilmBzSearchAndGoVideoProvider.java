@@ -1,8 +1,10 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
@@ -10,6 +12,8 @@ import caceresenzo.libs.boxplay.common.extractor.openload.OpenloadVideoExtractor
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
@@ -21,12 +25,36 @@ import caceresenzo.libs.logger.Logger;
 
 public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
+	public static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Titre Original:";
+	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genre:";
+	public static final String ADDITIONAL_DATA_KEY_QUALITY = "Qualité:";
+	public static final String ADDITIONAL_DATA_KEY_VERSION = "Version:";
+	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Année:";
+	public static final String ADDITIONAL_DATA_KEY_COUNTRY = "Pays:";
+	public static final String ADDITIONAL_DATA_KEY_DIRECTOR = "Directeur:";
+	public static final String ADDITIONAL_DATA_KEY_ACTORS = "Acteurs:";
+	public static final String ADDITIONAL_DATA_KEY_DURATION = "Durée:";
+	public static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis";
+	
+	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
+	
 	private final String searchBaseUrl;
 	
 	public VoirFilmBzSearchAndGoVideoProvider() {
 		super("VOIRFILM.bz", "http://www.voirfilm.bz");
 		
 		this.searchBaseUrl = getSiteUrl() + "/index.php?do=search";
+		
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.ORIGINAL_NAME, ADDITIONAL_DATA_KEY_ORIGINAL_NAME);
+		// ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS); // Not usable in a loop
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.QUALITY, ADDITIONAL_DATA_KEY_QUALITY);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.VERSION, ADDITIONAL_DATA_KEY_VERSION);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.COUNTRY, ADDITIONAL_DATA_KEY_COUNTRY);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.DIRECTOR, ADDITIONAL_DATA_KEY_DIRECTOR);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.ACTORS, ADDITIONAL_DATA_KEY_ACTORS);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.DURATION, ADDITIONAL_DATA_KEY_DURATION);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.RESUME, ADDITIONAL_DATA_KEY_RESUME);
 	}
 	
 	@Override
@@ -82,7 +110,68 @@ public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider impl
 	
 	@Override
 	protected List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result) {
-		return createEmptyAdditionalResultDataList();
+		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
+		
+		String html = getHelper().downloadPageCache(result.getUrl());
+		String htmlContainer = extractInformationContainer(html);
+		
+		if (html == null || html.isEmpty() || htmlContainer == null || htmlContainer.isEmpty()) {
+			return additionals;
+		}
+		
+		/**
+		 * Common
+		 */
+		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
+			AdditionalDataType type = entry.getKey();
+			String dataKey = entry.getValue();
+			
+			String extractedData = extractCommonData(dataKey, htmlContainer);
+			
+			if (extractedData != null) {
+				additionals.add(new AdditionalResultData(type, extractedData.trim()));
+			}
+		}
+		
+		/**
+		 * Item that need to be url-extracted (html element <a>)
+		 */
+		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.entrySet()) {
+			AdditionalDataType type = entry.getKey();
+			String dataKey = entry.getValue();
+			
+			String extractedHtmlElementData = extractCommonData(dataKey, htmlContainer);
+			
+			if (extractedHtmlElementData != null) {
+				UrlResultData extractedUrlData = getHelper().extractUrlFromHtml(extractedHtmlElementData);
+				
+				additionals.add(new AdditionalResultData(type, extractedUrlData));
+			}
+		}
+		
+		// GENDERS
+		String extractedGendersData = extractCommonData(ADDITIONAL_DATA_KEY_GENDERS, htmlContainer);
+		
+		if (extractedGendersData != null) {
+			Matcher matcher = getHelper().regex(UrlResultData.EXTRATION_REGEX_FROM_HTML, extractedGendersData);
+			
+			List<CategoryResultData> categories = new ArrayList<>();
+			
+			while (matcher.find()) {
+				categories.add(new CategoryResultData(matcher.group(1), AdditionalResultData.escapeHtmlChar(matcher.group(2))));
+			}
+			
+			additionals.add(new AdditionalResultData(AdditionalDataType.GENDERS, categories));
+		}
+		
+		// RESUME
+		String extractedResumeData = extractResumeData(htmlContainer);
+		
+		if (extractedResumeData != null) {
+			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResumeData));
+		}
+		
+		return additionals;
 	}
 	
 	@Override
@@ -152,6 +241,41 @@ public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider impl
 		}
 		
 		return items;
+	}
+	
+	/**
+	 * Extract common data on the VOIRFILM.bz information container
+	 * 
+	 * @param dataKey
+	 *            Something like "Genre:" or "Qualité:", a key that will used as a line identifier
+	 * @param htmlContainer
+	 *            A html container, source of data
+	 * @return Some extracted data, null if not found
+	 */
+	public static String extractCommonData(String dataKey, String htmlContainer) {
+		return getStaticHelper().extract(String.format("\\<li\\>\\<div\\sclass=\\\"mov-label\\\">[\\s]*%s[\\s]*\\<\\/div\\>[\\s]*\\<div\\sclass=\\\"mov-desc\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/div\\>\\<\\/li\\>", dataKey), htmlContainer);
+	}
+	
+	/**
+	 * On VOIRFILM.bz, that will extract a container string that is a article div in html containing all information about the series/movie
+	 * 
+	 * @param html
+	 *            The downloaded html of a series/movie page
+	 * @return A string containing all information in html
+	 */
+	public static String extractInformationContainer(String html) {
+		return getStaticHelper().extract("\\<article\\sclass=\\\"full\\\"\\>(.*?)\\<\\/article\\>", html);
+	}
+	
+	/**
+	 * Extract the resume from the HTML INFORMATION CONTAINER
+	 * 
+	 * @param htmlContainer
+	 *            Information container
+	 * @return Extracted resume, null if not found
+	 */
+	public static String extractResumeData(String htmlContainer) {
+		return getStaticHelper().extract(String.format("\\<div\\sclass=\\\"screenshots-full\\\"\\>[\\s\\t\\n]*\\<div\\sclass=\\\"screenshots-title\\\"\\>%s\\<\\/div\\>[\\s]*(.*?)[\\s]*\\<\\/div\\>", ADDITIONAL_DATA_KEY_RESUME), htmlContainer);
 	}
 	
 	/**

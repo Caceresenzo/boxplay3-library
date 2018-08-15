@@ -47,6 +47,11 @@ public abstract class VideoContentExtractor extends ContentExtractor {
 		void onDownloadingUrl(String targetUrl);
 		
 		/**
+		 * Called when stream is not available, maybe he got deleted
+		 */
+		void onStreamingNotAvailable();
+		
+		/**
 		 * Called when link extraction is appening
 		 */
 		void onExtractingLink();
@@ -55,6 +60,11 @@ public abstract class VideoContentExtractor extends ContentExtractor {
 		 * Called when the finish link is formatting
 		 */
 		void onFormattingResult();
+		
+	}
+	
+	public static class StreamingNotAvailableException extends ExtractorRuntimeException {
+		private static final long serialVersionUID = 1L;
 		
 	}
 	

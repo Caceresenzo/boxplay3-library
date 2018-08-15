@@ -45,7 +45,7 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "hello";
+		private static final String QUERY = "ant-man";
 		
 		public static void main(String[] args) {
 			
@@ -213,7 +213,7 @@ public class SearchAndGoTestUnits {
 			}
 			
 			for (AdditionalDataType resultType : AdditionalDataType.values()) {
-				System.out.println(String.format("enumCacheTranslation.put(ResultDataType.%s, boxPlayActivity.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.toString(), resultType.toString().toLowerCase()));
+				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayActivity.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.getClass().getSimpleName(), resultType.toString(), resultType.toString().toLowerCase()));
 			}
 		}
 		

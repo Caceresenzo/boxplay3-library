@@ -29,6 +29,16 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 		
 		waitUntilUnlock();
 		
+		if (!checkStreamingAvailability(openloadHtml)) {
+			if (progressCallback != null) {
+				progressCallback.onStreamingNotAvailable();
+			}
+			
+			failed(true).notifyException(new StreamingNotAvailableException());;
+			
+			return null;
+		}
+		
 		if (progressCallback != null) {
 			progressCallback.onExtractingLink();
 		}
@@ -54,6 +64,15 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	 * @return Page content
 	 */
 	public abstract String downloadTargetPage(String url);
+	
+	/**
+	 * Abstract function, used to check if the target file to stream is available or not
+	 * 
+	 * @param html
+	 *            Source of the page
+	 * @return Yes or not
+	 */
+	public abstract boolean checkStreamingAvailability(String html);
 	
 	/**
 	 * Abstract function, used to inject into some kind of webview or html parser (with javascript support), code that will be executed
