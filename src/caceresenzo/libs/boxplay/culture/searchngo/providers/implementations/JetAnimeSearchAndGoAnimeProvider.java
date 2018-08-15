@@ -1,7 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -110,7 +109,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 				String trimExtractedData = extractedData.trim();
 				Object formattedData = trimExtractedData;
 				
-				if (type.equals(AdditionalDataType.GENDERS) && trimExtractedData.contains(",")) {
+				if (type.equals(AdditionalDataType.GENDERS)) {
 					List<CategoryResultData> categories = new ArrayList<>();
 					
 					if (trimExtractedData.contains(",")) {
