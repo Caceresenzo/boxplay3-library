@@ -1,6 +1,7 @@
 package caceresenzo.libs.boxplay.common.extractor;
 
-import caceresenzo.libs.boxplay.common.extractor.openload.ExtractionLogger;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
+import caceresenzo.libs.string.StringUtils;
 import caceresenzo.libs.thread.ThreadUtils;
 
 /**
@@ -92,14 +93,14 @@ public abstract class ContentExtractor implements IExtractor {
 	}
 	
 	/**
-	 * Abstract function to ovveride;
-	 * 
 	 * Called when an exception append
 	 * 
 	 * @param exception
 	 *            Append exception
 	 */
-	public abstract void notifyException(Exception exception);
+	public void notifyException(Exception exception) {
+		getLogger().appendln(exception.getClass() + ": An error occured").appendln("Stacktrace: ").appendln(StringUtils.fromException(exception));
+	}
 	
 	/**
 	 * Get the private {@link #logger} instance
@@ -108,6 +109,15 @@ public abstract class ContentExtractor implements IExtractor {
 	 */
 	public ExtractionLogger getLogger() {
 		return logger;
+	}
+	
+	/**
+	 * Get the static provider helper instance more quickly
+	 * 
+	 * @return {@link ProviderHelper#getStaticHelper()}
+	 */
+	public static ProviderHelper getStaticHelper() {
+		return ProviderHelper.getStaticHelper();
 	}
 	
 	/**

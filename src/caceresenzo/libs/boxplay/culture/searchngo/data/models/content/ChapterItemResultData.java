@@ -1,6 +1,7 @@
 package caceresenzo.libs.boxplay.culture.searchngo.data.models.content;
 
 import caceresenzo.libs.boxplay.culture.searchngo.content.ContentViewerType;
+import caceresenzo.libs.boxplay.culture.searchngo.content.image.IImageContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.ViewableContent;
@@ -12,6 +13,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.View
  */
 public class ChapterItemResultData implements DisplayableString, ViewableContent {
 	
+	private final IImageContentProvider imageContentProvider;
 	private final String url, name, title;
 	
 	/**
@@ -19,13 +21,15 @@ public class ChapterItemResultData implements DisplayableString, ViewableContent
 	 * 
 	 * These value will be {@link String#trim()}
 	 * 
+	 * @param imageContentProvider
+	 *            Parent provider used to call this constructor
 	 * @param url
 	 *            Traget chapter url
 	 * @param name
 	 *            Traget chapter name
 	 */
-	public ChapterItemResultData(String url, String name) {
-		this(url, name, null);
+	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name) {
+		this(imageContentProvider, url, name, null);
 	}
 	
 	/**
@@ -33,6 +37,8 @@ public class ChapterItemResultData implements DisplayableString, ViewableContent
 	 * 
 	 * These value will be {@link String#trim()}
 	 * 
+	 * @param imageContentProvider
+	 *            Parent provider used to call this constructor
 	 * @param url
 	 *            Target chapter url
 	 * @param name
@@ -40,10 +46,20 @@ public class ChapterItemResultData implements DisplayableString, ViewableContent
 	 * @param title
 	 *            Traget chapter title
 	 */
-	public ChapterItemResultData(String url, String name, String title) {
+	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name, String title) {
+		this.imageContentProvider = imageContentProvider;
 		this.url = url;
 		this.name = name != null ? AdditionalResultData.escapeHtmlChar(name.trim()) : name;
 		this.title = title != null ? AdditionalResultData.escapeHtmlChar(title.trim()) : title;
+	}
+	
+	/**
+	 * Get the parent image content provider that has been used to generate this item
+	 * 
+	 * @return Parent provider
+	 */
+	public IImageContentProvider getImageContentProvider() {
+		return imageContentProvider;
 	}
 	
 	/**

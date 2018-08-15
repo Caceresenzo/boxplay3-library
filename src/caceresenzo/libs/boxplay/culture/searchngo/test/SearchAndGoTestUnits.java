@@ -11,10 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
+import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
@@ -45,7 +48,7 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "ant-man";
+		private static final String QUERY = "hell";
 		
 		public static void main(String[] args) {
 			
@@ -79,8 +82,8 @@ public class SearchAndGoTestUnits {
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
 			// providers.add(ProviderManager.JETANIME.create());
-			providers.add(ProviderManager.VOIRFILM_BZ.create());
-			// providers.add(ProviderManager.MANGALEL.create());
+			// providers.add(ProviderManager.VOIRFILM_BZ.create());
+			providers.add(ProviderManager.MANGALEL.create());
 			
 			// Logger.info(ProviderManager.JETANIME.create().ADDITIONAL_DATA_CORRESPONDANCE);
 			// Logger.info(ProviderManager.MANGALEL.create().ADDITIONAL_DATA_CORRESPONDANCE);
@@ -132,7 +135,14 @@ public class SearchAndGoTestUnits {
 					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
 					
 					if (provider instanceof IVideoContentProvider && additionalData.getData() instanceof VideoItemResultData) {
-						Logger.$("IVideoContentProvider: " + ((IVideoContentProvider) provider).extractVideoUrl((VideoItemResultData) additionalData.getData()));
+						Logger.$("IVideoContentProvider: " + ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData()));
+						Logger.$("");
+					} else if (provider instanceof IMangaContentProvider && additionalData.getData() instanceof ChapterItemResultData) {
+						Logger.$("IMangaContentProvider: " + ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()));
+						Logger.$("");
+						for (String url : new GenericMangaLelChapterExtractor().getImageUrls(((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()))) {
+							Logger.$(" |- Image URL: " + url);
+						}
 						Logger.$("");
 					}
 				}

@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.openload.OpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -165,7 +165,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	}
 	
 	@Override
-	public String extractVideoUrl(VideoItemResultData videoItemResult) {
+	public String extractVideoPageUrl(VideoItemResultData videoItemResult) {
 		Webb webb = Webb.create();
 		webb.setDefaultHeader(Webb.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);
 		

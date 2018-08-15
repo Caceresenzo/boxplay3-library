@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
+import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
+import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
@@ -20,7 +23,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
-public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
+public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
 	
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
 	
@@ -43,8 +46,8 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 	public MangaLelSearchAndGoMangaProvider() {
 		super("Manga-LEL", "https://www.manga-lel.com");
 		
-		listApiUrl = getSiteUrl() + "/changeMangaList?type=text";
-		imageUrlFormat = getSiteUrl() + "//uploads/manga/%s/cover/cover_250x350.jpg";
+		this.listApiUrl = getSiteUrl() + "/changeMangaList?type=text";
+		this.imageUrlFormat = getSiteUrl() + "//uploads/manga/%s/cover/cover_250x350.jpg";
 		
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.NAME, ADDITIONAL_DATA_KEY_NAME); // Not usable in a loop
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.OTHER_NAME, ADDITIONAL_DATA_KEY_OTHER_NAME);
@@ -214,10 +217,21 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider {
 			String chapter = matcher.group(2);
 			String title = matcher.group(3);
 			
-			additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(url, chapter, title)));
+			additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(this, url, chapter, title)));
 		}
 		
 		return additionals;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
+		return new Class[] { GenericMangaLelChapterExtractor.class } ;
+	}
+	
+	@Override
+	public String extractMangaPageUrl(ChapterItemResultData chapterItemResult) {
+		return chapterItemResult.getUrl();
 	}
 	
 	/**

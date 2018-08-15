@@ -1,4 +1,4 @@
-package caceresenzo.libs.boxplay.common.extractor.openload;
+package caceresenzo.libs.boxplay.common.extractor;
 
 /**
  * Simple string logger used by extractor to log activity and result

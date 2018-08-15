@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.openload.OpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -21,7 +21,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
-import caceresenzo.libs.logger.Logger;
 
 public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
@@ -217,7 +216,7 @@ public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider impl
 	}
 	
 	@Override
-	public String extractVideoUrl(VideoItemResultData videoItemResult) {
+	public String extractVideoPageUrl(VideoItemResultData videoItemResult) {
 		return videoItemResult.getUrl();
 	}
 	

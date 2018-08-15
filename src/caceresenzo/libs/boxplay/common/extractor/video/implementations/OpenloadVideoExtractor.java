@@ -1,8 +1,8 @@
-package caceresenzo.libs.boxplay.common.extractor.openload;
+package caceresenzo.libs.boxplay.common.extractor.video.implementations;
 
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.VideoContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
 
 /**

@@ -1,4 +1,6 @@
-package caceresenzo.libs.boxplay.common.extractor;
+package caceresenzo.libs.boxplay.common.extractor.video;
+
+import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 
 /**
  * Abstract class that extends {@link ContentExtractor} for more compatibility for video extraction
