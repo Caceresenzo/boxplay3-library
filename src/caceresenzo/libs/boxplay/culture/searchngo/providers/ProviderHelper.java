@@ -1,11 +1,13 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import caceresenzo.libs.boxplay.culture.searchngo.content.IContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
@@ -16,7 +18,7 @@ import caceresenzo.libs.network.Downloader;
  * 
  * @author Enzo CACERES
  */
-public class ProviderHelper {
+public class ProviderHelper implements Serializable {
 	
 	protected static ProviderHelper STATIC_HELPER = new ProviderHelper();
 	

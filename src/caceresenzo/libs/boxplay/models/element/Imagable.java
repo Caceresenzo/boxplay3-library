@@ -1,6 +1,8 @@
 package caceresenzo.libs.boxplay.models.element;
 
-public abstract class Imagable {
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
+
+public abstract class Imagable extends SimpleData {
 	
 	protected String imageUrl, imageHdUrl, defaultImageUrl;
 	

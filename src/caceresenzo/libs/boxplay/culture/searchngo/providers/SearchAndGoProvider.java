@@ -1,5 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import caceresenzo.libs.boxplay.culture.searchngo.content.IContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
@@ -21,7 +23,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
  * 
  * @author Enzo CACERES
  */
-public abstract class SearchAndGoProvider {
+public abstract class SearchAndGoProvider implements IContentProvider {
 	
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new EnumMap<>(AdditionalDataType.class);
 	

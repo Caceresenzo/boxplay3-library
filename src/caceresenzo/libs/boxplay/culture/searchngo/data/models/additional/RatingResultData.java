@@ -1,13 +1,14 @@
 package caceresenzo.libs.boxplay.culture.searchngo.data.models.additional;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 
 /**
  * Holder class, hold information about a rating
  * 
  * @author Enzo CACERES
  */
-public class RatingResultData implements DisplayableString {
+public class RatingResultData extends SimpleData implements DisplayableString {
 	
 	public static final int NO_VALUE = -1;
 	

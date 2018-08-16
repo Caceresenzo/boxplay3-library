@@ -1,13 +1,14 @@
 package caceresenzo.libs.boxplay.culture.searchngo.data.models.additional;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 
 /**
  * Holder class to contain an url and a name of a Category
  * 
  * @author Enzo CACERES
  */
-public class CategoryResultData implements DisplayableString {
+public class CategoryResultData extends SimpleData implements DisplayableString {
 	
 	private final String url, name;
 	

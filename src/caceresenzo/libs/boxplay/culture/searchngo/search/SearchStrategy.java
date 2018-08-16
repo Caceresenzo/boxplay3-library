@@ -1,11 +1,13 @@
 package caceresenzo.libs.boxplay.culture.searchngo.search;
 
+import java.io.Serializable;
+
 /**
  * A class to allow implementations of searching strategy
  * 
  * @author Enzo CACERES
  */
-public abstract class SearchStrategy {
+public abstract class SearchStrategy implements Serializable {
 	
 	/**
 	 * Abstract function used by implementations

@@ -1,5 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.content.ContentViewerType;
  * 
  * @author Enzo CACERES
  */
-public class ProviderSearchCapability {
+public class ProviderSearchCapability implements Serializable {
 	
 	private List<SearchCapability> capabilities;
 	
@@ -82,7 +83,7 @@ public class ProviderSearchCapability {
 	 * 
 	 * @author Enzo CACERES
 	 */
-	public static enum SearchCapability {
+	public enum SearchCapability implements Serializable {
 		ANIME(ContentViewerType.VIDEO), //
 		SERIES(ContentViewerType.VIDEO), //
 		VIDEO(ContentViewerType.VIDEO), //

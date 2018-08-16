@@ -5,13 +5,14 @@ import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentPro
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.ViewableContent;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 
 /**
  * Holder class to contain an url and a name of a Video
  * 
  * @author Enzo CACERES
  */
-public class VideoItemResultData implements DisplayableString, ViewableContent {
+public class VideoItemResultData extends SimpleData implements DisplayableString, ViewableContent {
 	
 	private final IVideoContentProvider videoContentProvider;
 	private final String url, name;

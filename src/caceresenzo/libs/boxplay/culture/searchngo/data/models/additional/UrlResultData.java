@@ -1,13 +1,14 @@
 package caceresenzo.libs.boxplay.culture.searchngo.data.models.additional;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 
 /**
  * Holder class to contain a target url and a display string of a html link (<a>)
  * 
  * @author Enzo CACERES
  */
-public class UrlResultData implements DisplayableString {
+public class UrlResultData extends SimpleData implements DisplayableString {
 	
 	public static final String EXTRATION_REGEX_FROM_HTML = "\\<a.*?href[\\s]*=[\\s]*\\\"(.*?)\".*?\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>";
 	

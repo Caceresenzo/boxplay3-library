@@ -1,11 +1,13 @@
 package caceresenzo.libs.boxplay.culture.searchngo.search;
 
+import java.io.Serializable;
+
 /**
  * Search engine, used by Provider to sort result
  * 
  * @author Enzo CACERES
  */
-public class SearchEngine {
+public class SearchEngine implements Serializable {
 	
 	private SearchStrategy searchStrategy;
 	
