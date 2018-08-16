@@ -51,7 +51,7 @@ public abstract class VideoContentExtractor extends ContentExtractor {
 		/**
 		 * Called when stream is not available, maybe he got deleted
 		 */
-		void onStreamingNotAvailable();
+		void onFileNotAvailable();
 		
 		/**
 		 * Called when link extraction is appening

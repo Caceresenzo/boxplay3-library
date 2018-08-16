@@ -31,7 +31,7 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 		
 		if (!checkStreamingAvailability(openloadHtml)) {
 			if (progressCallback != null) {
-				progressCallback.onStreamingNotAvailable();
+				progressCallback.onFileNotAvailable();
 			}
 			
 			failed(true).notifyException(new StreamingNotAvailableException());;
