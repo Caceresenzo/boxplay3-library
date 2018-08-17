@@ -83,7 +83,7 @@ public class ProviderSearchCapability implements Serializable {
 	 * 
 	 * @author Enzo CACERES
 	 */
-	public enum SearchCapability implements Serializable {
+	public static enum SearchCapability implements Serializable {
 		ANIME(ContentViewerType.VIDEO), //
 		SERIES(ContentViewerType.VIDEO), //
 		VIDEO(ContentViewerType.VIDEO), //

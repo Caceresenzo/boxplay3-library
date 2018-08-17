@@ -3,6 +3,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers;
 import java.util.ArrayList;
 import java.util.List;
 
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamNuSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.VoirFilmBzSearchAndGoVideoProvider;
@@ -17,6 +18,7 @@ public enum ProviderManager {
 	
 	JETANIME(JetAnimeSearchAndGoAnimeProvider.class), //
 	VOIRFILM_BZ(VoirFilmBzSearchAndGoVideoProvider.class), //
+	FULLSTREAM_NU(FullStreamNuSearchAndGoVideoProvider.class), //
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class); //
 	
 	private Class<? extends SearchAndGoProvider> providerClass;
