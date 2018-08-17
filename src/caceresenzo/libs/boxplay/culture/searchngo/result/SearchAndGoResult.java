@@ -3,13 +3,14 @@ package caceresenzo.libs.boxplay.culture.searchngo.result;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.models.element.Imagable;
+import caceresenzo.libs.boxplay.mylist.watchlater.WatchLaterListable;
 
 /**
  * Class containing some displayable information for the frond-end
  * 
  * @author Enzo CACERES
  */
-public class SearchAndGoResult extends Imagable {
+public class SearchAndGoResult extends Imagable implements WatchLaterListable {
 	
 	private static final int NO_SCORE = -1;
 	
