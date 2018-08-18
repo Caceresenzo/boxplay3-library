@@ -40,7 +40,7 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 	
 	@Override
 	protected Map<String, SearchAndGoResult> processWork(String searchQuery) throws Exception {
-		Map<String, SearchAndGoResult> result = createEmptyWorkMap();
+		Map<String, SearchAndGoResult> workmap = createEmptyWorkMap();
 		
 		/* 43 = Series and 2 = Movies (or inversed) // Adding conbination of the 2 pages (bad i know) */
 		String html = makeRequestByCategory(searchQuery, "43") + makeRequestByCategory(searchQuery, "2");
@@ -62,11 +62,11 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 					type = SearchCapability.MOVIE;
 				}
 				
-				result.put(url, new SearchAndGoResult(this, fullStreamNuItem.getName(), url, imageUrl, type).score(score));
+				workmap.put(url, new SearchAndGoResult(this, fullStreamNuItem.getName(), url, imageUrl, type).score(score));
 			}
 		}
 		
-		return result;
+		return workmap;
 	}
 	
 	@Override

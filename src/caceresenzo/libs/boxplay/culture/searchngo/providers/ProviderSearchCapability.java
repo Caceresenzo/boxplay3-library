@@ -87,6 +87,7 @@ public class ProviderSearchCapability implements Serializable {
 		ANIME(ContentViewerType.VIDEO), //
 		SERIES(ContentViewerType.VIDEO), //
 		VIDEO(ContentViewerType.VIDEO), //
+		HENTAI(ContentViewerType.VIDEO), //
 		MANGA(ContentViewerType.IMAGE), //
 		MOVIE(ContentViewerType.VIDEO), //
 		DEFAULT(null); //
