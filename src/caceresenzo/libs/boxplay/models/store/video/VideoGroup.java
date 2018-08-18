@@ -6,9 +6,10 @@ import java.util.List;
 import caceresenzo.libs.boxplay.models.element.enums.ElementLanguage;
 import caceresenzo.libs.boxplay.models.element.implementations.VideoElement;
 import caceresenzo.libs.boxplay.models.store.video.enums.VideoFileType;
+import caceresenzo.libs.boxplay.mylist.MyListable;
 import caceresenzo.libs.parse.ParseUtils;
 
-public class VideoGroup extends VideoElement {
+public class VideoGroup extends VideoElement implements MyListable {
 	
 	public static final Comparator<VideoGroup> COMPARATOR = new Comparator<VideoGroup>() {
 		@Override
@@ -58,7 +59,7 @@ public class VideoGroup extends VideoElement {
 	}
 	
 	public VideoGroup setAsWatching(boolean watching) {
-		this.watching = watching;
+		this.watching = watching;		
 		return this;
 	}
 	
@@ -113,11 +114,16 @@ public class VideoGroup extends VideoElement {
 	}
 	
 	public boolean hasSeason() { // If season 0 don't exists, so its a serie/anime
-		if (seasons.size() == 0) {
+		if (seasons == null || seasons.isEmpty()) {
 			return false;
 		}
 		
 		return ParseUtils.parseInt(seasons.get(0).getSeasonValue(), 0) != 0;
+	}
+	
+	@Override
+	public String toUniqueString() {
+		return getSlug();
 	}
 	
 	@Override

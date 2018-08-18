@@ -15,22 +15,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
 
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
-import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.mylist.MyListItem;
 import caceresenzo.libs.logger.Logger;
-import caceresenzo.libs.random.RandomString;
 
 public class MyListTestUnits {
 	

@@ -3,14 +3,14 @@ package caceresenzo.libs.boxplay.culture.searchngo.result;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.models.element.Imagable;
-import caceresenzo.libs.boxplay.mylist.watchlater.WatchLaterListable;
+import caceresenzo.libs.boxplay.mylist.MyListable;
 
 /**
  * Class containing some displayable information for the frond-end
  * 
  * @author Enzo CACERES
  */
-public class SearchAndGoResult extends Imagable implements WatchLaterListable {
+public class SearchAndGoResult extends Imagable implements MyListable {
 	
 	private static final int NO_SCORE = -1;
 	
@@ -136,6 +136,11 @@ public class SearchAndGoResult extends Imagable implements WatchLaterListable {
 	public SearchAndGoResult score(int score) {
 		this.score = score;
 		return this;
+	}
+	
+	@Override
+	public String toUniqueString() {
+		return String.format("%s:%s", type, name);
 	}
 	
 	@Override

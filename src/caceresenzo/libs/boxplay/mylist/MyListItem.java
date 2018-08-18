@@ -17,4 +17,9 @@ public class MyListItem<T> implements MyListable {
 		return "MyListItem[savedItem=" + savedItem + "]";
 	}
 	
+	@Override
+	public String toUniqueString() {
+		return savedItem.toString();
+	}
+	
 }
