@@ -165,7 +165,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	}
 	
 	@Override
-	public String extractVideoPageUrl(VideoItemResultData videoItemResult) {
+	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
 		Webb webb = Webb.create();
 		webb.setDefaultHeader(Webb.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);
 		
@@ -180,14 +180,19 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 					.ensureSuccess() //
 					.asString().getBody(); //
 		} catch (Exception exception) {
-			return null;
+			return new String[] { null };
 		}
 		
 		if (openloadIframeHtml == null) {
-			return null;
+			return new String[] { null };
 		}
 		
-		return HtmlCommonExtractor.extractIframeUrlFromHtml(openloadIframeHtml);
+		return new String[] { HtmlCommonExtractor.extractIframeUrlFromHtml(openloadIframeHtml) };
+	}
+	
+	@Override
+	public boolean hasMoreThanOnePlayer() {
+		return false;
 	}
 	
 	@SuppressWarnings("unchecked")

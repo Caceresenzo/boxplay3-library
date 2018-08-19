@@ -26,4 +26,9 @@ public class GenericVidozaVideoExtractor extends VideoContentExtractor {
 		return getStaticHelper().extract("sourcesCode\\:\\s\\[\\{\\ssrc\\:\\s\\\"(.*?)\\\"\\,", vidozaHtml);
 	}
 	
+	@Override
+	public boolean matchUrl(String baseUrl) {
+		return baseUrl.matches(".*?(vidoza\\.net).*?");
+	}
+	
 }

@@ -24,6 +24,8 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
  */
 public abstract class SearchAndGoProvider implements IContentProvider {
 	
+	public static final int NO_VALUE = Integer.MIN_VALUE;
+	
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new EnumMap<>(AdditionalDataType.class);
 	
 	private final String siteName, siteUrl;

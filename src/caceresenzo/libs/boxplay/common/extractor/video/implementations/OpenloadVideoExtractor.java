@@ -151,4 +151,9 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 		return "<html><script src=\"https://oload.download/assets/js/jquery.min.js\"></script>" + htmlDom + "<script>function " + CODE_EXECUTOR_JS_FUNCTION_NAME + "() {" + jsCode + "}; myFunction();</script></html>";
 	}
 	
+	@Override
+	public boolean matchUrl(String baseUrl) {
+		return baseUrl.matches(".*?(openload\\.co|oloadcdn\\.net).*?");
+	}
+	
 }

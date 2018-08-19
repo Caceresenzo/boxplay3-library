@@ -2,7 +2,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +18,8 @@ import caceresenzo.libs.network.Downloader;
  * @author Enzo CACERES
  */
 public class ProviderHelper implements Serializable {
+	
+	public static final int MAX_CACHE_CONTENT_SIZE = 10;
 	
 	protected static ProviderHelper STATIC_HELPER = new ProviderHelper();
 	
@@ -46,7 +48,7 @@ public class ProviderHelper implements Serializable {
 		this.searchEngine = new SearchEngine();
 		
 		if (parentProvider != null) {
-			this.cache = new HashMap<>();
+			this.cache = new LinkedHashMap<>();
 		}
 	}
 	
@@ -96,6 +98,10 @@ public class ProviderHelper implements Serializable {
 		
 		if (parentProvider.isCacheSupported()) {
 			cache.put(url, content);
+		}
+		
+		while (cache.size() > MAX_CACHE_CONTENT_SIZE) {
+			cache.remove(cache.keySet().iterator().next());
 		}
 		
 		return content;

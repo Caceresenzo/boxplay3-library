@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.InternetSource;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
@@ -25,6 +29,9 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
+import caceresenzo.libs.boxplay.utils.Sandbox;
+import caceresenzo.libs.cryptography.Base64;
+import caceresenzo.libs.iterator.ByteArrayIterator;
 import caceresenzo.libs.logger.Logger;
 
 /**
@@ -33,6 +40,42 @@ import caceresenzo.libs.logger.Logger;
  * @author Enzo CACERES
  */
 public class SearchAndGoTestUnits {
+	
+	private static final Map<Class<? extends ContentExtractor>, ContentExtractor> EXTRACTORS = new HashMap<>();
+	
+	static {
+		/* Video */
+		EXTRACTORS.put(OpenloadVideoExtractor.class, new OpenloadVideoExtractor() {
+			@Override
+			public void injectJsCode(String html) {
+				;
+			}
+			
+			@Override
+			public String getOpenloadKey(String htmlResult) {
+				return null;
+			}
+			
+			@Override
+			public String getJsResult() {
+				return "hello world";
+			}
+			
+			@Override
+			public String downloadTargetPage(String url) {
+				return null;
+			}
+			
+			@Override
+			public boolean checkStreamingAvailability(String html) {
+				return false;
+			}
+		});
+		EXTRACTORS.put(GenericVidozaVideoExtractor.class, new GenericVidozaVideoExtractor());
+		
+		/* Manga */
+		EXTRACTORS.put(GenericMangaLelChapterExtractor.class, new GenericMangaLelChapterExtractor());
+	}
 	
 	public static void main(String[] args) {
 		;
@@ -46,9 +89,29 @@ public class SearchAndGoTestUnits {
 		}
 	}
 	
+	public static ContentExtractor getExtractorFromBaseUrl(String baseUrl) {
+		if (baseUrl == null) {
+			return null;
+		}
+		
+		for (Entry<Class<? extends ContentExtractor>, ContentExtractor> entry : EXTRACTORS.entrySet()) {
+			InternetSource internetSource = entry.getValue();
+			
+			// Logger.info(String.format("Trying to match ContentExtract class: %s with base url: %s", entry.getKey(), baseUrl));
+			
+			if (internetSource.matchUrl(baseUrl)) {
+				// Logger.info(String.format("An instance of ContentExtractor has been asked (base url: %s, returned class: %s)", baseUrl, entry.getKey()));
+				return entry.getValue();
+			}
+		}
+		
+		// Logger.error(String.format("No compatible ContentExtract instance found for base url %s", baseUrl));
+		return null;
+	}
+	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "hell";
+		private static final String QUERY = "kaitai";
 		
 		public static void main(String[] args) {
 			
@@ -83,7 +146,8 @@ public class SearchAndGoTestUnits {
 			
 			// providers.add(ProviderManager.JETANIME.create());
 			// providers.add(ProviderManager.VOIRFILM_BZ.create());
-			providers.add(ProviderManager.MANGALEL.create());
+			// providers.add(ProviderManager.MANGALEL.create());
+			providers.add(ProviderManager.ADKAMI.create());
 			
 			// Logger.info(ProviderManager.JETANIME.create().ADDITIONAL_DATA_CORRESPONDANCE);
 			// Logger.info(ProviderManager.MANGALEL.create().ADDITIONAL_DATA_CORRESPONDANCE);
@@ -135,14 +199,29 @@ public class SearchAndGoTestUnits {
 					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
 					
 					if (provider instanceof IVideoContentProvider && additionalData.getData() instanceof VideoItemResultData) {
-						Logger.$("IVideoContentProvider: " + ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData()));
+						String[] urls = ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData());
+						
+						for (String url : urls) {
+							Logger.$("IVideoContentProvider: " + url);
+							
+							ContentExtractor contentExtractor = getExtractorFromBaseUrl(url);
+							
+							if (contentExtractor instanceof OpenloadVideoExtractor) {
+								Logger.$(((OpenloadVideoExtractor) contentExtractor).getJsResult());
+							}
+							
+							Logger.$(contentExtractor);
+						}
+						
 						Logger.$("");
 					} else if (provider instanceof IMangaContentProvider && additionalData.getData() instanceof ChapterItemResultData) {
 						Logger.$("IMangaContentProvider: " + ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()));
 						Logger.$("");
+						
 						for (String url : new GenericMangaLelChapterExtractor().getImageUrls(((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()))) {
 							Logger.$(" |- Image URL: " + url);
 						}
+						
 						Logger.$("");
 					}
 				}
@@ -225,6 +304,46 @@ public class SearchAndGoTestUnits {
 			for (AdditionalDataType resultType : AdditionalDataType.values()) {
 				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayActivity.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.getClass().getSimpleName(), resultType.toString(), resultType.toString().toLowerCase()));
 			}
+		}
+		
+	}
+	
+	public static class AdkamiSandboxTestUnit {
+		
+		public static void main(String[] args) {
+			
+			// redirectConsoleOutput();
+			
+			Sandbox<String, String> sandbox = new Sandbox<String, String>() {
+				@Override
+				public String execute(String baseUrl) {
+					String[] split = baseUrl.split("https://www.youtube.com/embed/");
+					
+					if (split.length < 2) {
+						return null;
+					}
+					
+					baseUrl = split[1];
+					byte[] decodedBytes = Base64.decodeFast(baseUrl);
+					String result = "", key = "ETEfazefzeaZa13MnZEe";
+					int index = 0;
+					
+					try {
+						ByteArrayIterator iterator = new ByteArrayIterator(decodedBytes);
+						while (iterator.hasNext()) {
+							int nextByte = Byte.toUnsignedInt(iterator.next());
+							result += (char) ((175 ^ nextByte) - (int) key.charAt(index));
+							index = index > key.length() - 2 ? 0 : index + 1;
+						}
+					} catch (Exception exception) {
+						return null;
+					}
+					
+					return result;
+				}
+			};
+			
+			Logger.info(sandbox.execute("https://www.youtube.com/embed/2ywbeWlHfnp0ZiASf883FX8QBjvSCdNwfGAJcUEWDQ=="));
 		}
 		
 	}

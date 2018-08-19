@@ -80,9 +80,13 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 	}
 	
 	@Override
-	public String extractVideoPageUrl(VideoItemResultData videoItemResult) {
-		// TODO Auto-generated method stub
+	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
 		return null;
+	}
+	
+	@Override
+	public boolean hasMoreThanOnePlayer() {
+		return false;
 	}
 	
 	@SuppressWarnings("unchecked")

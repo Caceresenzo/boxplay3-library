@@ -1,5 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.data.models.additional;
 
+import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 
@@ -36,7 +37,7 @@ public class CategoryResultData extends SimpleData implements DisplayableString 
 	 */
 	public CategoryResultData(String url, String name) {
 		this.url = url != null ? url.trim() : null;
-		this.name = name != null ? name.trim() : null;
+		this.name = name != null ? AdditionalResultData.escapeHtmlChar(name.trim()) : null;
 	}
 	
 	/**

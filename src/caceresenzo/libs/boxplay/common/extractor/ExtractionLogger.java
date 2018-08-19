@@ -3,7 +3,6 @@ package caceresenzo.libs.boxplay.common.extractor;
 /**
  * Simple string logger used by extractor to log activity and result
  * 
- * 
  * @author Enzo CACERES
  */
 public class ExtractionLogger {
@@ -66,6 +65,16 @@ public class ExtractionLogger {
 	public ExtractionLogger append(Object message) {
 		content += String.valueOf(message);
 		
+		return this;
+	}
+	
+	/**
+	 * Clear the logger's content
+	 * 
+	 * @return Itself
+	 */
+	public ExtractionLogger clear() {
+		content = "";
 		return this;
 	}
 	

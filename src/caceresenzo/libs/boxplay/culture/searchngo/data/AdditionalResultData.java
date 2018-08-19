@@ -84,7 +84,7 @@ public class AdditionalResultData {
 		} else if (data instanceof DisplayableString) {
 			converted = ((DisplayableString) data).convertToDisplayableString();
 		} else {
-			converted = (String) data;
+			converted = String.valueOf(data);
 		}
 		
 		return converted;
@@ -101,6 +101,10 @@ public class AdditionalResultData {
 		return string //
 				.replace("&#039;", "'") //
 				.replace("&eacute;", "é") //
+				.replace("&quot;", "\"") //
+				.replace("&amp;amp;", "&") //
+				.replace("&amp;", "&") //
+				.replaceAll("<br[\\s]*(\\/)>", "")
 		;
 	}
 	

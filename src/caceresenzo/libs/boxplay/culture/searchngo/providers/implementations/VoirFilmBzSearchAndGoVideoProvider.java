@@ -216,8 +216,13 @@ public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider impl
 	}
 	
 	@Override
-	public String extractVideoPageUrl(VideoItemResultData videoItemResult) {
-		return videoItemResult.getUrl();
+	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
+		return new String[] { videoItemResult.getUrl() };
+	}
+	
+	@Override
+	public boolean hasMoreThanOnePlayer() {
+		return false;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -9,7 +9,7 @@ import caceresenzo.libs.thread.ThreadUtils;
  * 
  * @author Enzo CACERES
  */
-public abstract class ContentExtractor implements IExtractor {
+public abstract class ContentExtractor implements IExtractor, InternetSource {
 	
 	private ExtractionLogger logger = new ExtractionLogger(getClass().getSimpleName());
 	

@@ -12,6 +12,13 @@ public interface IVideoContentProvider extends IContentProvider {
 	 *            Target video result
 	 * @return A direct page url for the extractor to work
 	 */
-	String extractVideoPageUrl(VideoItemResultData videoItemResult);
+	String[] extractVideoPageUrl(VideoItemResultData videoItemResult);
+	
+	/**
+	 * Tell if a provider ofter return most than one player on his page
+	 * 
+	 * @return Yes or not
+	 */
+	boolean hasMoreThanOnePlayer();
 	
 }

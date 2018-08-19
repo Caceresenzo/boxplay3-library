@@ -62,4 +62,9 @@ public class GenericMangaLelChapterExtractor extends MangaChapterContentExtracto
 		return getStaticHelper().extract("var pages[\\s]*=[\\s]*(.*?)[\\s]*;", html);
 	}
 	
+	@Override
+	public boolean matchUrl(String baseUrl) {
+		return baseUrl.matches(".*?(manga-lel\\.com).*?");
+	}
+	
 }
