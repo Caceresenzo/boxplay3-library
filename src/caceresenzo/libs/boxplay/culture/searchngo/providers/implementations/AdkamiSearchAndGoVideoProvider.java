@@ -320,11 +320,13 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 			try {
 				ByteArrayIterator iterator = new ByteArrayIterator(decodedBytes);
 				while (iterator.hasNext()) {
-					int nextByte = Byte.toUnsignedInt(iterator.next());
+					// int nextByte = Byte.toUnsignedInt(iterator.next()); // Too advanced for older phone
+					int nextByte = iterator.next() & 0xFF; // Basicly un-sign actual byte value, thanks stackoverflow
 					result += (char) ((175 ^ nextByte) - (int) key.charAt(index));
 					index = index > key.length() - 2 ? 0 : index + 1;
 				}
 			} catch (Exception exception) {
+				exception.printStackTrace();
 				return null;
 			}
 			
