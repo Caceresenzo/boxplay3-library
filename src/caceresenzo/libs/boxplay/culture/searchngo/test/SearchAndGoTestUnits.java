@@ -45,32 +45,7 @@ public class SearchAndGoTestUnits {
 	
 	static {
 		/* Video */
-		EXTRACTORS.put(OpenloadVideoExtractor.class, new OpenloadVideoExtractor() {
-			@Override
-			public void injectJsCode(String html) {
-				;
-			}
-			
-			@Override
-			public String getOpenloadKey(String htmlResult) {
-				return null;
-			}
-			
-			@Override
-			public String getJsResult() {
-				return "hello world";
-			}
-			
-			@Override
-			public String downloadTargetPage(String url) {
-				return null;
-			}
-			
-			@Override
-			public boolean checkStreamingAvailability(String html) {
-				return false;
-			}
-		});
+		EXTRACTORS.put(OpenloadVideoExtractor.class, new FakeOpenloadVideoExtractor());
 		EXTRACTORS.put(GenericVidozaVideoExtractor.class, new GenericVidozaVideoExtractor());
 		
 		/* Manga */
@@ -97,42 +72,34 @@ public class SearchAndGoTestUnits {
 		for (Entry<Class<? extends ContentExtractor>, ContentExtractor> entry : EXTRACTORS.entrySet()) {
 			InternetSource internetSource = entry.getValue();
 			
-			// Logger.info(String.format("Trying to match ContentExtract class: %s with base url: %s", entry.getKey(), baseUrl));
-			
 			if (internetSource.matchUrl(baseUrl)) {
-				// Logger.info(String.format("An instance of ContentExtractor has been asked (base url: %s, returned class: %s)", baseUrl, entry.getKey()));
 				return entry.getValue();
 			}
 		}
 		
-		// Logger.error(String.format("No compatible ContentExtract instance found for base url %s", baseUrl));
 		return null;
 	}
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "kaitai";
+		private static final String QUERY = "Ballers - Saison 4";
 		
 		public static void main(String[] args) {
 			
 			ProviderCallback.registerProviderSearchallback(new ProviderSearchCallback() {
-				
 				@Override
 				public void onProviderSorting(SearchAndGoProvider provider) {
-					// TODO Auto-generated method stub
-					
+					;
 				}
 				
 				@Override
 				public void onProviderSearchStarting(SearchAndGoProvider provider) {
-					// TODO Auto-generated method stub
-					
+					;
 				}
 				
 				@Override
 				public void onProviderSearchFinished(SearchAndGoProvider provider, Map<String, SearchAndGoResult> workmap) {
-					// TODO Auto-generated method stub
-					
+					;
 				}
 				
 				@Override
@@ -147,10 +114,8 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.JETANIME.create());
 			// providers.add(ProviderManager.VOIRFILM_BZ.create());
 			// providers.add(ProviderManager.MANGALEL.create());
-			providers.add(ProviderManager.ADKAMI.create());
-			
-			// Logger.info(ProviderManager.JETANIME.create().ADDITIONAL_DATA_CORRESPONDANCE);
-			// Logger.info(ProviderManager.MANGALEL.create().ADDITIONAL_DATA_CORRESPONDANCE);
+			// providers.add(ProviderManager.ADKAMI.create());
+			providers.add(ProviderManager.FULLSTREAM_NU.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
 			
@@ -181,36 +146,32 @@ public class SearchAndGoTestUnits {
 				Logger.$("\t" + result.getName());
 				Logger.$("\t" + result.getBestImageUrl());
 				
-				// if (result.getParentProvider() instanceof JetAnimeSearchAndGoAnimeProvider) {
+				/* Data */
 				Logger.$("");
 				Logger.$("\tDATA:");
 				
 				List<AdditionalResultData> additionalResult = result.getParentProvider().fetchMoreData(result);
 				for (AdditionalResultData additionalData : additionalResult) {
-					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
+					Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
 				}
-				// }
 				
+				/* Content */
 				Logger.$("");
-				Logger.$("\tDATA:");
+				Logger.$("\tCONTENT:");
 				
 				List<AdditionalResultData> additionalContent = result.getParentProvider().fetchContent(result);
 				for (AdditionalResultData additionalData : additionalContent) {
-					Logger.$("\t- TYPE: %-20s, CONTENT: %s", additionalData.getType(), additionalData.convert());
+					Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
 					
 					if (provider instanceof IVideoContentProvider && additionalData.getData() instanceof VideoItemResultData) {
 						String[] urls = ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData());
 						
 						for (String url : urls) {
-							Logger.$("IVideoContentProvider: " + url);
+							Logger.$("\t\tIVideoContentProvider: " + url);
 							
 							ContentExtractor contentExtractor = getExtractorFromBaseUrl(url);
 							
-							if (contentExtractor instanceof OpenloadVideoExtractor) {
-								Logger.$(((OpenloadVideoExtractor) contentExtractor).getJsResult());
-							}
-							
-							Logger.$(contentExtractor);
+							Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
 						}
 						
 						Logger.$("");

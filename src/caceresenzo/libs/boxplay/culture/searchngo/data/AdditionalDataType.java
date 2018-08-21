@@ -17,9 +17,10 @@ public enum AdditionalDataType {
 	COUNTRY, //
 	DIRECTOR, //
 	AUTHORS, //
-	ACTORS,
+	ACTORS, //
 	ARTISTS, //
 	STUDIOS, //
+	CHANNEL, //
 	RELEASE_DATE, //
 	VIEWS, //
 	DURATION, //

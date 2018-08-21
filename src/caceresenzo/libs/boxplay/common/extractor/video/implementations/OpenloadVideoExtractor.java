@@ -34,7 +34,8 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 				progressCallback.onFileNotAvailable();
 			}
 			
-			failed(true).notifyException(new StreamingNotAvailableException());;
+			failed(true).notifyException(new StreamingNotAvailableException());
+			;
 			
 			return null;
 		}
@@ -153,7 +154,8 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	
 	@Override
 	public boolean matchUrl(String baseUrl) {
-		return baseUrl.matches(".*?(openload\\.co|oloadcdn\\.net).*?");
+		/* Custom from provider: film.full-stream.nu/openload/ */
+		return baseUrl.matches(".*?(openload\\.co|oloadcdn\\.net|film\\.full-stream\\.nu\\/openload\\/).*?");
 	}
 	
 }

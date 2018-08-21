@@ -104,7 +104,6 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 			String dataKey = entry.getValue();
 			
 			String extractedData = extractCommonData(dataKey, htmlContainer);
-			
 			if (extractedData != null) {
 				String trimExtractedData = extractedData.trim();
 				Object formattedData = trimExtractedData;

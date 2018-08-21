@@ -9,6 +9,8 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
  */
 public class HtmlCommonExtractor {
 	
+	public static final String COMMON_LINK_EXTRACTION_REGEX = "\\<a.*?href=\\\"(.*?)\\\"\\>(.*?)\\<\\/a\\>";
+	
 	/**
 	 * Disabled constructor, static only
 	 */

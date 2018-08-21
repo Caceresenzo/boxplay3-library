@@ -104,7 +104,9 @@ public class AdditionalResultData {
 				.replace("&quot;", "\"") //
 				.replace("&amp;amp;", "&") //
 				.replace("&amp;", "&") //
-				.replaceAll("<br[\\s]*(\\/)>", "")
+				.replace("&nbsp;", " ") //
+				.replaceAll("<br[\\s]*(\\/)>", "") //
+				.trim() //
 		;
 	}
 	
