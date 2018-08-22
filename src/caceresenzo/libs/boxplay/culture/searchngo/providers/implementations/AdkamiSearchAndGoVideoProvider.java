@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.IHentaiVideoContentProvider;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
@@ -26,16 +27,16 @@ import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.iterator.ByteArrayIterator;
 import caceresenzo.libs.parse.ParseUtils;
 
-public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
+public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider, IHentaiVideoContentProvider {
 	
 	public static final boolean SEARCH_USING_FULL_PAGE = false;
-	public static final boolean ALLOW_HENTAI_SEARCH = false;
 	
 	protected static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date: ";
 	protected static final String ADDITIONAL_DATA_KEY_AUTHOR = "Auteur: ";
 	protected static final String ADDITIONAL_DATA_KEY_STUDIO = "Studio: ";
 	
 	private final String searchUrlFormat, imageUrlFormat, imageMiniUrlFormat;
+	public boolean hentaiAllowed = false;
 	
 	public AdkamiSearchAndGoVideoProvider() {
 		super("Adkami", "https://www.adkami.com");
@@ -64,7 +65,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 			extractEverythingFromUrl(workmap, searchQuery, "https://www.adkami.com/drama", SearchCapability.VIDEO);
 			extractEverythingFromUrl(workmap, searchQuery, "https://www.adkami.com/serie", SearchCapability.SERIES);
 			
-			if (ALLOW_HENTAI_SEARCH) {
+			if (hentaiAllowed) {
 				extractEverythingFromUrl(workmap, searchQuery, "https://www.adkami.com/hentai", SearchCapability.HENTAI);
 			}
 		} else {
@@ -74,7 +75,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 			extractEverythingFromUrl(workmap, searchQuery, String.format(searchUrlFormat, encodedSearchQuery, 1), SearchCapability.SERIES); // Series
 			extractEverythingFromUrl(workmap, searchQuery, String.format(searchUrlFormat, encodedSearchQuery, 5), SearchCapability.VIDEO); // Drama
 			
-			if (ALLOW_HENTAI_SEARCH) {
+			if (hentaiAllowed) {
 				extractEverythingFromUrl(workmap, searchQuery, String.format(searchUrlFormat, encodedSearchQuery, 4), SearchCapability.HENTAI); // Hentai
 			}
 		}
@@ -235,6 +236,11 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 	@Override
 	public boolean hasMoreThanOnePlayer() {
 		return true;
+	}
+	
+	@Override
+	public void allowHentai(boolean allow) {
+		this.hentaiAllowed = allow;
 	}
 	
 	public void extractEverythingFromUrl(Map<String, SearchAndGoResult> actualWorkmap, String searchQuery, String targetUrl, SearchCapability type) {

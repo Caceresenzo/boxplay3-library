@@ -91,23 +91,39 @@ public class AdditionalResultData {
 	}
 	
 	/**
-	 * Static function to escape most se (during developpement) html custom char
+	 * Static function to escape most known (during developpement) html custom/encoded char
 	 * 
 	 * @param string
 	 *            Source string
 	 * @return Escaped string
 	 */
 	public static String escapeHtmlChar(String string) {
-		return string //
+		return escapeDoubleSpace(string //
 				.replace("&#039;", "'") //
 				.replace("&eacute;", "é") //
 				.replace("&quot;", "\"") //
 				.replace("&amp;amp;", "&") //
 				.replace("&amp;", "&") //
 				.replace("&nbsp;", " ") //
+				.replace("&NBSP;", " ") //
 				.replaceAll("<br[\\s]*(\\/)>", "") //
 				.trim() //
-		;
+		);
+	}
+	
+	/**
+	 * Static function to escape every double space till no remain
+	 * 
+	 * @param string
+	 *            Source string
+	 * @return Escaped string
+	 */
+	public static String escapeDoubleSpace(String string) {
+		while (string.contains(" " + " ")) {
+			string = string.replace("  ", " ");
+		}
+		
+		return string;
 	}
 	
 	/**

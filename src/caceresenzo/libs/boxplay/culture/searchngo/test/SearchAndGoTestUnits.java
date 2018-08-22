@@ -21,6 +21,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderCallback;
@@ -33,6 +34,7 @@ import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.iterator.ByteArrayIterator;
 import caceresenzo.libs.logger.Logger;
+import caceresenzo.libs.string.StringUtils;
 
 /**
  * Basic Test Units
@@ -82,7 +84,7 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "Ballers - Saison 4";
+		private static final String QUERY = "game of thrones 1";
 		
 		public static void main(String[] args) {
 			
@@ -305,6 +307,32 @@ public class SearchAndGoTestUnits {
 			};
 			
 			Logger.info(sandbox.execute("https://www.youtube.com/embed/2ywbeWlHfnp0ZiASf883FX8QBjvSCdNwfGAJcUEWDQ=="));
+		}
+		
+	}
+	
+	public static class RandomCodeTest {
+		
+		public static void main(String[] args) {
+			String categoriesString = ".Drame.Fantastique";
+			
+			String[] genders = categoriesString.split("\\.");
+			
+			List<CategoryResultData> categories = new ArrayList<>();
+			
+			for (String gender : genders) {
+				Logger.error("FOUND : " + gender);
+				if (!StringUtils.validate(genders)) {
+					continue;
+				}
+				Logger.error("-- VALIDATED: " + gender);
+				
+				categories.add(new CategoryResultData(gender));
+			}
+			
+			// if (!categories.isEmpty()) {
+			// additionals.add(new AdditionalResultData(AdditionalDataType.GENDERS, categories));
+			// }
 		}
 		
 	}

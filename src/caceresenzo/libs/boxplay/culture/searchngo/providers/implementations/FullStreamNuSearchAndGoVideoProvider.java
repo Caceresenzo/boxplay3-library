@@ -1,6 +1,7 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
+import caceresenzo.libs.string.StringUtils;
 
 public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
@@ -227,6 +229,7 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 						if (author != null) {
 							additionals.add(new AdditionalResultData(AdditionalDataType.AUTHORS, author));
 						}
+						
 						break;
 					}
 					
@@ -258,6 +261,26 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 							
 							additionals.add(new AdditionalResultData(AdditionalDataType.ACTORS, builder.toString()));
 						}
+						
+						break;
+					}
+					
+					/* Genders */
+					case ADDITIONAL_DATA_KEY_SERIES_GENDERS: {
+						String[] genders = extractedData.split("\\.");
+						
+						List<CategoryResultData> categories = new ArrayList<>();
+						
+						for (String gender : genders) {
+							if (StringUtils.validate(gender)) {
+								categories.add(new CategoryResultData(gender));
+							}
+						}
+						
+						if (!categories.isEmpty()) {
+							additionals.add(new AdditionalResultData(AdditionalDataType.GENDERS, categories));
+						}
+						
 						break;
 					}
 					
@@ -297,22 +320,22 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 			
 			List<FullStreamNuVideoEpisodeItem> episodeItems = new ArrayList<>();
 			
-			Matcher episodeMatcher = getHelper().regex("\\<a.*?data-rel=\\\"(.*?)\\\".*?\\>\\<i.*?\\/i\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>", episodeHtmlContainer);
-			
-			while (episodeMatcher.find()) {
-				String episodeString = episodeMatcher.group(2);
-				String dataRelation = episodeMatcher.group(1);
-				
-				episodeItems.add(new FullStreamNuVideoEpisodeItem(episodeString, dataRelation));
-			}
-			
-			if (episodeItems.isEmpty()) {
-				continue;
-			}
-			
 			switch (result.getType()) {
 				/* Series */
 				case SERIES: {
+					Matcher seriesEpisodeMatcher = getHelper().regex("\\<a.*?data-rel=\\\"(.*?)\\\".*?\\>\\<i.*?\\/i\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>", episodeHtmlContainer);
+					
+					while (seriesEpisodeMatcher.find()) {
+						String episodeString = seriesEpisodeMatcher.group(2);
+						String dataRelation = seriesEpisodeMatcher.group(1);
+						
+						episodeItems.add(FullStreamNuVideoEpisodeItem.createWithSeries(episodeString, dataRelation));
+					}
+					
+					if (episodeItems.isEmpty()) {
+						continue;
+					}
+					
 					Matcher playerUrlContainerMatcher = getHelper().regex("\\<div\\sid=\\\"(.*?)\\\"\\sclass=\\\"fullsfeature\\\"\\>[\\s\\t\\n]*\\<div\\sclass=\\\"selink\\\"\\>[\\s\\t\\n]*\\<ul\\sclass=\\\"btnss\\\"\\>(.*?)\\<\\/ul\\>[\\s\\t\\n]*\\<div\\sstyle=\\\".*?\\\"\\>\\<\\/div\\>[\\s\\t\\n]*\\<\\/div\\>[\\s\\t\\n]*\\<\\/div\\>", html);
 					
 					while (playerUrlContainerMatcher.find()) {
@@ -347,7 +370,7 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 						}
 						
 						if (!urls.isEmpty()) {
-							String episode = String.format(VIDEO_NAME_FORMAT, actualItem.getEpisodeString(), language);
+							String episode = String.format(VIDEO_NAME_FORMAT, AdditionalResultData.escapeHtmlChar(actualItem.getEpisodeString()), language);
 							
 							additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new CompletedVideoItemResultData(this, episode, urls)));
 						}
@@ -358,6 +381,28 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 				
 				/* Movie */
 				case MOVIE: {
+					Matcher movieEpisodeMatcher = getHelper().regex("\\<a.*?onclick=\\\"(.*?)\\\".*?\\>\\<i.*?\\/i\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>", episodeHtmlContainer);
+					
+					while (movieEpisodeMatcher.find()) {
+						String episodeString = movieEpisodeMatcher.group(2);
+						String onClickJavascript = movieEpisodeMatcher.group(1);
+						
+						episodeItems.add(FullStreamNuVideoEpisodeItem.createWithMovie(episodeString, onClickJavascript));
+					}
+					
+					if (episodeItems.isEmpty()) {
+						continue;
+					}
+					
+					for (FullStreamNuVideoEpisodeItem episodeItem : episodeItems) {
+						String extractedSource = episodeItem.extractJavascriptUrl();
+						
+						if (extractedSource != null) {
+							String episode = String.format(VIDEO_NAME_FORMAT, episodeItem.getEpisodeString(), language);
+							
+							additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new CompletedVideoItemResultData(this, episode, Arrays.asList(extractedSource))));
+						}
+					}
 					
 					break;
 				}
@@ -367,7 +412,6 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 					break; // Untreatable for the moment
 				}
 			}
-			// additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new CompletedVideoItemResultData(this, name, playerUrls)));
 		}
 		
 		return additionals;
@@ -380,7 +424,7 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 	
 	@Override
 	public boolean hasMoreThanOnePlayer() {
-		return false;
+		return true;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -491,16 +535,21 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 	 * 
 	 * <br>
 	 * <br>
-	 * Using the <code>&lt;a&gt;String&lt;/a&gt;</code> and the data-rel attribute
+	 * Using the <code>&lt;a&gt;String&lt;/a&gt;</code> and the data-rel attribute (series)
+	 * 
+	 * <br>
+	 * <br>
+	 * Using the <code>&lt;a&gt;String&lt;/a&gt;</code> and the onClick attribute (movie)
 	 * 
 	 * @author Enzo CACERES
 	 */
 	public static class FullStreamNuVideoEpisodeItem {
-		private final String episodeString, dataRelation;
+		private final String episodeString, dataRelation, onClickJavascript;
 		
-		public FullStreamNuVideoEpisodeItem(String episodeString, String dataRelation) {
+		private FullStreamNuVideoEpisodeItem(String episodeString, String dataRelation, String onClickJavascript) {
 			this.episodeString = episodeString;
 			this.dataRelation = dataRelation;
+			this.onClickJavascript = onClickJavascript;
 		}
 		
 		public String getEpisodeString() {
@@ -509,6 +558,85 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 		
 		public String getDataRelation() {
 			return dataRelation;
+		}
+		
+		public String getOnClickJavascript() {
+			return onClickJavascript;
+		}
+		
+		public String extractJavascriptUrl() {
+			if (onClickJavascript == null) {
+				return null;
+			}
+			
+			Matcher functionMatcher = getStaticHelper().regex("(.*?)\\(\\'(.*?)\\'\\);", onClickJavascript);
+			
+			if (functionMatcher.find()) {
+				String function = functionMatcher.group(1);
+				String source = functionMatcher.group(2);
+				
+				switch (function) {
+					/* Apply source directly */
+					case "gen": {
+						return source;
+					}
+					
+					/* Flashx.tv */
+					case "aw": {
+						return "https://www.flashx.tv/embed-" + source + ".html";
+					}
+					
+					/* Openload */
+					case "ae": {
+						return "https://openload.co/embed/" + source;
+					}
+					
+					/* Vidoza */
+					case "tq": {
+						return "https://vidoza.net/embed-" + source + ".html";
+					}
+					
+					/* ESTREAM */
+					case "bg": {
+						return "https://estream.to/embed-" + source + ".html";
+					}
+					
+					/* Vidlox */
+					case "jh": {
+						return "https://vidlox.me/embed-" + source + ".html";
+					}
+					
+					/* MyStream */
+					case "mg3": {
+						return "https://mystream.la/embed-" + source + ".html";
+					}
+					
+					/* Streamango */
+					case "yu": {
+						return "https://streamango.com/embed/" + source;
+					}
+					
+					/* EasyVid */
+					case "yru": {
+						return "https://easyvid.org/embed-" + source + "-600x360.html";
+					}
+					
+					/* Unknown */
+					default: {
+						break;
+					}
+				}
+			}
+			
+			return null;
+		}
+		
+		public static FullStreamNuVideoEpisodeItem createWithSeries(String episodeString, String dataRelation) {
+			return new FullStreamNuVideoEpisodeItem(episodeString, dataRelation, null);
+		}
+		
+		public static FullStreamNuVideoEpisodeItem createWithMovie(String episodeString, String onClickJavascript) {
+			return new FullStreamNuVideoEpisodeItem(episodeString, null, onClickJavascript);
 		}
 	}
 	
