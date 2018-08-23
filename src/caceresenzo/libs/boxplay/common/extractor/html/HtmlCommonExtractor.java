@@ -11,6 +11,8 @@ public class HtmlCommonExtractor {
 	
 	public static final String COMMON_LINK_EXTRACTION_REGEX = "\\<a.*?href=\\\"(.*?)\\\"\\>(.*?)\\<\\/a\\>";
 	
+	public static final String COMMON_JS_FUNCTION_EXTRACT_HTML = "(function() { return (document.getElementsByTagName('html')[0].innerHTML); })();";
+	
 	/**
 	 * Disabled constructor, static only
 	 */

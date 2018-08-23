@@ -13,6 +13,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
 public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	
 	public static final String CODE_EXECUTOR_JS_FUNCTION_NAME = "myFunction";
+	public static final String FILE_DELETED = "We can't find the file you are looking for. It maybe got deleted by the owner or was removed due a copyright violation.";
 	
 	/**
 	 * This regex is used to extract the "japanease smiley" encoded java script at the end of the page that is used to decypher a key to watch the video
@@ -67,13 +68,19 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	public abstract String downloadTargetPage(String url);
 	
 	/**
-	 * Abstract function, used to check if the target file to stream is available or not
+	 * Used to check if the target file to stream is available or not
 	 * 
 	 * @param html
 	 *            Source of the page
 	 * @return Yes or not
 	 */
-	public abstract boolean checkStreamingAvailability(String html);
+	public boolean checkStreamingAvailability(String html) {
+		if (html == null) {
+			return false;
+		}
+		
+		return !html.contains(FILE_DELETED);
+	}
 	
 	/**
 	 * Abstract function, used to inject into some kind of webview or html parser (with javascript support), code that will be executed
