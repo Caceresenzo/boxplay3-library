@@ -216,7 +216,7 @@ public class VideoTest {
 						int seasonValue = Integer.parseInt(season.getSeasonValue());
 						String imageUrl = season.getImageHdUrl() != null ? season.getImageHdUrl() : season.getImageUrl();
 						String status = "AVAILABLE";
-						int groupId = groupIdentifiers.getOrDefault(slug, Integer.MIN_VALUE);
+						int groupId = (int) getOrDefault(groupIdentifiers, slug, Integer.MIN_VALUE);
 						
 						System.out.println(String.format(format, title, seasonValue, imageUrl, status, groupId));
 						
@@ -243,8 +243,8 @@ public class VideoTest {
 						// System.out.println(season.toString());
 						
 						int seasonValue = Integer.parseInt(season.getSeasonValue());
-						int groupId = groupIdentifiers.getOrDefault(slug, Integer.MIN_VALUE);
-						int seasonId = seasonIdentifiers.getOrDefault(season.getTitle() + "_____" + seasonValue, Integer.MIN_VALUE);
+						int groupId = (int) getOrDefault(groupIdentifiers, slug, Integer.MIN_VALUE);
+						int seasonId = (int) getOrDefault(seasonIdentifiers, season.getTitle() + "_____" + seasonValue, Integer.MIN_VALUE);
 						
 						for (VideoFile video : season.getVideos()) {
 							// System.out.println(video.toString() + " [url= " + video.getUrl() + "]");
@@ -283,7 +283,7 @@ public class VideoTest {
 					String bigImageUrl = season.getImageHdUrl();
 					String status = "AVAILABLE";
 					String url = season.getVideos().get(0).getUrl();
-					int groupId = groupIdentifiers.getOrDefault(slug, Integer.MIN_VALUE);
+					int groupId = (int) getOrDefault(groupIdentifiers, slug, Integer.MIN_VALUE);
 					
 					System.out.println(String.format(format, slug, title, imageUrl, bigImageUrl, status, url, groupId));
 					
@@ -295,6 +295,14 @@ public class VideoTest {
 	
 	public void generateMysqlSyntax() {
 		
+	}
+	
+	public static Object getOrDefault(Map<?, ?> map, Object key, Object defaultValue) {
+		if (map.containsKey(key)) {
+			return map.get(key);
+		}
+		
+		return defaultValue;
 	}
 	
 }
