@@ -40,7 +40,7 @@ public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider impl
 	private final String searchBaseUrl;
 	
 	public VoirFilmBzSearchAndGoVideoProvider() {
-		super("VOIRFILM.bz", "http://www.voirfilm.bz");
+		super("VOIRFILM.bz", "https://www.voirfilm.pro");
 		
 		this.searchBaseUrl = getSiteUrl() + "/index.php?do=search";
 		
