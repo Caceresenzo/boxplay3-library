@@ -29,6 +29,7 @@ import caceresenzo.libs.parse.ParseUtils;
 
 public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider, IHentaiVideoContentProvider {
 	
+	/* Provider Settings: Use full page instead of adkami's search bar, will be much longer but more precise (name only) */
 	public static final boolean SEARCH_USING_FULL_PAGE = false;
 	
 	protected static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date: ";
@@ -36,7 +37,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 	protected static final String ADDITIONAL_DATA_KEY_STUDIO = "Studio: ";
 	
 	private final String searchUrlFormat, imageUrlFormat, imageMiniUrlFormat;
-	public boolean hentaiAllowed = false;
+	private boolean hentaiAllowed = false;
 	
 	public AdkamiSearchAndGoVideoProvider() {
 		super("Adkami", "https://www.adkami.com");
