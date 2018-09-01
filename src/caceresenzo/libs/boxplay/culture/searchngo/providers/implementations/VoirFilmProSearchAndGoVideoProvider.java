@@ -22,7 +22,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
 
-public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
+public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
 	public static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Titre Original:";
 	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genre:";
@@ -39,8 +39,8 @@ public class VoirFilmBzSearchAndGoVideoProvider extends SearchAndGoProvider impl
 	
 	private final String searchBaseUrl;
 	
-	public VoirFilmBzSearchAndGoVideoProvider() {
-		super("VOIRFILM.bz", "https://www.voirfilm.pro");
+	public VoirFilmProSearchAndGoVideoProvider() {
+		super("VOIRFILM.pro", "https://www.voirfilm.pro");
 		
 		this.searchBaseUrl = getSiteUrl() + "/index.php?do=search";
 		

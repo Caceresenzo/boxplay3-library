@@ -347,7 +347,7 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 * 
 	 * It contain, a full regex match, an url, and a name
 	 */
-	protected static class ResultItem {
+	public static class ResultItem {
 		private String match, url, name, imageUrl, description, genre, view;
 		
 		/**

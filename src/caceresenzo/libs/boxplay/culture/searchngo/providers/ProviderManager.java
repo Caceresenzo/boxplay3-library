@@ -7,7 +7,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.Adka
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamNuSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.VoirFilmBzSearchAndGoVideoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.VoirFilmProSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchStrategy;
 
 /**
@@ -19,7 +19,7 @@ public enum ProviderManager {
 	
 	JETANIME(JetAnimeSearchAndGoAnimeProvider.class), //
 	ADKAMI(AdkamiSearchAndGoVideoProvider.class), //
-	VOIRFILM_BZ(VoirFilmBzSearchAndGoVideoProvider.class), //
+	VOIRFILM_PRO(VoirFilmProSearchAndGoVideoProvider.class), //
 	FULLSTREAM_NU(FullStreamNuSearchAndGoVideoProvider.class), //
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class); //
 	

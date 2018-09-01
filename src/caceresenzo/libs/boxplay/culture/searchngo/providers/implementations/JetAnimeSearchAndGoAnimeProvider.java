@@ -18,11 +18,15 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscribe.Subscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscribe.Subscriber;
 import caceresenzo.libs.cryptography.CloudflareUtils;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
+import caceresenzo.libs.network.Downloader;
+import caceresenzo.libs.string.StringUtils;
 
-public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider {
+public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider, Subscribable {
 	
 	protected static final String ADDITIONAL_DATA_KEY_NAME = "Nom:";
 	protected static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Nom original:";
@@ -34,12 +38,13 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	protected static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date de Sortie:";
 	protected static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis:";
 	
-	private final String imageUrlFormat;
+	private final String imageUrlFormat, rssUrl;
 	
 	public JetAnimeSearchAndGoAnimeProvider() {
 		super("JetAnime", "https://www.jetanime.co");
-		
+
 		imageUrlFormat = getSiteUrl() + "/assets/imgs/%s.jpg";
+		rssUrl = getSiteUrl() + "/rss/";
 		
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.NAME, ADDITIONAL_DATA_KEY_NAME);
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.ORIGINAL_NAME, ADDITIONAL_DATA_KEY_ORIGINAL_NAME);
@@ -198,6 +203,31 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { OpenloadVideoExtractor.class };
+	}
+	
+	@Override
+	public Subscriber getSubscriber() {
+		return new Subscriber() {
+			@Override
+			public List<Item> check() throws Exception {
+				List<Item> items = new ArrayList<>();
+				
+				String content = Downloader.getUrlContent(rssUrl);
+				
+				if (!StringUtils.validate(content)) {
+					return items;
+				}
+				
+				
+				
+				return items;
+			}
+			
+			@Override
+			public SearchAndGoResult createResultFromData(String name, String url, String imageUrl) {
+				return new SearchAndGoResult(JetAnimeSearchAndGoAnimeProvider.this, name, url, imageUrl);
+			}
+		};
 	}
 	
 	/**
