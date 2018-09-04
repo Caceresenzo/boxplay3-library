@@ -142,16 +142,33 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 		return this;
 	}
 	
+	/**
+	 * Create a new map if necessary
+	 */
 	private void checkRequireHeaders() {
 		if (requireHeaders == null) {
 			requireHeaders = new HashMap<>();
 		}
 	}
 	
+	/**
+	 * Get the actual headers
+	 * 
+	 * @return {@link #requireHeaders} or null
+	 */
 	public Map<String, Object> getRequireHeaders() {
 		return requireHeaders;
 	}
 	
+	/**
+	 * Add a single header value to the list
+	 * 
+	 * @param key
+	 *            Header key
+	 * @param value
+	 *            Header value
+	 * @return Itself
+	 */
 	public SearchAndGoResult requireHeader(String key, Object value) {
 		checkRequireHeaders();
 		
@@ -160,6 +177,13 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 		return this;
 	}
 	
+	/**
+	 * Add a full map that will be used in the header when doing the request
+	 * 
+	 * @param requireHeaders
+	 *            Target map you want to add
+	 * @return Itself
+	 */
 	public SearchAndGoResult requireHeaders(Map<String, Object> requireHeaders) {
 		checkRequireHeaders();
 		
