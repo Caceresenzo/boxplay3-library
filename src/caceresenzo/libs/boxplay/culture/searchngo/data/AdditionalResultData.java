@@ -100,6 +100,7 @@ public class AdditionalResultData {
 	public static String escapeHtmlChar(String string) {
 		return escapeDoubleSpace(string //
 				.replace("&#039;", "'") //
+				.replace("&#39;", "'") //
 				.replace("&eacute;", "é") //
 				.replace("&quot;", "\"") //
 				.replace("&amp;amp;", "&") //

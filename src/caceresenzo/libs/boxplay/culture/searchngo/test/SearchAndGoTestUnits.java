@@ -84,7 +84,7 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "game of thrones 1";
+		private static final String QUERY = "isekai desu ga";
 		
 		public static void main(String[] args) {
 			
@@ -117,7 +117,8 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.VOIRFILM_BZ.create());
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
-			providers.add(ProviderManager.FULLSTREAM_NU.create());
+			providers.add(ProviderManager.MANGASCAN.create());
+			// providers.add(ProviderManager.FULLSTREAM_NU.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
 			

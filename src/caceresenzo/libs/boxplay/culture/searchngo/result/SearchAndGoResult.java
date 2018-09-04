@@ -1,5 +1,8 @@
 package caceresenzo.libs.boxplay.culture.searchngo.result;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.models.element.Imagable;
@@ -17,6 +20,7 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	private SearchAndGoProvider parentProvider;
 	private String name, url;
 	private SearchCapability type;
+	private Map<String, Object> requireHeaders;
 	
 	private int score = NO_SCORE;
 	
@@ -135,6 +139,32 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	 */
 	public SearchAndGoResult score(int score) {
 		this.score = score;
+		return this;
+	}
+	
+	private void checkRequireHeaders() {
+		if (requireHeaders == null) {
+			requireHeaders = new HashMap<>();
+		}
+	}
+	
+	public Map<String, Object> getRequireHeaders() {
+		return requireHeaders;
+	}
+	
+	public SearchAndGoResult requireHeader(String key, Object value) {
+		checkRequireHeaders();
+		
+		requireHeaders.put(key, value);
+		
+		return this;
+	}
+	
+	public SearchAndGoResult requireHeaders(Map<String, Object> requireHeaders) {
+		checkRequireHeaders();
+		
+		this.requireHeaders.putAll(requireHeaders);
+		
 		return this;
 	}
 	
