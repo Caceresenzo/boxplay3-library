@@ -117,7 +117,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.VOIRFILM_BZ.create());
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
-			providers.add(ProviderManager.MANGASCAN.create());
+			providers.add(ProviderManager.SCANMANGA.create());
 			// providers.add(ProviderManager.FULLSTREAM_NU.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();

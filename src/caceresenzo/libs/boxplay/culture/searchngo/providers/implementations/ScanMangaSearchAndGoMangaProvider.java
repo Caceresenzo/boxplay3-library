@@ -25,7 +25,7 @@ import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.string.StringUtils;
 
-public class MangaScanSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
+public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
 	
 	public static final int API_RESULT_INDEX_NAME = 0;
 	public static final int API_RESULT_INDEX_URL = 1;
@@ -42,8 +42,8 @@ public class MangaScanSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	
 	private final String imageServerBaseUrl, searchApiUrlFormat;
 	
-	public MangaScanSearchAndGoMangaProvider() {
-		super("Manga Scan", "http://www.scan-manga.com");
+	public ScanMangaSearchAndGoMangaProvider() {
+		super("Scan Manga", "http://www.scan-manga.com");
 		
 		this.imageServerBaseUrl = getSiteUrl() + ":8080/img";
 		this.searchApiUrlFormat = getSiteUrl() + "/qsearch.json?term=%s";
