@@ -4,7 +4,7 @@ import java.util.List;
 
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 
-public class GenericMangaScanChapterExtractor extends MangaChapterContentExtractor {
+public class GenericScanMangaChapterExtractor extends MangaChapterContentExtractor {
 
 	@Override
 	public List<String> getImageUrls(String chapterUrl) {
