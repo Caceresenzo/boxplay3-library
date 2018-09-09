@@ -13,7 +13,9 @@ import java.util.Map.Entry;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.InternetSource;
+import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
+import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
@@ -52,6 +54,7 @@ public class SearchAndGoTestUnits {
 		
 		/* Manga */
 		EXTRACTORS.put(GenericMangaLelChapterExtractor.class, new GenericMangaLelChapterExtractor());
+		EXTRACTORS.put(GenericScanMangaChapterExtractor.class, new GenericScanMangaChapterExtractor());
 	}
 	
 	public static void main(String[] args) {
@@ -84,9 +87,10 @@ public class SearchAndGoTestUnits {
 	
 	public static class ExtractionTest {
 		
-		private static final String QUERY = "isekai desu ga";
+		private static final String QUERY = "death march";
 		
 		public static void main(String[] args) {
+			// redirectConsoleOutput();
 			
 			ProviderCallback.registerProviderSearchallback(new ProviderSearchCallback() {
 				@Override
@@ -182,11 +186,17 @@ public class SearchAndGoTestUnits {
 						Logger.$("IMangaContentProvider: " + ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()));
 						Logger.$("");
 						
-						for (String url : new GenericMangaLelChapterExtractor().getImageUrls(((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()))) {
-							Logger.$(" |- Image URL: " + url);
-						}
+						ContentExtractor extractor = getExtractorFromBaseUrl(result.getUrl());
 						
-						Logger.$("");
+						if (extractor != null && extractor instanceof MangaChapterContentExtractor) {
+							String pageUrl = ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData());
+							
+							for (String url : ((MangaChapterContentExtractor) extractor).getImageUrls(pageUrl)) {
+								Logger.$(" |- Image URL: " + url);
+							}
+							
+							Logger.$("");
+						}
 					}
 				}
 				

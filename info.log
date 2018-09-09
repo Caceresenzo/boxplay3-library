@@ -1,1 +1,80 @@
-Û,yiG~ztf Ï7;Ò	Óp|`	qA
+19:04:47 | INFO     | SearchA... | ------------------------------------------------------------ 21 Death March kara Hajimaru Isekai Kyousoukyoku
+19:04:47 | INFO     | SearchA... | type: MANGA      - name: Death March kara Hajimaru Isekai Kyousoukyoku                - score: 21
+19:04:47 | //////// | SearchA... | MANGA [search score: 21]
+19:04:47 | //////// | SearchA... | 	http://www.scan-manga.com/2565/Death-March-kara-Hajimaru-Isekai-Kyousoukyoku.html
+19:04:47 | //////// | SearchA... | 	Death March kara Hajimaru Isekai Kyousoukyoku
+19:04:47 | //////// | SearchA... | 	http://www.scan-manga.com:8080/img/manga/Death_March_kara_Hajimaru_Isekai_Kyousoukyoku_1_8310.jpg
+19:04:47 | //////// | SearchA... | 
+19:04:47 | //////// | SearchA... | 	DATA:
+19:04:47 | INFO     | ScanMan... | source: Death March to the Parallel World Rhapsody
+19:04:47 | INFO     | ScanMan... | transform: null
+19:04:47 | INFO     | ScanMan... | source: Death March Kara Hajimaru Isekai Ky&#333;s&#333;kyoku
+19:04:47 | INFO     | HtmlCom... | find match &#333;               so unicode: ō                   , so actual string: Death March Kara Hajimaru Isekai Kyōsōkyoku
+19:04:47 | INFO     | HtmlCom... | find match &#333;               so unicode: ō                   , so actual string: Death March Kara Hajimaru Isekai Kyōsōkyoku
+19:04:47 | INFO     | ScanMan... | transform: null
+19:04:47 | INFO     | HtmlCom... | find match &#333;               so unicode: ō                   , so actual string: Death March Kara Hajimaru Isekai Kyōsōkyoku
+19:04:47 | INFO     | HtmlCom... | find match &#333;               so unicode: ō                   , so actual string: Death March Kara Hajimaru Isekai Kyōsōkyoku
+19:04:47 | INFO     | ScanMan... | source: &#20174;&#27515;&#20129;&#20043;&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#20174;             so unicode: 从                   , so actual string: 从&#27515;&#20129;&#20043;&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#27515;             so unicode: 死                   , so actual string: 从死&#20129;&#20043;&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#20129;             so unicode: 亡                   , so actual string: 从死亡&#20043;&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#20043;             so unicode: 之                   , so actual string: 从死亡之&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#26053;             so unicode: 旅                   , so actual string: 从死亡之旅&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#24320;             so unicode: 开                   , so actual string: 从死亡之旅开&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#22987;             so unicode: 始                   , so actual string: 从死亡之旅开始&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#30340;             so unicode: 的                   , so actual string: 从死亡之旅开始的&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#24322;             so unicode: 异                   , so actual string: 从死亡之旅开始的异&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#19990;             so unicode: 世                   , so actual string: 从死亡之旅开始的异世&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#30028;             so unicode: 界                   , so actual string: 从死亡之旅开始的异世界&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#29378;             so unicode: 狂                   , so actual string: 从死亡之旅开始的异世界狂&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#24819;             so unicode: 想                   , so actual string: 从死亡之旅开始的异世界狂想&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#26354;             so unicode: 曲                   , so actual string: 从死亡之旅开始的异世界狂想曲
+19:04:47 | INFO     | ScanMan... | transform: null
+19:04:47 | INFO     | HtmlCom... | find match &#20174;             so unicode: 从                   , so actual string: 从&#27515;&#20129;&#20043;&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#27515;             so unicode: 死                   , so actual string: 从死&#20129;&#20043;&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#20129;             so unicode: 亡                   , so actual string: 从死亡&#20043;&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#20043;             so unicode: 之                   , so actual string: 从死亡之&#26053;&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#26053;             so unicode: 旅                   , so actual string: 从死亡之旅&#24320;&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#24320;             so unicode: 开                   , so actual string: 从死亡之旅开&#22987;&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#22987;             so unicode: 始                   , so actual string: 从死亡之旅开始&#30340;&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#30340;             so unicode: 的                   , so actual string: 从死亡之旅开始的&#24322;&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#24322;             so unicode: 异                   , so actual string: 从死亡之旅开始的异&#19990;&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#19990;             so unicode: 世                   , so actual string: 从死亡之旅开始的异世&#30028;&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#30028;             so unicode: 界                   , so actual string: 从死亡之旅开始的异世界&#29378;&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#29378;             so unicode: 狂                   , so actual string: 从死亡之旅开始的异世界狂&#24819;&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#24819;             so unicode: 想                   , so actual string: 从死亡之旅开始的异世界狂想&#26354;
+19:04:47 | INFO     | HtmlCom... | find match &#26354;             so unicode: 曲                   , so actual string: 从死亡之旅开始的异世界狂想曲
+19:04:47 | INFO     | ScanMan... | source: &#12487;&#12473;&#12510;&#12540;&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12487;             so unicode: デ                   , so actual string: デ&#12473;&#12510;&#12540;&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12473;             so unicode: ス                   , so actual string: デス&#12510;&#12540;&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12510;             so unicode: マ                   , so actual string: デスマ&#12540;&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12540;             so unicode: ー                   , so actual string: デスマー&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12481;             so unicode: チ                   , so actual string: デスマーチ&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12363;             so unicode: か                   , so actual string: デスマーチか&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12425;             so unicode: ら                   , so actual string: デスマーチから&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12399;             so unicode: は                   , so actual string: デスマーチからは&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12376;             so unicode: じ                   , so actual string: デスマーチからはじ&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12414;             so unicode: ま                   , so actual string: デスマーチからはじま&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12427;             so unicode: る                   , so actual string: デスマーチからはじまる&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#30064;             so unicode: 異                   , so actual string: デスマーチからはじまる異&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#19990;             so unicode: 世                   , so actual string: デスマーチからはじまる異世&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#30028;             so unicode: 界                   , so actual string: デスマーチからはじまる異世界&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#29378;             so unicode: 狂                   , so actual string: デスマーチからはじまる異世界狂&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#24819              so unicode: 想                   , so actual string: デスマーチからはじまる異世界狂想
+19:04:47 | INFO     | ScanMan... | transform: null
+19:04:47 | INFO     | HtmlCom... | find match &#12487;             so unicode: デ                   , so actual string: デ&#12473;&#12510;&#12540;&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12473;             so unicode: ス                   , so actual string: デス&#12510;&#12540;&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12510;             so unicode: マ                   , so actual string: デスマ&#12540;&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12540;             so unicode: ー                   , so actual string: デスマー&#12481;&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12481;             so unicode: チ                   , so actual string: デスマーチ&#12363;&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12363;             so unicode: か                   , so actual string: デスマーチか&#12425;&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12425;             so unicode: ら                   , so actual string: デスマーチから&#12399;&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12399;             so unicode: は                   , so actual string: デスマーチからは&#12376;&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12376;             so unicode: じ                   , so actual string: デスマーチからはじ&#12414;&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12414;             so unicode: ま                   , so actual string: デスマーチからはじま&#12427;&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#12427;             so unicode: る                   , so actual string: デスマーチからはじまる&#30064;&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#30064;             so unicode: 異                   , so actual string: デスマーチからはじまる異&#19990;&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#19990;             so unicode: 世                   , so actual string: デスマーチからはじまる異世&#30028;&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#30028;             so unicode: 界                   , so actual string: デスマーチからはじまる異世界&#29378;&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#29378;             so unicode: 狂                   , so actual string: デスマーチからはじまる異世界狂&#24819
+19:04:47 | INFO     | HtmlCom... | find match &#24819              so unicode: 想                   , so actual string: デスマーチからはじまる異世界狂想

@@ -102,6 +102,7 @@ public class AdditionalResultData {
 				.replace("&#039;", "'") //
 				.replace("&#39;", "'") //
 				.replace("&eacute;", "é") //
+				.replace("&Eacute;", "É")
 				.replace("&quot;", "\"") //
 				.replace("&amp;amp;", "&") //
 				.replace("&amp;", "&") //

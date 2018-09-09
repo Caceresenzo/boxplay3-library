@@ -10,7 +10,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
  */
 public class UrlResultData extends SimpleData implements DisplayableString {
 	
-	public static final String EXTRATION_REGEX_FROM_HTML = "\\<a.*?href[\\s]*=[\\s]*\\\"(.*?)\".*?\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>";
+	public static final String EXTRATION_REGEX_FROM_HTML = "\\<a.*?href[\\s]*=[\\s]*[\\\"\\']{1}(.*?)[\\\"\\']{1}.*?\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>";
 	
 	private String targetUrl, string;
 	

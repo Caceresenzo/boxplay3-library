@@ -13,6 +13,7 @@ public enum AdditionalDataType {
 	VERSION,
 	TRADUCTION_TEAM, //
 	GENDERS, //
+	LAST_CHAPTER, //
 	STATUS, //
 	COUNTRY, //
 	DIRECTOR, //
@@ -22,6 +23,7 @@ public enum AdditionalDataType {
 	STUDIOS, //
 	CHANNEL, //
 	RELEASE_DATE, //
+	PUBLISHER, //
 	VIEWS, //
 	DURATION, //
 	RESUME, //

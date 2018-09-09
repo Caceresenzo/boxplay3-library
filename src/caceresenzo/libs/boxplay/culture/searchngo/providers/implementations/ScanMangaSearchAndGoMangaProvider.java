@@ -3,16 +3,20 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaScanChapterExtractor;
+import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
+import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.RatingResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
@@ -23,6 +27,7 @@ import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.json.parser.JsonParser;
+import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
 public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
@@ -36,9 +41,18 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	
 	public static final String API_IMAGE_REDIRECTOR_URL_FORMAT = "http://caceresenzo.esy.es/api/v3/helper/mangascan/image.php?url=%s";
 	
-	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
+	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur/Artiste";
+	public static final String ADDITIONAL_DATA_KEY_TYPE = "Catégorie";
+	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genres";
+	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Année";
+	public static final String ADDITIONAL_DATA_KEY_PUBLISHER = "Éditeur original";
+	public static final String ADDITIONAL_DATA_KEY_LAST_CHAPTER = "Dernier chapitre";
+	public static final String ADDITIONAL_DATA_KEY_STATUS = "Statut";
+	public static final String ADDITIONAL_DATA_KEY_TRADUCTION_TEAM = "Team";
+	public static final String ADDITIONAL_DATA_KEY_RATING = "Popularité";
+	public static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis";
 	
-	public static final String ADDITIONAL_DATA_KEY_NAME = "h2";
+	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
 	
 	private final String imageServerBaseUrl, searchApiUrlFormat;
 	
@@ -48,7 +62,15 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 		this.imageServerBaseUrl = getSiteUrl() + ":8080/img";
 		this.searchApiUrlFormat = getSiteUrl() + "/qsearch.json?term=%s";
 		
-		// ADDITIONAL_DATA_CORRESPONDANCE.put(ResultDataType.NAME, ADDITIONAL_DATA_KEY_NAME); // Not usable in a loop
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.AUTHORS, ADDITIONAL_DATA_KEY_AUTHORS); // Not usable in a loop
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.TYPE, ADDITIONAL_DATA_KEY_TYPE);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS); // Not usable in a loop
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.PUBLISHER, ADDITIONAL_DATA_KEY_PUBLISHER);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.LAST_CHAPTER, ADDITIONAL_DATA_KEY_LAST_CHAPTER);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS);
+		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
+		// ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.RATING, ADDITIONAL_DATA_KEY_RATING); // Not usable in a loop
 	}
 	
 	@Override
@@ -102,42 +124,128 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 		String html = getHelper().downloadPageCache(result.getUrl());
 		String htmlContainer = extractInformationContainer(html);
 		
-		if (html == null || html.isEmpty() || htmlContainer == null || htmlContainer.isEmpty()) {
+		if (!StringUtils.validate(html, htmlContainer)) {
 			return additionals;
 		}
 		
-		/**
-		 * Common
-		 */
-		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
-			AdditionalDataType type = entry.getKey();
-			String dataKey = entry.getValue();
+		/* Alternative Names */
+		String alternativeNamesHtml = getHelper().extract("\\<div\\sclass=[\\\"\\']{1}alt_name[\\\"\\']{1}\\>(.*?)\\<\\/div\\>", html);
+		if (alternativeNamesHtml != null) {
+			Matcher nameMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, alternativeNamesHtml);
 			
-			String extractedData = extractCommonData(dataKey, htmlContainer);
+			List<String> alternativeNames = new ArrayList<>();
 			
-			if (extractedData != null) {
-				if (type.equals(AdditionalDataType.TYPE)) {
-					extractedData = StringUtils.capitalize(extractedData);
-				}
+			while (nameMatcher.find()) {
+				String name = HtmlCommonExtractor.escapeUnicode(nameMatcher.group(2));
 				
-				additionals.add(new AdditionalResultData(type, extractedData.trim()));
+				alternativeNames.add(name);
+			}
+			
+			if (!alternativeNames.isEmpty()) {
+				additionals.add(new AdditionalResultData(AdditionalDataType.ALTERNATIVE_NAME, alternativeNames));
 			}
 		}
 		
-		/**
-		 * Item that need to be url-extracted (html element <a>)
-		 */
-		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.entrySet()) {
-			AdditionalDataType type = entry.getKey();
-			String dataKey = entry.getValue();
+		/* Information Container */
+		List<String> keys = extractDataList(htmlContainer, "contenu_titres_fiche_technique");
+		List<String> values = extractDataList(htmlContainer, "contenu_texte_fiche_technique");
+		
+		if (keys.size() == values.size()) {
+			Map<String, String> dataMap = new LinkedHashMap<>();
 			
-			String extractedHtmlElementData = extractCommonData(dataKey, htmlContainer);
-			
-			if (extractedHtmlElementData != null) {
-				UrlResultData extractedUrlData = getHelper().extractUrlFromHtml(extractedHtmlElementData);
+			for (int index = 0; index < keys.size(); index++) {
+				String key = keys.get(index);
+				String value = values.get(index);
 				
-				additionals.add(new AdditionalResultData(type, extractedUrlData));
+				dataMap.put(key, value);
 			}
+			
+			if (!dataMap.isEmpty()) {
+				/* Common */
+				for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
+					AdditionalDataType type = entry.getKey();
+					String dataMapKey = entry.getValue();
+					
+					String value = dataMap.get(dataMapKey);
+					
+					if (value != null) {
+						additionals.add(new AdditionalResultData(type, value));
+					}
+				}
+				
+				/* Url-extraction needed common */
+				for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.entrySet()) {
+					AdditionalDataType type = entry.getKey();
+					String dataMapKey = entry.getValue();
+					
+					UrlResultData urlResultData = getHelper().extractUrlFromHtml(dataMap.get(dataMapKey));
+					
+					if (urlResultData != null && StringUtils.validate(urlResultData.getString())) {
+						additionals.add(new AdditionalResultData(type, urlResultData));
+					}
+				}
+				
+				/* Authors */
+				String extractedAuthorsData = dataMap.get(ADDITIONAL_DATA_KEY_AUTHORS);
+				if (extractedAuthorsData != null) {
+					Matcher urlMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, extractedAuthorsData);
+					
+					List<String> authors = new ArrayList<>();
+					
+					while (urlMatcher.find()) {
+						String name = urlMatcher.group(2);
+						
+						authors.add(name);
+					}
+					
+					if (!authors.isEmpty()) {
+						additionals.add(new AdditionalResultData(AdditionalDataType.AUTHORS, authors));
+					}
+				}
+				
+				/* Genders */
+				String extractedGendersData = dataMap.get(ADDITIONAL_DATA_KEY_GENDERS);
+				if (extractedGendersData != null) {
+					Matcher genderMatcher = getHelper().regex("<a.*?\\<span\\>.*?\\<\\/span\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>", extractedGendersData);
+					
+					List<CategoryResultData> genders = new ArrayList<>();
+					
+					while (genderMatcher.find()) {
+						String name = genderMatcher.group(1);
+						
+						if (name != null) {
+							genders.add(new CategoryResultData(name));
+						}
+					}
+					
+					if (!genders.isEmpty()) {
+						additionals.add(new AdditionalResultData(AdditionalDataType.GENDERS, genders));
+					}
+				}
+				
+				/* Rating */
+				String extractedRatingData = dataMap.get(ADDITIONAL_DATA_KEY_RATING);
+				if (extractedRatingData != null) {
+					String extractedRatingHtmlContainer = getHelper().extract("\\<section\\sitemprop\\=[\\\"\\']{1}aggregateRating[\\\"\\']{1}\\sitemscope\\sitemtype\\=[\\\"\\']{1}http\\:\\/\\/schema\\.org\\/AggregateRating[\\\"\\']{1}\\>(.*?)\\<\\/section\\>", extractedRatingData);
+					
+					if (extractedRatingHtmlContainer != null) {
+						final String extractRatingValueRegex = "\\<span\\sitemprop=\\\"%s\\\"\\scontent=\\\"[\\d\\.]*\\\"\\>([\\d]*)\\<\\/span\\>";
+						
+						float average = ParseUtils.parseFloat(getHelper().extract(String.format(extractRatingValueRegex, "ratingValue"), extractedRatingHtmlContainer), RatingResultData.NO_VALUE);
+						int best = ParseUtils.parseInt(getHelper().extract(String.format(extractRatingValueRegex, "bestRating"), extractedRatingHtmlContainer), RatingResultData.NO_VALUE);
+						int votes = ParseUtils.parseInt(getHelper().extract(String.format(extractRatingValueRegex, "ratingCount"), extractedRatingHtmlContainer), RatingResultData.NO_VALUE);
+						
+						if (average != RatingResultData.NO_VALUE && best != RatingResultData.NO_VALUE && votes != RatingResultData.NO_VALUE) {
+							additionals.add(new AdditionalResultData(AdditionalDataType.RATING, new RatingResultData(average, best, votes)));
+						}
+					}
+				}
+			}
+		}
+		
+		String extractedResumeData = extractResumeData(html);
+		if (extractedResumeData != null) {
+			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResumeData));
 		}
 		
 		return additionals;
@@ -194,7 +302,7 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericMangaScanChapterExtractor.class };
+		return new Class[] { GenericScanMangaChapterExtractor.class };
 	}
 	
 	@Override
@@ -238,14 +346,14 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	}
 	
 	/**
-	 * On Manga-LEL, that will extract a container string that is a dl div shit in html containing all information about the manga
+	 * On Scan-Manga, that will extract a container string that is a div html container, containing all information about the manga
 	 * 
 	 * @param html
 	 *            The downloaded html of a manga page
 	 * @return A string containing all information in html
 	 */
 	public static String extractInformationContainer(String html) {
-		return getStaticHelper().extract("\\<dl\\sclass=\\\"dl-horizontal\\\"\\>(.*?)\\<\\/dl\\>", html);
+		return getStaticHelper().extract("\\<div\\sclass=[\\\"\\']{1}fiche_technique\\sfolder_corner[\\\"\\']{1}\\>(.*?)\\<\\/div\\>[\\s\\t\\n]*\\<\\/div\\>[\\s\\t\\n]*\\<\\/div\\>", html);
 	}
 	
 	/**
@@ -269,7 +377,36 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	 * @return Extracted resume, null if not found
 	 */
 	public static String extractResumeData(String html) {
-		return getStaticHelper().extract(String.format("\\<div\\sclass=\\\"well\\\"\\>[\\s\\t\\n]*\\<h5\\>\\<strong\\>%s\\<\\/strong\\>\\<\\/h5\\>[\\s\\t\\n]*\\<p\\>[ ]*(.*?)[ ]*\\<\\/p\\>[\\s\\t\\n]*\\<\\/div\\>", "ADDITIONAL_DATA_KEY_RESUME"), html);
+		return getStaticHelper().extract("\\<div\\sclass=[\\\"\\']{1}synopsis_manga\\sborder_radius_contener\\sfolder_corner[\\\"\\']{1}\\>.*?\\<p\\sitemprop=[\\\"\\']{1}articleBody[\\\"\\']{1}\\>(.*?)\\<\\/p\\>.*?\\<\\/div\\>", html);
+	}
+	
+	/**
+	 * On the Scan-Manga, information are separated in two html list put side by side with html
+	 * 
+	 * This will extract one list, choosen from its css class key
+	 * 
+	 * @param htmlContainer
+	 *            Target html container to do extraction
+	 * @param htmlClassKey
+	 *            Target css key used to be side by side
+	 * @return A list containing all item of the target html list
+	 */
+	public static List<String> extractDataList(String htmlContainer, String htmlClassKey) {
+		List<String> list = new ArrayList<>();
+		
+		String extractedListHtml = getStaticHelper().extract(String.format("\\<div\\sclass=[\\\"\\']{1}%s[\\\"\\']{1}\\>[\\s\\t\\n]*\\<ul\\>(.*?)\\<\\/ul\\>[\\s\\t\\n]*\\<\\/div\\>", htmlClassKey), htmlContainer);
+		
+		if (extractedListHtml != null) {
+			Matcher matcher = getStaticHelper().regex(HtmlCommonExtractor.COMMON_LIST_EXTRACTION_REGEX, extractedListHtml);
+			
+			while (matcher.find()) {
+				String data = AdditionalResultData.escapeHtmlChar(matcher.group(1));
+				
+				list.add(data);
+			}
+		}
+		
+		return list;
 	}
 	
 	/**

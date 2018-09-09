@@ -160,6 +160,7 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 * 
 	 * More info at {@link #fetchMoreData(String)}
 	 * 
+	 * Please process information as they come (order) on the website
 	 * 
 	 * @param result
 	 *            Target result
