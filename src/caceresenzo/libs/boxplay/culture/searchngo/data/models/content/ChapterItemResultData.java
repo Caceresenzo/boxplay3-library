@@ -5,17 +5,18 @@ import caceresenzo.libs.boxplay.culture.searchngo.content.image.IImageContentPro
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.ViewableContent;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleUrlData;
 
 /**
  * Holder class to contain an url and a name of a Chapter
  * 
  * @author Enzo CACERES
  */
-public class ChapterItemResultData extends SimpleData implements DisplayableString, ViewableContent {
+public class ChapterItemResultData extends SimpleUrlData implements DisplayableString, ViewableContent {
 	
 	private final IImageContentProvider imageContentProvider;
-	private final String url, name, title;
+	private final String name, title;
+	private final ChapterType chapterType;
 	
 	/**
 	 * Constructor, create a new instance with an url and a name only, title will be considered as null
@@ -25,12 +26,14 @@ public class ChapterItemResultData extends SimpleData implements DisplayableStri
 	 * @param imageContentProvider
 	 *            Parent provider used to call this constructor
 	 * @param url
-	 *            Traget chapter url
+	 *            Target chapter url
 	 * @param name
-	 *            Traget chapter name
+	 *            Target chapter name
+	 * @param chapterType
+	 *            Change chapter type, if null, default is {@link ChapterType#IMAGE_ARRAY}
 	 */
-	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name) {
-		this(imageContentProvider, url, name, null);
+	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name, ChapterType chapterType) {
+		this(imageContentProvider, url, name, null, chapterType);
 	}
 	
 	/**
@@ -43,15 +46,18 @@ public class ChapterItemResultData extends SimpleData implements DisplayableStri
 	 * @param url
 	 *            Target chapter url
 	 * @param name
-	 *            Traget chapter name
+	 *            Target chapter name
 	 * @param title
-	 *            Traget chapter title
+	 *            Target chapter title
+	 * @param chapterType
+	 *            Change chapter type, if null, default is {@link ChapterType#IMAGE_ARRAY}
 	 */
-	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name, String title) {
+	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name, String title, ChapterType chapterType) {
+		super(url);
 		this.imageContentProvider = imageContentProvider;
-		this.url = url;
 		this.name = name != null ? AdditionalResultData.escapeHtmlChar(name.trim()) : name;
 		this.title = title != null ? AdditionalResultData.escapeHtmlChar(title.trim()) : title;
+		this.chapterType = chapterType == null ? ChapterType.IMAGE_ARRAY : chapterType;
 	}
 	
 	/**
@@ -61,15 +67,6 @@ public class ChapterItemResultData extends SimpleData implements DisplayableStri
 	 */
 	public IImageContentProvider getImageContentProvider() {
 		return imageContentProvider;
-	}
-	
-	/**
-	 * Get the url
-	 * 
-	 * @return The url
-	 */
-	public String getUrl() {
-		return url;
 	}
 	
 	/**
@@ -90,6 +87,15 @@ public class ChapterItemResultData extends SimpleData implements DisplayableStri
 		return title;
 	}
 	
+	/*
+	 * Get the {@link ChapterType} of this item
+	 * 
+	 * @return Chapter type
+	 */
+	public ChapterType getChapterType() {
+		return chapterType;
+	}
+	
 	@Override
 	public String convertToDisplayableString() {
 		return getName() + (getTitle() != null && !getTitle().isEmpty() ? " - " + getTitle() : "");
@@ -105,7 +111,16 @@ public class ChapterItemResultData extends SimpleData implements DisplayableStri
 	 */
 	@Override
 	public String toString() {
-		return "ChapterItemResultData[url=" + url + ", name=" + name + "]";
+		return "ChapterItemResultData[url=" + url + ", name=" + name + ", type=" + chapterType + "]";
+	}
+	
+	/**
+	 * Type of an {@link ChapterItemResultData}, its can target a image list or a plain text novel
+	 * 
+	 * @author Enzo CACERES
+	 */
+	public static enum ChapterType {
+		IMAGE_ARRAY, TEXT;
 	}
 	
 }

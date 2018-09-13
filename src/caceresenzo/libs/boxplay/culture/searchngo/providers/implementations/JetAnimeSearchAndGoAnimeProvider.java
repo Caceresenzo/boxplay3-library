@@ -18,15 +18,11 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
-import caceresenzo.libs.boxplay.culture.searchngo.subscribe.Subscribable;
-import caceresenzo.libs.boxplay.culture.searchngo.subscribe.Subscriber;
 import caceresenzo.libs.cryptography.CloudflareUtils;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
-import caceresenzo.libs.network.Downloader;
-import caceresenzo.libs.string.StringUtils;
 
-public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider, Subscribable {
+public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
 	protected static final String ADDITIONAL_DATA_KEY_NAME = "Nom:";
 	protected static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Nom original:";
@@ -42,7 +38,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	
 	public JetAnimeSearchAndGoAnimeProvider() {
 		super("JetAnime", "https://www.jetanime.co");
-
+		
 		imageUrlFormat = getSiteUrl() + "/assets/imgs/%s.jpg";
 		rssUrl = getSiteUrl() + "/rss/";
 		
@@ -203,31 +199,6 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { OpenloadVideoExtractor.class };
-	}
-	
-	@Override
-	public Subscriber getSubscriber() {
-		return new Subscriber() {
-			@Override
-			public List<Item> check() throws Exception {
-				List<Item> items = new ArrayList<>();
-				
-				String content = Downloader.getUrlContent(rssUrl);
-				
-				if (!StringUtils.validate(content)) {
-					return items;
-				}
-				
-				
-				
-				return items;
-			}
-			
-			@Override
-			public SearchAndGoResult createResultFromData(String name, String url, String imageUrl) {
-				return new SearchAndGoResult(JetAnimeSearchAndGoAnimeProvider.this, name, url, imageUrl);
-			}
-		};
 	}
 	
 	/**

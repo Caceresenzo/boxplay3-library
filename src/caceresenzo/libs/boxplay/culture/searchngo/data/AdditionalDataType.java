@@ -21,9 +21,9 @@ public enum AdditionalDataType {
 	ACTORS, //
 	ARTISTS, //
 	STUDIOS, //
-	CHANNEL, //
+	CHANNELS, //
 	RELEASE_DATE, //
-	PUBLISHER, //
+	PUBLISHERS, //
 	VIEWS, //
 	DURATION, //
 	RESUME, //

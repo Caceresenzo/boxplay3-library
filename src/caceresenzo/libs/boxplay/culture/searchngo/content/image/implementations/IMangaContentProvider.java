@@ -1,9 +1,10 @@
 package caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations;
 
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.IImageContentProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.content.text.INovelContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 
-public interface IMangaContentProvider extends IImageContentProvider {
+public interface IMangaContentProvider extends IImageContentProvider, INovelContentProvider {
 	
 	/**
 	 * Extract a usable link for the extractor behind

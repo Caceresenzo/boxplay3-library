@@ -8,14 +8,19 @@ import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.json.parser.JsonParser;
 
+/**
+ * Manga Chapter extractor for the Manga LEL site
+ * 
+ * @author Enzo CACERES
+ */
 public class GenericMangaLelChapterExtractor extends MangaChapterContentExtractor {
 	
 	public static final String FORMAT_URL_IMAGE = "https://www.manga-lel.com//uploads/manga/%s/chapters/%s/%s";
-
+	
 	public static final String JSON_KEY_ITEM_EXTERNAL = "external";
 	public static final String JSON_KEY_ITEM_PAGE_SLUG = "page_slug";
 	public static final String JSON_KEY_ITEM_PAGE_IMAGE = "page_image";
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getImageUrls(String chapterUrl) {
@@ -51,6 +56,11 @@ public class GenericMangaLelChapterExtractor extends MangaChapterContentExtracto
 		return urls;
 	}
 	
+	@Override
+	public boolean matchUrl(String baseUrl) {
+		return baseUrl.matches(".*?(manga-lel\\.com).*?");
+	}
+	
 	/**
 	 * Extract a json container containing all image informations
 	 * 
@@ -60,11 +70,6 @@ public class GenericMangaLelChapterExtractor extends MangaChapterContentExtracto
 	 */
 	public static String extractJsonImageData(String html) {
 		return getStaticHelper().extract("var pages[\\s]*=[\\s]*(.*?)[\\s]*;", html);
-	}
-	
-	@Override
-	public boolean matchUrl(String baseUrl) {
-		return baseUrl.matches(".*?(manga-lel\\.com).*?");
 	}
 	
 }

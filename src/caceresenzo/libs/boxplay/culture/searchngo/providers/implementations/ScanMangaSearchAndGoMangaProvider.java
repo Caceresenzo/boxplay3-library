@@ -3,6 +3,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +14,15 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.content.text.INovelContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.RatingResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData.ChapterType;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
@@ -30,7 +34,7 @@ import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
-public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
+public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, INovelContentProvider {
 	
 	public static final int API_RESULT_INDEX_NAME = 0;
 	public static final int API_RESULT_INDEX_URL = 1;
@@ -45,7 +49,7 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	public static final String ADDITIONAL_DATA_KEY_TYPE = "Catégorie";
 	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genres";
 	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Année";
-	public static final String ADDITIONAL_DATA_KEY_PUBLISHER = "Éditeur original";
+	public static final String ADDITIONAL_DATA_KEY_PUBLISHERS = "Éditeur original";
 	public static final String ADDITIONAL_DATA_KEY_LAST_CHAPTER = "Dernier chapitre";
 	public static final String ADDITIONAL_DATA_KEY_STATUS = "Statut";
 	public static final String ADDITIONAL_DATA_KEY_TRADUCTION_TEAM = "Team";
@@ -66,7 +70,7 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.TYPE, ADDITIONAL_DATA_KEY_TYPE);
 		// ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.GENDERS, ADDITIONAL_DATA_KEY_GENDERS); // Not usable in a loop
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.RELEASE_DATE, ADDITIONAL_DATA_KEY_RELEASE_DATE);
-		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.PUBLISHER, ADDITIONAL_DATA_KEY_PUBLISHER);
+		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.PUBLISHERS, ADDITIONAL_DATA_KEY_PUBLISHERS);
 		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.LAST_CHAPTER, ADDITIONAL_DATA_KEY_LAST_CHAPTER);
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.STATUS, ADDITIONAL_DATA_KEY_STATUS);
 		ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.put(AdditionalDataType.TRADUCTION_TEAM, ADDITIONAL_DATA_KEY_TRADUCTION_TEAM);
@@ -190,15 +194,15 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 				if (extractedAuthorsData != null) {
 					Matcher urlMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, extractedAuthorsData);
 					
-					List<String> authors = new ArrayList<>();
+					String authors = "";
 					
 					while (urlMatcher.find()) {
 						String name = urlMatcher.group(2);
 						
-						authors.add(name);
+						authors += name;
 					}
 					
-					if (!authors.isEmpty()) {
+					if (!StringUtils.validate(authors)) {
 						additionals.add(new AdditionalResultData(AdditionalDataType.AUTHORS, authors));
 					}
 				}
@@ -261,6 +265,11 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 			return additionals;
 		}
 		
+		ChapterType chapterType = ChapterType.IMAGE_ARRAY;
+		if (result.getName().endsWith("(Novel)")) {
+			chapterType = ChapterType.TEXT;
+		}
+		
 		Matcher volumeContainerMatcher = getHelper().regex("\\<div\\sclass=[\\'\\\"]{1}volume_manga\\sborder_radius_contener[\\'\\\"]{1}\\srole=[\\'\\\"]{1}navigation[\\'\\\"]{1}\\>(.*?)\\<\\/div\\>[\\s\\n\\t]*\\<\\/div\\>[\\s\\n\\t]*\\<\\/div\\>", html);
 		
 		while (volumeContainerMatcher.find()) {
@@ -271,13 +280,12 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 				// TODO: Do something with the volume book image
 			}
 			
-			Matcher volumeBookMatcher = getHelper().regex("\\<div\\sclass=[\\'\\\"]{1}titre_volume_manga[\\'\\\"]{1}\\>[\\s\\t\\n]*\\<h3\\>(.*?)\\<\\/h3\\>[\\s\\t\\n]*\\<span.*?>[\\(]*(.*?)[\\)]\\<\\/span\\>\\<\\/div\\>", htmlVolumeContainer);
+			Matcher volumeBookMatcher = getHelper().regex("\\<div\\sclass=[\\'\\\"]{1}titre_volume_manga[\\'\\\"]{1}\\>[\\s\\t\\n]*\\<h3\\>(.*?)\\<\\/h3\\>.*?\\<\\/div\\>", htmlVolumeContainer);
 			if (!volumeBookMatcher.find()) {
 				continue;
 			}
 			
 			String volume = volumeBookMatcher.group(1).toUpperCase();
-			String volumeStatus = volumeBookMatcher.group(2);
 			
 			Matcher chaptersListMatcher = getHelper().regex("\\<ul\\>(.*?)\\<\\/ul\\>", htmlVolumeContainer);
 			if (!chaptersListMatcher.find()) {
@@ -285,13 +293,42 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 			}
 			
 			String htmlChaptersList = chaptersListMatcher.group(1);
+			List<ChapterItemResultData> extractedChapter = new ArrayList<>();
 			
 			Matcher chapterMatcher = getHelper().regex("\\<li\\sclass=[\\'\\\"]{1}chapitre[\\'\\\"]{1}.*?\\>[\\s\\t\\n]*\\<div\\sclass=[\\'\\\"]{1}chapitre_nom[\\'\\\"]{1}\\>\\<a\\s.*?href=[\\'\\\"]{1}(.*?)[\\'\\\"]{1}>(.*?)\\<\\/a\\>(.*?)\\<\\/div\\>.*?\\<\\/li\\>", htmlChaptersList);
 			while (chapterMatcher.find()) {
 				String url = chapterMatcher.group(1);
 				String chapterTitle = chapterMatcher.group(2).toUpperCase() + chapterMatcher.group(3);
 				
-				additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(this, url, volume, chapterTitle)));
+				Map<String, String> headers = new HashMap<>();
+				// headers.put("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+				// headers.put("Accept-Encoding", "gzip, deflate");
+				// headers.put("Accept-Language", "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7");
+				// headers.put("Cache-Control", "no-cache");
+				// headers.put("Connection", "keep-alive");
+				// headers.put("DNT", "1");
+				// headers.put("Host", "lei.scan-manga.com:8080");
+				// headers.put("Pragma", "no-cache");
+				headers.put("Referer", url);
+				// headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
+				
+				extractedChapter.add((ChapterItemResultData) new ChapterItemResultData(this, url, volume, chapterTitle, chapterType).complements(SimpleData.REQUIRE_HTTP_HEADERS_COMPLEMENT, headers));
+			}
+			
+			/* Disabled series are sometimes differents, because they got their (reader) url removed */
+			if (extractedChapter.isEmpty()) {
+				Matcher disabledChapterMatcher = getHelper().regex("\\<li\\sclass=[\\'\\\"]{1}chapitre[\\'\\\"]{1}.*?\\>[\\s\\t\\n]*\\<div\\sclass=[\\'\\\"]{1}chapitre_nom[\\'\\\"]{1}\\>\\<strong\\>(.*?)\\<\\/strong\\>(.*?)\\<\\/div\\>.*?\\<\\/li\\>", htmlChaptersList);
+				while (disabledChapterMatcher.find()) {
+					String chapterTitle = disabledChapterMatcher.group(1).toUpperCase() + disabledChapterMatcher.group(2);
+					
+					extractedChapter.add(new ChapterItemResultData(this, null, volume, chapterTitle, chapterType));
+				}
+			}
+			
+			if (!extractedChapter.isEmpty()) {
+				for (ChapterItemResultData chapterItem : extractedChapter) {
+					additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, chapterItem));
+				}
 			}
 			
 		}
@@ -338,6 +375,10 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 			String name = String.valueOf(list.get(API_RESULT_INDEX_NAME));
 			String imageUrl = String.valueOf(list.get(API_RESULT_INDEX_BASE_IMAGE_URL));
 			String url = String.valueOf(list.get(API_RESULT_INDEX_URL));
+			
+			if (url.contains("/auteur-") || url.contains("/team-")) {
+				continue;
+			}
 			
 			items.add(new MangaScanItem(url, name, imageUrl));
 		}

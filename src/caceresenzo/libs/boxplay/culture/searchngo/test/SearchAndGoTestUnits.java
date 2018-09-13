@@ -2,7 +2,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,18 +11,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager;
+import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.ExtractorType;
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.InternetSource;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
@@ -34,9 +33,14 @@ import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
+import caceresenzo.libs.filesystem.FileUtils;
+import caceresenzo.libs.http.client.webb.Request;
+import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.iterator.ByteArrayIterator;
 import caceresenzo.libs.logger.Logger;
+import caceresenzo.libs.stream.StreamUtils;
 import caceresenzo.libs.string.StringUtils;
+import caceresenzo.libs.thread.ThreadUtils;
 
 /**
  * Basic Test Units
@@ -45,49 +49,13 @@ import caceresenzo.libs.string.StringUtils;
  */
 public class SearchAndGoTestUnits {
 	
-	private static final Map<Class<? extends ContentExtractor>, ContentExtractor> EXTRACTORS = new HashMap<>();
-	
-	static {
-		/* Video */
-		EXTRACTORS.put(OpenloadVideoExtractor.class, new FakeOpenloadVideoExtractor());
-		EXTRACTORS.put(GenericVidozaVideoExtractor.class, new GenericVidozaVideoExtractor());
-		
-		/* Manga */
-		EXTRACTORS.put(GenericMangaLelChapterExtractor.class, new GenericMangaLelChapterExtractor());
-		EXTRACTORS.put(GenericScanMangaChapterExtractor.class, new GenericScanMangaChapterExtractor());
-	}
-	
-	public static void main(String[] args) {
-		;
-	}
-	
-	public static void redirectConsoleOutput() {
-		try {
-			System.setOut(new PrintStream(new FileOutputStream(new File("info.log")), true, "UTF-8"));
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-	}
-	
-	public static ContentExtractor getExtractorFromBaseUrl(String baseUrl) {
-		if (baseUrl == null) {
-			return null;
-		}
-		
-		for (Entry<Class<? extends ContentExtractor>, ContentExtractor> entry : EXTRACTORS.entrySet()) {
-			InternetSource internetSource = entry.getValue();
-			
-			if (internetSource.matchUrl(baseUrl)) {
-				return entry.getValue();
-			}
-		}
-		
-		return null;
-	}
+	public static final boolean ENABLED_MANGA_DOWNLOAD = true;
+	public static final int MAX_THREAD_COUNT = 10;
+	public static final String MANGA_DOWNLOAD_BASE_PATH = "C:\\Users\\cacer\\Desktop\\manga_output\\";
+	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		
-		private static final String QUERY = "death march";
+		private static final String QUERY = "hero waltz";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -114,7 +82,6 @@ public class SearchAndGoTestUnits {
 				}
 			});
 			
-			// redirectConsoleOutput();
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
 			// providers.add(ProviderManager.JETANIME.create());
@@ -176,7 +143,7 @@ public class SearchAndGoTestUnits {
 						for (String url : urls) {
 							Logger.$("\t\tIVideoContentProvider: " + url);
 							
-							ContentExtractor contentExtractor = getExtractorFromBaseUrl(url);
+							ContentExtractor contentExtractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.VIDEO, url);
 							
 							Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
 						}
@@ -186,31 +153,93 @@ public class SearchAndGoTestUnits {
 						Logger.$("IMangaContentProvider: " + ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()));
 						Logger.$("");
 						
-						ContentExtractor extractor = getExtractorFromBaseUrl(result.getUrl());
+						ChapterItemResultData chapterItem = (ChapterItemResultData) additionalData.getData();
+						String pageUrl = ((IMangaContentProvider) provider).extractMangaPageUrl(chapterItem);
+						ContentExtractor extractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.fromChapterType(chapterItem.getChapterType()), result.getUrl());
 						
-						if (extractor != null && extractor instanceof MangaChapterContentExtractor) {
-							String pageUrl = ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData());
-							
+						if (extractor instanceof MangaChapterContentExtractor) { /* If null; it will skip */
+							int pageCount = 0;
 							for (String url : ((MangaChapterContentExtractor) extractor).getImageUrls(pageUrl)) {
 								Logger.$(" |- Image URL: " + url);
+								
+								if (ENABLED_MANGA_DOWNLOAD) {
+									File file = new File(MANGA_DOWNLOAD_BASE_PATH, "WEBB_" + FileUtils.replaceIllegalChar(result.getName()) + "/" + FileUtils.replaceIllegalChar(additionalData.convert()) + "/" + FileUtils.replaceIllegalChar(String.format("PAGE %s.jpg", pageCount++)));
+									
+									while (THREAD_COUNT > MAX_THREAD_COUNT) {
+										ThreadUtils.sleep(100L);
+									}
+									
+									new DownloadWorker().applyData(chapterItem, file, url).start();
+								}
 							}
-							
-							Logger.$("");
+						} else if (extractor instanceof NovelChapterContentExtractor) {
+							String novel = ((NovelChapterContentExtractor) extractor).extractNovel(chapterItem);
+
+							if (novel != null) {
+								Logger.$(" |- Novel (cut a 200): " + StringUtils.cutIfTooLong(novel, 200));
+							}
 						}
+						
+						Logger.$("");
 					}
 				}
 				
 				Logger.$(" ------------------------------------- ");
-				
-				// System.out.println(String.format("names.add(\"%s\");", result.getName()));
-				
-				// System.exit(0);
 			}
 			
 			Logger.$("    ");
 			Logger.$("size: " + results.size());
 			Logger.$("    ");
 			Logger.$("Providers: " + providers);
+		}
+		
+		public static class DownloadWorker extends Thread {
+			private ChapterItemResultData chapterItem;
+			private File file;
+			private String url;
+			
+			@Override
+			public void run() {
+				while (true) {
+					THREAD_COUNT++;
+					try {
+						file.delete();
+						file.getParentFile().mkdirs();
+						
+						Request request = Webb.create().get(url).ensureSuccess();
+						
+						if (chapterItem.hasInitializedComplements()) {
+							@SuppressWarnings("unchecked")
+							Map<String, String> headers = Map.class.cast(chapterItem.getComplement(SimpleData.REQUIRE_HTTP_HEADERS_COMPLEMENT));
+							
+							if (headers != null && !headers.isEmpty()) {
+								for (Entry<String, String> entry : headers.entrySet()) {
+									request.header(entry.getKey(), entry.getValue());
+								}
+							}
+						}
+						
+						InputStream stream = request.asStream().getBody();
+						
+						StreamUtils.copyInputStream(stream, new FileOutputStream(file));
+						
+					} catch (Exception exception) {
+						Logger.exception(exception, "[Webb] Failed to download file %s (url=%s)", file.getAbsolutePath(), url);
+						ThreadUtils.sleep(5000L);
+						continue;
+					}
+					
+					THREAD_COUNT--;
+				}
+			}
+			
+			public DownloadWorker applyData(ChapterItemResultData chapterItem, File file, String url) {
+				this.chapterItem = chapterItem;
+				this.file = file;
+				this.url = url;
+				
+				return this;
+			}
 		}
 		
 	}
@@ -276,7 +305,7 @@ public class SearchAndGoTestUnits {
 			}
 			
 			for (AdditionalDataType resultType : AdditionalDataType.values()) {
-				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayActivity.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.getClass().getSimpleName(), resultType.toString(), resultType.toString().toLowerCase()));
+				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayApplication.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.getClass().getSimpleName(), resultType.toString(), resultType.toString().toLowerCase()));
 			}
 		}
 		

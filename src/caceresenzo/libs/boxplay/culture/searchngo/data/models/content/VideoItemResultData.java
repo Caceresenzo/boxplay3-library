@@ -5,17 +5,17 @@ import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentPro
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.ViewableContent;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleUrlData;
 
 /**
  * Holder class to contain an url and a name of a Video
  * 
  * @author Enzo CACERES
  */
-public class VideoItemResultData extends SimpleData implements DisplayableString, ViewableContent {
+public class VideoItemResultData extends SimpleUrlData implements DisplayableString, ViewableContent {
 	
 	private final IVideoContentProvider videoContentProvider;
-	private final String url, name;
+	private final String name;
 	
 	/**
 	 * Constructor, create a new instance with parent content provider, an url and a name
@@ -30,8 +30,8 @@ public class VideoItemResultData extends SimpleData implements DisplayableString
 	 *            Traget video name
 	 */
 	public VideoItemResultData(IVideoContentProvider videoContentProvider, String url, String name) {
+		super(url);
 		this.videoContentProvider = videoContentProvider;
-		this.url = url;
 		this.name = name != null ? AdditionalResultData.escapeHtmlChar(name.trim()) : name;
 	}
 	
@@ -42,15 +42,6 @@ public class VideoItemResultData extends SimpleData implements DisplayableString
 	 */
 	public IVideoContentProvider getVideoContentProvider() {
 		return videoContentProvider;
-	}
-	
-	/**
-	 * Get the url
-	 * 
-	 * @return The url
-	 */
-	public String getUrl() {
-		return url;
 	}
 	
 	/**

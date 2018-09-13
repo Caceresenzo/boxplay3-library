@@ -217,7 +217,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 			String chapter = matcher.group(2);
 			String title = matcher.group(3);
 			
-			additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(this, url, chapter, title)));
+			additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(this, url, chapter, title, ChapterItemResultData.ChapterType.IMAGE_ARRAY)));
 		}
 		
 		return additionals;
@@ -226,7 +226,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericMangaLelChapterExtractor.class } ;
+		return new Class[] { GenericMangaLelChapterExtractor.class };
 	}
 	
 	@Override
