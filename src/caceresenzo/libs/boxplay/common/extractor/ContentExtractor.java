@@ -99,7 +99,7 @@ public abstract class ContentExtractor implements IExtractor, InternetSource {
 	 *            Append exception
 	 */
 	public void notifyException(Exception exception) {
-		getLogger().appendln(exception.getClass() + ": An error occured").appendln("Stacktrace: ").appendln(StringUtils.fromException(exception));
+		getLogger().appendln(exception.getClass().getSimpleName() + ": An error occured").appendln("Stacktrace: ").appendln(StringUtils.fromException(exception));
 	}
 	
 	/**

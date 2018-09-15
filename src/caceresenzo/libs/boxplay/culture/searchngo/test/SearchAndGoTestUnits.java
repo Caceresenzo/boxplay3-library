@@ -50,12 +50,12 @@ import caceresenzo.libs.thread.ThreadUtils;
 public class SearchAndGoTestUnits {
 	
 	public static final boolean ENABLED_MANGA_DOWNLOAD = true;
-	public static final int MAX_THREAD_COUNT = 10;
+	public static final int MAX_THREAD_COUNT = 1;
 	public static final String MANGA_DOWNLOAD_BASE_PATH = "C:\\Users\\cacer\\Desktop\\manga_output\\";
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "hero waltz";
+		private static final String QUERY = "hell";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -85,10 +85,10 @@ public class SearchAndGoTestUnits {
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
 			// providers.add(ProviderManager.JETANIME.create());
-			// providers.add(ProviderManager.VOIRFILM_BZ.create());
+			providers.add(ProviderManager.VOIRFILM_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
-			providers.add(ProviderManager.SCANMANGA.create());
+			// providers.add(ProviderManager.SCANMANGA.create());
 			// providers.add(ProviderManager.FULLSTREAM_NU.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
@@ -165,16 +165,17 @@ public class SearchAndGoTestUnits {
 								if (ENABLED_MANGA_DOWNLOAD) {
 									File file = new File(MANGA_DOWNLOAD_BASE_PATH, "WEBB_" + FileUtils.replaceIllegalChar(result.getName()) + "/" + FileUtils.replaceIllegalChar(additionalData.convert()) + "/" + FileUtils.replaceIllegalChar(String.format("PAGE %s.jpg", pageCount++)));
 									
-									while (THREAD_COUNT > MAX_THREAD_COUNT) {
+									while (THREAD_COUNT >= MAX_THREAD_COUNT) {
 										ThreadUtils.sleep(100L);
 									}
 									
+									THREAD_COUNT++;
 									new DownloadWorker().applyData(chapterItem, file, url).start();
 								}
 							}
 						} else if (extractor instanceof NovelChapterContentExtractor) {
 							String novel = ((NovelChapterContentExtractor) extractor).extractNovel(chapterItem);
-
+							
 							if (novel != null) {
 								Logger.$(" |- Novel (cut a 200): " + StringUtils.cutIfTooLong(novel, 200));
 							}
@@ -201,12 +202,11 @@ public class SearchAndGoTestUnits {
 			@Override
 			public void run() {
 				while (true) {
-					THREAD_COUNT++;
 					try {
 						file.delete();
 						file.getParentFile().mkdirs();
 						
-						Request request = Webb.create().get(url).ensureSuccess();
+						Request request = Webb.create().get(url).ensureSuccess().readTimeout(0).connectTimeout(0);
 						
 						if (chapterItem.hasInitializedComplements()) {
 							@SuppressWarnings("unchecked")
@@ -222,7 +222,6 @@ public class SearchAndGoTestUnits {
 						InputStream stream = request.asStream().getBody();
 						
 						StreamUtils.copyInputStream(stream, new FileOutputStream(file));
-						
 					} catch (Exception exception) {
 						Logger.exception(exception, "[Webb] Failed to download file %s (url=%s)", file.getAbsolutePath(), url);
 						ThreadUtils.sleep(5000L);

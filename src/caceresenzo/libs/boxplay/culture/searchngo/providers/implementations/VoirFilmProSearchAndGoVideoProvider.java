@@ -21,6 +21,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
+import caceresenzo.libs.string.StringUtils;
 
 public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
@@ -85,9 +86,9 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 				.param("story", searchQuery) //
 				
 				.ensureSuccess() //
-				.asString().getBody(); // ;
+				.asString().getBody(); //
 		
-		if (html == null || searchQuery == null || searchQuery.length() < 4) {
+		if (!StringUtils.validate(html, searchQuery) || searchQuery.length() < 4) {
 			return result;
 		}
 		
@@ -114,33 +115,27 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 		String html = getHelper().downloadPageCache(result.getUrl());
 		String htmlContainer = extractInformationContainer(html);
 		
-		if (html == null || html.isEmpty() || htmlContainer == null || htmlContainer.isEmpty()) {
+		if (!StringUtils.validate(html, htmlContainer)) {
 			return additionals;
 		}
 		
-		/**
-		 * Common
-		 */
+		/* Common */
 		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE.entrySet()) {
 			AdditionalDataType type = entry.getKey();
 			String dataKey = entry.getValue();
 			
 			String extractedData = extractCommonData(dataKey, htmlContainer);
-			
 			if (extractedData != null) {
 				additionals.add(new AdditionalResultData(type, extractedData.trim()));
 			}
 		}
 		
-		/**
-		 * Item that need to be url-extracted (html element <a>)
-		 */
+		/* Item that need to be url-extracted (html element <a>) */
 		for (Entry<AdditionalDataType, String> entry : ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION.entrySet()) {
 			AdditionalDataType type = entry.getKey();
 			String dataKey = entry.getValue();
 			
 			String extractedHtmlElementData = extractCommonData(dataKey, htmlContainer);
-			
 			if (extractedHtmlElementData != null) {
 				UrlResultData extractedUrlData = getHelper().extractUrlFromHtml(extractedHtmlElementData);
 				
@@ -148,9 +143,8 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 			}
 		}
 		
-		// GENDERS
+		/* Genders */
 		String extractedGendersData = extractCommonData(ADDITIONAL_DATA_KEY_GENDERS, htmlContainer);
-		
 		if (extractedGendersData != null) {
 			Matcher matcher = getHelper().regex(UrlResultData.EXTRATION_REGEX_FROM_HTML, extractedGendersData);
 			
@@ -163,9 +157,8 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 			additionals.add(new AdditionalResultData(AdditionalDataType.GENDERS, categories));
 		}
 		
-		// RESUME
+		/* Resume */
 		String extractedResumeData = extractResumeData(htmlContainer);
-		
 		if (extractedResumeData != null) {
 			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResumeData));
 		}
@@ -179,14 +172,13 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 		
 		String html = getHelper().downloadPageCache(result.getUrl());
 		
-		if (html == null || html.isEmpty()) {
+		if (!StringUtils.validate(html)) {
 			return additionals;
 		}
 		
 		List<String> buttons = new ArrayList<>(), iframeUrls = new ArrayList<>();
 		
 		String extractedHtmlButtonContainer = getHelper().extract("<div\\sclass=\\\"tabs-sel\\\">(.*?)<\\/div>", html);
-		
 		if (extractedHtmlButtonContainer == null) {
 			return additionals;
 		}
@@ -234,12 +226,11 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 	private List<VoirFilmBzItem> extractVideoFromHtml(String html) {
 		List<VoirFilmBzItem> items = new ArrayList<>();
 		
-		Matcher matcher = getStaticHelper().regex("\\<div\\sclass=\\\"mov\\\">[\\s\\t\\n]*\\<div\\sclass=\\\"mov-i\\simg-box\\\"\\>[\\s\\t\\n]*\\<img src=\\\"[\\s]*(.*?)[\\s]*\\\".*?\\>[\\s\\t\\n]*\\<div\\sclass=\\\"mov-mask\\sflex-col\\sps-link\\\"\\sdata-link=\\\"[\\s]*(.*?)[\\s]*\\\"\\>\\<span\\sclass=\\\"fa\\sfa-play\\\"\\>\\<\\/span\\>\\<\\/div\\>[\\s\\t\\n]*\\<div\\sclass=\\\"mov-m\\\"\\>\\<b\\>.*?\\<\\/b\\>\\<\\/div\\>[\\s\\t\\n]*\\<\\/div\\>.*?\\<div\\sclass=\\\"mov-c\\snowrap\\\">[\\s]*(.*?)[\\s]*\\<\\/div\\>[\\s\\t\\n]*\\<\\/div>", html);
-		
+		Matcher matcher = getStaticHelper().regex("\\<div\\sclass\\=\\\"mov\\\"\\>[\\s\\t\\n]*\\<div\\sclass\\=\\\"mov-i\\simg-box\\\"\\>[\\s\\t\\n]*\\<img\\ssrc\\=\\\"(.*?)\\\".*?\\/\\>[\\s\\t\\n]*\\<div\\sclass\\=\\\"mov-mask\\sflex-col\\sps-link\\\".*?\\>.*?\\<\\/div\\>[\\s\\t\\n]*\\<div\\sclass\\=\\\"mov-m\\\"\\>.*?\\<\\/div\\>[\\s\\t\\n]*\\<\\/div\\>[\\s\\t\\n]*\\<a\\sclass=\\\"mov-t\\snowrap\\\"\\shref=\\\"(.*?)\\\"\\>\\<b\\>(<center>)*(.*?)(<\\/center>)*\\<\\/b\\>\\<\\/a\\>[\\s\\t\\n]*\\<\\/div\\>[\\s\\t\\n]*", html);
 		while (matcher.find()) {
 			String imageUrl = matcher.group(1);
 			String url = matcher.group(2);
-			String name = matcher.group(3);
+			String name = matcher.group(4);
 			
 			items.add(new VoirFilmBzItem(matcher.group(0), url, name, imageUrl));
 		}

@@ -47,4 +47,9 @@ public class CompletedVideoItemResultData extends VideoItemResultData {
 		return playerUrls.toArray(array);
 	}
 	
+	@Override
+	public String getUrl() {
+		throw new IllegalStateException("Get a direct url from a CompletedVideoItemResultData is not possible.");
+	}
+	
 }
