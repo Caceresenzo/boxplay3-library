@@ -35,7 +35,7 @@ public class AdultFactory extends AbstractFactory {
 		}
 		
 		if (loadNewsVideo) {
-			Matcher newVideoMatcher = getNewVideoMatcher(html);
+			Matcher newVideoMatcher = getNewVideoMatcher(html); 
 			while (newVideoMatcher.find()) {
 				String targetUrl = newVideoMatcher.group(1);
 				String title = newVideoMatcher.group(2);

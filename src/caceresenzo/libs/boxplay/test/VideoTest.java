@@ -1,6 +1,9 @@
 package caceresenzo.libs.boxplay.test;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +16,12 @@ import caceresenzo.libs.boxplay.models.store.video.VideoFile;
 import caceresenzo.libs.boxplay.models.store.video.VideoGroup;
 import caceresenzo.libs.boxplay.models.store.video.VideoSeason;
 import caceresenzo.libs.boxplay.models.store.video.enums.VideoFileType;
+import caceresenzo.libs.boxplay.models.store.video.enums.VideoType;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.logger.Logger;
-import caceresenzo.libs.network.Downloader;
+import caceresenzo.libs.string.StringUtils;
 
 public class VideoTest {
 	
@@ -36,10 +40,10 @@ public class VideoTest {
 	public void initialize() throws IOException, JsonException {
 		groups = new ArrayList<VideoGroup>();
 		
-		String content = Downloader.getUrlContent("https://caceres.freeboxos.fr:583/share/n9npNCIdbJr1Wbq8/Android/data/boxplay_3.json");
+		String content = StringUtils.fromFile(new File("boxplay_3.json"));
 		serverJsonData = new JsonObject((Map<?, ?>) new JsonParser().parse(new StringReader(content)));
 		
-		// File output = new File("./output.txt");
+		// File output = new File("./request.sql");
 		// output.createNewFile();
 		// System.setOut(new PrintStream(new FileOutputStream(output)));
 	}
@@ -135,7 +139,7 @@ public class VideoTest {
 		seasonIdentifiers.put("Doctor Who (2005)_____4", 36);
 		seasonIdentifiers.put("Doctor Who (2005)_____5", 37);
 		
-		int mode = 5;
+		int mode = 7;
 		
 		switch (mode) {
 			case 0:
@@ -288,6 +292,76 @@ public class VideoTest {
 					System.out.println(String.format(format, slug, title, imageUrl, bigImageUrl, status, url, groupId));
 					
 				}
+				break;
+			}
+			
+			case 6: {
+				String format = "INSERT INTO `bp_group`(`id`, `parent_id`, `title`, `image`, `type`) VALUES (%s, %s,'%s','%s','%s');";
+				
+				int parent = 4;
+				
+				for (VideoGroup group : groups) {
+					// System.out.println("GROUP: " + group.getTitle());
+					// if (!group.getTitle().contains("Black Mirror")) {
+					// continue;
+					// }
+					
+					if (!group.getVideoFileType().hasEpisode()) {
+						continue;
+					}
+					
+					int actualGroup = parent++;
+					System.out.println(String.format(format, actualGroup, "NULL", group.getTitle(), String.format("https://assets.boxplay.io/img/groups/%s.jpg", group.getSlug()), "ROOT"));
+					
+					for (VideoSeason season : group.getSeasons()) {
+						String seasonTitle = season.getTitle() + " S" + season.getSeasonValue();
+						int actualSeason = parent++;
+						
+						System.out.println(String.format(format, actualSeason, actualGroup, seasonTitle, String.format("https://assets.boxplay.io/img/series/%s/season-%s.jpg", group.getSlug(), season.getSeasonValue()), "SEASON"));
+						
+						int episode = 1;
+						VideoType oldVideoType = VideoType.EPISODE;
+						for (VideoFile video : season.getVideos()) {
+							if (oldVideoType != video.getVideoType()) {
+								episode = 1;
+							}
+							oldVideoType = video.getVideoType();
+							
+							String episodeFormat = "INSERT INTO `bp_video`(`group_id`, `type`, `title`, `episode`, `release_date`, `language`, `size`, `status`, `url`) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');";
+							
+							String episodeValue = video.getEpisodeValue().replace(video.getVideoType().toString() + "/", "");
+							String videoTitle = seasonTitle + video.getVideoType().getFormat() + episodeValue;
+							String url = String.format("https://dl.boxplay.io/series/%s/season-%s/%s-%s.mp4", group.getSlug(), season.getSeasonValue(), video.getVideoType().toString().toLowerCase(), episodeValue);
+							
+							String language;
+							switch (video.getLanguage()) {
+								case FR: {
+									language = "VF";
+									break;
+								}
+								
+								default:
+								case EN: {
+									language = "VO";
+									break;
+								}
+								
+								case JPSUBFR:
+								case ENSUBFR: {
+									language = "VOSTFR";
+									break;
+								}
+							}
+							
+							System.out.println(String.format(episodeFormat, actualSeason, "EPISODE", videoTitle, episode++, "0000", language, 0, (video.isAvailable() ? "" : "UN") + "AVAILABLE", url));
+						}
+					}
+				}
+				
+				break;
+			}
+			
+			case 7: {
 				break;
 			}
 		}
