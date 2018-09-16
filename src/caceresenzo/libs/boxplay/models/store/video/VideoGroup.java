@@ -1,5 +1,6 @@
 package caceresenzo.libs.boxplay.models.store.video;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class VideoGroup extends VideoElement implements MyListable {
 	}
 	
 	public List<VideoSeason> getSeasons() {
-		return seasons;
+		return seasons == null ? new ArrayList<VideoSeason>() : seasons;
 	}
 	
 	public boolean hasSeason() { // If season 0 don't exists, so its a serie/anime
