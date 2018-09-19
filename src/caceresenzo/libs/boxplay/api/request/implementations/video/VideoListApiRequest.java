@@ -6,16 +6,23 @@ import java.util.Map;
 
 import caceresenzo.libs.boxplay.api.ApiResponse;
 import caceresenzo.libs.boxplay.api.request.ApiRequest;
+import caceresenzo.libs.boxplay.api.request.RequestSettings;
 import caceresenzo.libs.boxplay.store.video.BaseVideoStoreElement;
+import caceresenzo.libs.parse.ParseUtils;
 
 public abstract class VideoListApiRequest<T extends BaseVideoStoreElement> extends ApiRequest<List<T>> {
 	
 	public static final String JSON_KEY_ID = "id";
 	public static final String JSON_KEY_TITLE = "title";
 	public static final String JSON_KEY_IMAGE_URL = "image";
+	public static final String JSON_KEY_TAGS_MASK = "tags";
 	
 	protected VideoListApiRequest(String urlFormat) {
-		super(urlFormat);
+		this(urlFormat, null);
+	}
+	
+	protected VideoListApiRequest(String urlFormat, RequestSettings requestSettings) {
+		super(urlFormat, requestSettings);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -27,17 +34,18 @@ public abstract class VideoListApiRequest<T extends BaseVideoStoreElement> exten
 			List<Map<String, Object>> videoMaps = (List<Map<String, Object>>) apiResponse.getResponse();
 			
 			for (Map<String, Object> videoMap : videoMaps) {
-				long id = (long) videoMap.get(JSON_KEY_ID);
+				long id = ParseUtils.parseLong(videoMap.get(JSON_KEY_ID), NO_ID);
 				String title = (String) videoMap.get(JSON_KEY_TITLE);
 				String imageUrl = (String) videoMap.get(JSON_KEY_IMAGE_URL);
+				long tagsMask = ParseUtils.parseLong(videoMap.get(JSON_KEY_TAGS_MASK), 0);
 				
-				items.add(createItem(id, title, imageUrl));
+				items.add(createItem(id, title, imageUrl, tagsMask));
 			}
 		}
 		
 		return items;
 	}
 	
-	public abstract T createItem(long id, String title, String imageUrl);
+	public abstract T createItem(long id, String title, String imageUrl, long tagsMask);
 	
 }

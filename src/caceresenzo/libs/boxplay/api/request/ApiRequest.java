@@ -8,16 +8,26 @@ import caceresenzo.libs.boxplay.api.ApiResponse;
  * @author Enzo CACERES
  */
 public abstract class ApiRequest<T> {
+	
 	/* Constants */
 	public static final int METHOD_GET = 0;
 	public static final int METHOD_POST = 1;
 	
-	/* Url method */
-	protected String urlFormat;
+	public static final long NO_ID = -1;
+	
+	/* Variables */
+	protected final String urlFormat;
+	protected final RequestSettings requestSettings;
 	
 	/* Constructor */
 	protected ApiRequest(String urlFormat) {
+		this(urlFormat, null);
+	}
+	
+	/* Constructor */
+	protected ApiRequest(String urlFormat, RequestSettings requestSettings) {
 		this.urlFormat = urlFormat;
+		this.requestSettings = requestSettings;
 	}
 	
 	/**
@@ -52,5 +62,12 @@ public abstract class ApiRequest<T> {
 	 * @return Some objects that are decided by the class origin
 	 */
 	public abstract T processResponse(ApiResponse apiResponse);
+	
+	/**
+	 * @return Settings for this request, can be null if the request don't support it or if no settings has been provided
+	 */
+	public RequestSettings getRequestSettings() {
+		return requestSettings;
+	}
 	
 }

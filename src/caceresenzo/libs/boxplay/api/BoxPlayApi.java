@@ -19,7 +19,7 @@ public class BoxPlayApi {
 		this.token = token;
 	}
 	
-	private String forgeUrl(ApiRequest apiRequest) {
+	private String forgeUrl(ApiRequest<?> apiRequest) {
 		return forgeUrl(apiRequest.forge());
 	}
 	
@@ -27,8 +27,12 @@ public class BoxPlayApi {
 		return API_URL + forgedUrl + "?token=" + token;
 	}
 	
-	public ApiResponse call(ApiRequest apiRequest) {
+	public ApiResponse call(ApiRequest<?> apiRequest) {
 		String forgedUrl = forgeUrl(apiRequest);
+		
+		if (apiRequest.getRequestSettings() != null) {
+			forgedUrl = apiRequest.getRequestSettings().createUrl(forgedUrl);
+		}
 		
 		Webb webb = Webb.create(true);
 		Request request;
