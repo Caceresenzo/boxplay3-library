@@ -7,7 +7,7 @@ import caceresenzo.libs.boxplay.api.request.ApiRequest;
 import caceresenzo.libs.boxplay.base.ElementStatus;
 import caceresenzo.libs.boxplay.store.video.implementations.MovieVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.SimpleVideoStoreElement;
-import caceresenzo.libs.bytes.bitset.LongBitSet;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 import caceresenzo.libs.parse.ParseUtils;
 
 public class MovieApiRequest extends ApiRequest<MovieVideoStoreElement> {
@@ -29,7 +29,7 @@ public class MovieApiRequest extends ApiRequest<MovieVideoStoreElement> {
 	public static final String JSON_KEY_URL = "url";
 	
 	/* Variables */
-	private long movieId;
+	private final long movieId;
 	
 	/* Constructor */
 	public MovieApiRequest(long movieId) {
@@ -53,11 +53,11 @@ public class MovieApiRequest extends ApiRequest<MovieVideoStoreElement> {
 			long groupId = ParseUtils.parseLong(groupMap.get(JSON_KEY_GROUP_ITEM_ID), NO_ID);
 			String groupTitle = (String) groupMap.get(JSON_KEY_GROUP_ITEM_TITLE);
 			String groupImageUrl = (String) groupMap.get(JSON_KEY_GROUP_ITEM_IMAGE_URL);
-			long groupTagsMask = ParseUtils.parseLong(groupMap.get(JSON_KEY_GROUP_ITEM_TAGS), 0);
+			String groupTagsMask = (String) groupMap.get(JSON_KEY_GROUP_ITEM_TAGS);
 			
 			SimpleVideoStoreElement parentGroup = null;
 			if (groupId != NO_ID) {
-				parentGroup = new SimpleVideoStoreElement(groupId, groupTitle, groupImageUrl, new LongBitSet(groupTagsMask));
+				parentGroup = new SimpleVideoStoreElement(groupId, groupTitle, groupImageUrl, BigIntegerBitSet.fromHex(groupTagsMask));
 			}
 			
 			String title = (String) dataMap.get(JSON_KEY_TITLE);
@@ -69,7 +69,7 @@ public class MovieApiRequest extends ApiRequest<MovieVideoStoreElement> {
 			ElementStatus status = ElementStatus.fromString((String) dataMap.get(JSON_KEY_STATUS));
 			String url = (String) dataMap.get(JSON_KEY_URL);
 			
-			return new MovieVideoStoreElement(parentGroup, title, imageUrl, new LongBitSet(groupTagsMask), episode, releaseDate, runningTime, fileSize, status, url);
+			return new MovieVideoStoreElement(parentGroup, title, imageUrl, BigIntegerBitSet.fromHex(groupTagsMask), episode, releaseDate, runningTime, fileSize, status, url);
 		}
 		
 		return null;

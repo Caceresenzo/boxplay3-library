@@ -37,7 +37,7 @@ public abstract class VideoListApiRequest<T extends BaseVideoStoreElement> exten
 				long id = ParseUtils.parseLong(videoMap.get(JSON_KEY_ID), NO_ID);
 				String title = (String) videoMap.get(JSON_KEY_TITLE);
 				String imageUrl = (String) videoMap.get(JSON_KEY_IMAGE_URL);
-				long tagsMask = ParseUtils.parseLong(videoMap.get(JSON_KEY_TAGS_MASK), 0);
+				String tagsMask = (String) videoMap.get(JSON_KEY_TAGS_MASK);
 				
 				items.add(createItem(id, title, imageUrl, tagsMask));
 			}
@@ -46,6 +46,6 @@ public abstract class VideoListApiRequest<T extends BaseVideoStoreElement> exten
 		return items;
 	}
 	
-	public abstract T createItem(long id, String title, String imageUrl, long tagsMask);
+	public abstract T createItem(long id, String title, String imageUrl, String tagsMask);
 	
 }

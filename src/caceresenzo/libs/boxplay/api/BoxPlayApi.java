@@ -5,6 +5,7 @@ import caceresenzo.libs.http.client.webb.Request;
 import caceresenzo.libs.http.client.webb.Webb;
 
 public class BoxPlayApi {
+	
 	/* Constants */
 	public static final String API_BASE_URL = "https://api.boxplay.io";
 	public static final int API_VERSION = 1;

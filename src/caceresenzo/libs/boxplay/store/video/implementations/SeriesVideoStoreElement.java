@@ -4,7 +4,7 @@ import java.util.List;
 
 import caceresenzo.libs.boxplay.store.video.BaseVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.series.SeriesSeasonVideoStoreElement;
-import caceresenzo.libs.bytes.bitset.LongBitSet;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 
 public class SeriesVideoStoreElement extends BaseVideoStoreElement {
 	
@@ -12,7 +12,7 @@ public class SeriesVideoStoreElement extends BaseVideoStoreElement {
 	private final List<SeriesSeasonVideoStoreElement> seasons;
 	
 	/* Constructor */
-	public SeriesVideoStoreElement(long id, String title, String imageUrl, LongBitSet tags, List<SeriesSeasonVideoStoreElement> seasons) {
+	public SeriesVideoStoreElement(long id, String title, String imageUrl, BigIntegerBitSet tags, List<SeriesSeasonVideoStoreElement> seasons) {
 		super(id, title, imageUrl, tags);
 		
 		this.seasons = seasons;

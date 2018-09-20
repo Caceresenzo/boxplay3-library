@@ -2,7 +2,7 @@ package caceresenzo.libs.boxplay.store.video.implementations;
 
 import caceresenzo.libs.boxplay.base.ElementStatus;
 import caceresenzo.libs.boxplay.store.video.BaseVideoStoreElement;
-import caceresenzo.libs.bytes.bitset.LongBitSet;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 
 public class MovieVideoStoreElement extends BaseVideoStoreElement {
 	
@@ -14,7 +14,7 @@ public class MovieVideoStoreElement extends BaseVideoStoreElement {
 	private final String url;
 	
 	/* Constructor */
-	public MovieVideoStoreElement(SimpleVideoStoreElement parentGroup, String title, String imageUrl, LongBitSet tags, int episode, int releaseDate, int runningTime, long fileSize, ElementStatus status, String url) {
+	public MovieVideoStoreElement(SimpleVideoStoreElement parentGroup, String title, String imageUrl, BigIntegerBitSet tags, int episode, int releaseDate, int runningTime, long fileSize, ElementStatus status, String url) {
 		super(NO_ID, title, imageUrl, tags);
 		
 		this.parentGroup = parentGroup;

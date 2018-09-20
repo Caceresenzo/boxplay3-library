@@ -1,7 +1,7 @@
 package caceresenzo.libs.boxplay.store.video;
 
 import caceresenzo.libs.boxplay.store.BaseStoreElement;
-import caceresenzo.libs.bytes.bitset.LongBitSet;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 
 public class BaseVideoStoreElement extends BaseStoreElement {
 	
@@ -11,10 +11,10 @@ public class BaseVideoStoreElement extends BaseStoreElement {
 	/* Variables */
 	protected final long id;
 	protected final String title, imageUrl;
-	protected final LongBitSet tags;
+	protected final BigIntegerBitSet tags;
 	
 	/* Constructor */
-	public BaseVideoStoreElement(long id, String title, String imageUrl, LongBitSet tags) {
+	public BaseVideoStoreElement(long id, String title, String imageUrl, BigIntegerBitSet tags) {
 		this.id = id;
 		this.title = title;
 		this.imageUrl = imageUrl;
@@ -43,9 +43,9 @@ public class BaseVideoStoreElement extends BaseStoreElement {
 	}
 	
 	/**
-	 * @return Unformatted {@link LongBitSet} used for tags
+	 * @return Unformatted {@link BigIntegerBitSet} used for tags
 	 */
-	public LongBitSet getTagsBitset() {
+	public BigIntegerBitSet getTagsBitset() {
 		return tags;
 	}
 	

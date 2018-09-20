@@ -1,5 +1,8 @@
 package caceresenzo.libs.boxplay.api.test;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import caceresenzo.libs.boxplay.api.ApiResponse;
@@ -15,22 +18,30 @@ import caceresenzo.libs.boxplay.store.video.implementations.MovieVideoStoreEleme
 import caceresenzo.libs.boxplay.store.video.implementations.SeriesVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.SimpleVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.series.SeriesSeasonVideoStoreElement;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
+import caceresenzo.libs.string.StringUtils;
 import caceresenzo.libs.test.SimpleTestUnits;
 
 public class ApiTestUnits extends SimpleTestUnits {
 	
 	public static final BoxPlayApi boxPlayApi = new BoxPlayApi("hello_fab_fab");
 	
+	private static TagsCorresponder tagsCorresponder;
+	
+	public static void initializeCorresponder() {
+		TagsApiRequest tagsApiRequest = new TagsApiRequest();
+		tagsCorresponder = tagsApiRequest.processResponse(boxPlayApi.call(tagsApiRequest));
+	}
+	
 	public static class DumpApiTest {
 		
-		public static final boolean FETCH_MOVIES = true;
-		public static final boolean FETCH_SERIES = false;
+		public static final boolean FETCH_MOVIES = false;
+		public static final boolean FETCH_SERIES = true;
 		
 		public static void main(String[] args) {
 			$("STARTING");
 			
-			TagsApiRequest tagsApiRequest = new TagsApiRequest();
-			TagsCorresponder tagsCorresponder = tagsApiRequest.processResponse(boxPlayApi.call(tagsApiRequest));
+			initializeCorresponder();
 			
 			int index = 0;
 			for (String correspondance : tagsCorresponder.getTagsCorrespondances()) {
@@ -49,7 +60,7 @@ public class ApiTestUnits extends SimpleTestUnits {
 					$("+ --------------------------- MOVIES");
 					$("| ID: " + video.getId());
 					$("| TITLE: " + video.getTitle());
-					$("| TAGS: " + video.getTagsBitset().getMask());
+					$("| TAGS: " + video.getTagsBitset().getValue());
 					$("| IMAGE URL: " + video.getImageUrl());
 					
 					for (String tag : tagsCorresponder.findCorrespondances(video)) {
@@ -71,7 +82,7 @@ public class ApiTestUnits extends SimpleTestUnits {
 							$("| PARENT GROUP | ID: " + parentGroup.getId());
 							$("| PARENT GROUP | TITLE: " + parentGroup.getTitle());
 							$("| PARENT GROUP | IMAGE URL: " + parentGroup.getImageUrl());
-							$("| PARENT GROUP | TAGS: " + parentGroup.getTagsBitset().getMask());
+							$("| PARENT GROUP | TAGS: " + parentGroup.getTagsBitset().getValue());
 							$("+ ------------ + ");
 						}
 						
@@ -88,7 +99,7 @@ public class ApiTestUnits extends SimpleTestUnits {
 			
 			/* Series */
 			if (FETCH_SERIES) {
-				SeriesListApiRequest seriesListApiRequest = new SeriesListApiRequest(new RequestSettings.Builder().include(1).search("ni").build());
+				SeriesListApiRequest seriesListApiRequest = new SeriesListApiRequest(new RequestSettings.Builder().include(1).search("kono").build());
 				ApiResponse seriesListResponse = boxPlayApi.call(seriesListApiRequest);
 				
 				List<SimpleVideoStoreElement> seriesList = seriesListApiRequest.processResponse(seriesListResponse);
@@ -99,6 +110,7 @@ public class ApiTestUnits extends SimpleTestUnits {
 					$("| ID: " + video.getId());
 					$("| TITLE: " + video.getTitle());
 					$("| IMAGE URL: " + video.getImageUrl());
+					$("| TAG: " + video.getTagsBitset().getValue());
 					
 					for (String tag : tagsCorresponder.findCorrespondances(video)) {
 						$("| TAG >> " + tag);
@@ -126,6 +138,66 @@ public class ApiTestUnits extends SimpleTestUnits {
 				}
 				
 				$(seriesListResponse.getRawResponse());
+			}
+		}
+		
+	}
+	
+	public static class TagsCompilerTest {
+		
+		public static void main(String[] args) {
+			$("STARTING");
+			
+			initializeCorresponder();
+			
+			String inputTags = "Adventure\r\n" + "Comedy\r\n" + "Fantasy\r\n" + "Supernatural\r\n" + "Other world\r\n" + "fights\r\n" + "Gods\r\n" + "demons\r\n" + "Parody";
+			
+			List<String> formattedTags = new ArrayList<>();
+			for (String tag : inputTags.toUpperCase().split("[\\n\\r\\,\\-]")) {
+				tag = tag.trim();
+				
+				if (!StringUtils.validate(tag)) {
+					continue;
+				}
+				
+				formattedTags.add(tag);
+				
+				if (tagsCorresponder.findIndexByName(tag) == TagsCorresponder.NO_TAG) {
+					$("Not found tag: " + tag);
+				}
+				
+				$(tagsCorresponder.findIndexByName(tag) + " -->> " + tag);
+			}
+			
+			List<Integer> indexes = tagsCorresponder.getIndexesByName(formattedTags);
+			$(indexes);
+			
+			BigIntegerBitSet bitSet = new BigIntegerBitSet(BigInteger.ONE);
+			for (int index : indexes) {
+				bitSet.set(index, true);
+			}
+			
+			$("Value: " + bitSet.getValue().toString(16));
+		}
+		
+	}
+	
+	public static class CsvTagsValueConverter {
+		
+		public static void main(String[] args) throws IOException {
+			$("STARTING");
+			
+			String csv = StringUtils.fromFile("bp_group.csv").replace("\"", "");
+			
+			String sql = "UPDATE `bp_group` SET `tags` = 0x%s WHERE `bp_group`.`id` = %s;";
+			
+			for (String line : csv.split("\n")) {
+				String[] items = line.split(",");
+				
+				// $(items[4]);
+				BigInteger bigInteger = new BigInteger(items[4], 10);
+				
+				$(String.format(sql, bigInteger.toString(16), items[0]));
 			}
 		}
 		

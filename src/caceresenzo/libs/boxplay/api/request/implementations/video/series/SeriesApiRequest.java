@@ -8,7 +8,7 @@ import caceresenzo.libs.boxplay.api.ApiResponse;
 import caceresenzo.libs.boxplay.api.request.ApiRequest;
 import caceresenzo.libs.boxplay.store.video.implementations.SeriesVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.series.SeriesSeasonVideoStoreElement;
-import caceresenzo.libs.bytes.bitset.LongBitSet;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 import caceresenzo.libs.parse.ParseUtils;
 
 public class SeriesApiRequest extends ApiRequest<SeriesVideoStoreElement> {
@@ -25,7 +25,7 @@ public class SeriesApiRequest extends ApiRequest<SeriesVideoStoreElement> {
 	public static final String JSON_KEY_SEASONS_ITEMS_TAGS = "tags";
 	
 	/* Variables */
-	private long seriesId;
+	private final long seriesId;
 	
 	/* Constructor */
 	public SeriesApiRequest(long seriesId) {
@@ -48,7 +48,7 @@ public class SeriesApiRequest extends ApiRequest<SeriesVideoStoreElement> {
 			long id = ParseUtils.parseLong(dataMap.get(JSON_KEY_ID), 0);
 			String title = (String) dataMap.get(JSON_KEY_TITLE);
 			String imageUrl = (String) dataMap.get(JSON_KEY_IMAGE_URL);
-			long tagsMask = ParseUtils.parseLong(dataMap.get(JSON_KEY_TAGS), 0);
+			String tagsMask = (String) dataMap.get(JSON_KEY_TAGS);
 			List<SeriesSeasonVideoStoreElement> seasons = new ArrayList<>();
 			
 			List<Map<String, Object>> seasonsMap = (List<Map<String, Object>>) dataMap.get(JSON_KEY_SEASONS);
@@ -56,14 +56,14 @@ public class SeriesApiRequest extends ApiRequest<SeriesVideoStoreElement> {
 				long seasonId = ParseUtils.parseLong(seasonMap.get(JSON_KEY_SEASONS_ITEMS_ID), NO_ID);
 				String seasonTitle = (String) seasonMap.get(JSON_KEY_SEASONS_ITEMS_TITLE);
 				String seasonImageUrl = (String) seasonMap.get(JSON_KEY_SEASONS_ITEMS_IMAGE_URL);
-				long seasonTags = ParseUtils.parseLong(seasonMap.get(JSON_KEY_SEASONS_ITEMS_TAGS), 0);
+				String seasonTags = (String) seasonMap.get(JSON_KEY_SEASONS_ITEMS_TAGS);
 				
 				if (seasonId != NO_ID) {
-					seasons.add(new SeriesSeasonVideoStoreElement(seasonId, seasonTitle, seasonImageUrl, new LongBitSet(seasonTags)));
+					seasons.add(new SeriesSeasonVideoStoreElement(seasonId, seasonTitle, seasonImageUrl, BigIntegerBitSet.fromHex(seasonTags)));
 				}
 			}
 			
-			return new SeriesVideoStoreElement(id, title, imageUrl, new LongBitSet(tagsMask), seasons);
+			return new SeriesVideoStoreElement(id, title, imageUrl, BigIntegerBitSet.fromHex(tagsMask), seasons);
 		}
 		
 		return null;

@@ -3,7 +3,7 @@ package caceresenzo.libs.boxplay.api.request.implementations.video.series;
 import caceresenzo.libs.boxplay.api.request.RequestSettings;
 import caceresenzo.libs.boxplay.api.request.implementations.video.VideoListApiRequest;
 import caceresenzo.libs.boxplay.store.video.implementations.SimpleVideoStoreElement;
-import caceresenzo.libs.bytes.bitset.LongBitSet;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 
 public class SeriesListApiRequest extends VideoListApiRequest<SimpleVideoStoreElement> {
 	
@@ -16,8 +16,8 @@ public class SeriesListApiRequest extends VideoListApiRequest<SimpleVideoStoreEl
 	}
 	
 	@Override
-	public SimpleVideoStoreElement createItem(long id, String title, String imageUrl, long tagsMask) {
-		return new SimpleVideoStoreElement(id, title, imageUrl, new LongBitSet(tagsMask));
+	public SimpleVideoStoreElement createItem(long id, String title, String imageUrl, String tagsMask) {
+		return new SimpleVideoStoreElement(id, title, imageUrl, BigIntegerBitSet.fromHex(tagsMask));
 	}
 	
 }

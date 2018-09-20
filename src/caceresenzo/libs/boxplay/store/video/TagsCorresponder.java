@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import caceresenzo.libs.bytes.bitset.IntegerBitSet;
-import caceresenzo.libs.bytes.bitset.LongBitSet;
+import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 import caceresenzo.libs.empty.EmptyUtils;
 
 public class TagsCorresponder {
@@ -46,10 +45,10 @@ public class TagsCorresponder {
 	 *            Source bitset to check
 	 * @return A list of tags corresponding
 	 */
-	public List<String> findCorrespondances(LongBitSet bitset) {
+	public List<String> findCorrespondances(BigIntegerBitSet bitset) {
 		List<String> foundTags = new ArrayList<>();
 		
-		if (!EmptyUtils.validate(correspondances) || bitset == null || bitset.getMask() == 0) {
+		if (!EmptyUtils.validate(correspondances) || bitset == null || bitset.getValue().intValue() == 0) {
 			return foundTags;
 		}
 		
@@ -65,7 +64,8 @@ public class TagsCorresponder {
 	/**
 	 * Get a Tag bitset index by its name
 	 * 
-	 * @param tag Targetted name
+	 * @param tag
+	 *            Targetted name
 	 * @return Corresponding bitset index, or {@link #NO_TAG} ({@value #NO_TAG}) if not found
 	 */
 	public int findIndexByName(String tag) {
@@ -94,7 +94,7 @@ public class TagsCorresponder {
 		
 		for (int index = 0; index < correspondances.size(); index++) {
 			if (itemTags.contains(correspondances.get(index))) {
-				indexes.add(index);
+				indexes.add(index + 1);
 			}
 		}
 		
