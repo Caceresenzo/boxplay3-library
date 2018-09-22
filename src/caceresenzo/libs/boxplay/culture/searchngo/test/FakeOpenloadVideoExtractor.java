@@ -17,9 +17,9 @@ public class FakeOpenloadVideoExtractor extends OpenloadVideoExtractor {
 	public boolean checkStreamingAvailability(String html) {
 		return false;
 	}
-	
+
 	@Override
-	public void injectJsCode(String html) {
+	public void injectJsCode(String html, String openloadHtml) {
 		;
 	}
 	

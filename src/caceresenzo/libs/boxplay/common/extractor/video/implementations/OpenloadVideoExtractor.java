@@ -2,8 +2,11 @@ package caceresenzo.libs.boxplay.common.extractor.video.implementations;
 
 import java.util.regex.Matcher;
 
+import caceresenzo.libs.boxplay.assets.BoxPlayAssets;
 import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
+import caceresenzo.libs.logger.Logger;
+import caceresenzo.libs.string.StringUtils;
 
 /**
  * Implementation of a ContentExtractor for Openload
@@ -18,7 +21,7 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	/**
 	 * This regex is used to extract the "japanease smiley" encoded java script at the end of the page that is used to decypher a key to watch the video
 	 */
-	public static final String REGEX_DOM_DATA_EXTRACTOR = "\\<div\\sclass=\\\"\\\"\\sstyle=\\\"display:none;\\\"\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sid=\\\"(.*?)\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sclass=\\\"\\\"\\sid=\\\"DtsBlkVFQx\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]\\<\\/div\\>";
+	public static final String REGEX_DOM_DATA_EXTRACTOR = "\\<div\\sclass=\\\"\\\"\\sstyle=\\\"display:none;\\\"\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sid=\\\"(.*?)\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sclass=\\\"\\\"\\sid=\\\"DtsBlkVFQx\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]*\\<\\/div\\>";
 	
 	@Override
 	public String extractDirectVideoUrl(String url, VideoContentExtractorProgressCallback progressCallback) {
@@ -36,15 +39,13 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 			}
 			
 			failed(true).notifyException(new StreamingNotAvailableException());
-			;
-			
 			return null;
 		}
 		
 		if (progressCallback != null) {
 			progressCallback.onExtractingLink();
 		}
-		injectJsCode(createJsCodeExecutor(openloadHtml));
+		injectJsCode(createJsCodeExecutor(openloadHtml), openloadHtml);
 		
 		waitUntilUnlock();
 		
@@ -55,6 +56,7 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 		if (progressCallback != null) {
 			progressCallback.onFormattingResult();
 		}
+		
 		return String.format("https://openload.co/stream/%s?mime=true", getOpenloadKey(resolvedHtml));
 	}
 	
@@ -87,8 +89,10 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	 * 
 	 * @param html
 	 *            Js code executor
+	 * @param Original
+	 *            code of the openload page
 	 */
-	public abstract void injectJsCode(String html);
+	public abstract void injectJsCode(String html, String openloadHtml);
 	
 	/**
 	 * Extract from your webview/html parser, the result of the javascript
@@ -124,9 +128,7 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	public String createJsCodeExecutor(String openloadHtml) {
 		String htmlDom = null, jsCode = null;
 		
-		/**
-		 * Extract uniques keys used by js to decypther everything
-		 */
+		/* Extract uniques keys used by js to decypther everything */
 		Matcher domMatcher = ProviderHelper.getStaticHelper().regex(REGEX_DOM_DATA_EXTRACTOR, openloadHtml);
 		if (domMatcher.find()) {
 			String keyId = domMatcher.group(1);
@@ -143,20 +145,26 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 			; //
 		}
 		
-		/**
-		 * Extract "japanease smiley" encoded js at the end of the page
-		 */
-		Matcher jsMatcher = ProviderHelper.getStaticHelper().regex("\\<script\\ssrc=\\\"\\/assets\\/js\\/video-js\\/.*?\\\"\\>\\<\\/script\\>[ \\t\\n]*\\<script\\stype=\\\"text\\/javascript\\\"\\>[ \\t\\n]*(.*?)[ \\t\\n]*\\<\\/script\\>[ \\t\\n]*\\<\\/body\\>[ \\t\\n]*\\<\\/html\\>", openloadHtml);
-		if (jsMatcher.find()) {
-			jsCode = jsMatcher.group(1);
-		}
+		/* Extract "japanease smiley" encoded js at the end of the page */
+		jsCode = extractKeyDecryptorJavaScript(openloadHtml);
+		Logger.info(openloadHtml);
 		
-		if (htmlDom == null || jsCode == null) {
-			getLogger().appendln("ERROR: NULL ?").append("-- htmlDom: ").appendln(htmlDom == null).append("-- jsCode: ").appendln(htmlDom == null);
+		if (!StringUtils.validate(htmlDom, jsCode)) {
+			getLogger().appendln("-- EXECUTOR VALIDITY").append("  >> htmlDom: ").appendln(StringUtils.validate(htmlDom)).append("  >> jsCode: ").appendln(StringUtils.validate(jsCode));
 			return null;
 		}
 		
-		return "<html><script src=\"https://oload.download/assets/js/jquery.min.js\"></script>" + htmlDom + "<script>function " + CODE_EXECUTOR_JS_FUNCTION_NAME + "() {" + jsCode + "}; myFunction();</script></html>";
+		// return "<html><head><script src=\"http://code.jquery.com/jquery-1.11.2.js\"></script>" + htmlDom + "<script>function " + CODE_EXECUTOR_JS_FUNCTION_NAME + "() {" + jsCode + "}; myFunction();</script></head></html>";
+		return "<html><head><script>" + BoxPlayAssets.getRessource(BoxPlayAssets.ASSETS_OPENLOAD_JQUERY) + "</script>" + htmlDom + "<script>function " + CODE_EXECUTOR_JS_FUNCTION_NAME + "() {" + jsCode + "}; myFunction();</script></head></html>";
+	}
+	
+	protected String extractKeyDecryptorJavaScript(String html) {
+		Matcher jsMatcher = ProviderHelper.getStaticHelper().regex("\\<script\\ssrc=\\\"\\/assets\\/js\\/video-js\\/.*?\\\"\\>\\<\\/script\\>[ \\t\\n]*\\<script\\stype=\\\"text\\/javascript\\\"\\>[ \\t\\n]*(.*?)[ \\t\\n]*\\<\\/script\\>[ \\t\\n]*\\<\\/body\\>[ \\t\\n]*\\<\\/html\\>", html);
+		if (jsMatcher.find()) {
+			return jsMatcher.group(1);
+		}
+		
+		return null;
 	}
 	
 	@Override
