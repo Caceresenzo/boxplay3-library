@@ -5,10 +5,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import caceresenzo.libs.boxplay.api.ApiResponse;
 import caceresenzo.libs.boxplay.api.BoxPlayApi;
 import caceresenzo.libs.boxplay.api.request.RequestSettings;
 import caceresenzo.libs.boxplay.api.request.implementations.tags.TagsApiRequest;
+import caceresenzo.libs.boxplay.api.request.implementations.user.identification.UserLoginApiRequest;
 import caceresenzo.libs.boxplay.api.request.implementations.video.movies.MovieApiRequest;
 import caceresenzo.libs.boxplay.api.request.implementations.video.movies.MoviesListApiRequest;
 import caceresenzo.libs.boxplay.api.request.implementations.video.series.SeriesApiRequest;
@@ -18,6 +18,7 @@ import caceresenzo.libs.boxplay.store.video.implementations.MovieVideoStoreEleme
 import caceresenzo.libs.boxplay.store.video.implementations.SeriesVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.SimpleVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.series.SeriesSeasonVideoStoreElement;
+import caceresenzo.libs.boxplay.users.User;
 import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;
 import caceresenzo.libs.string.StringUtils;
 import caceresenzo.libs.test.SimpleTestUnits;
@@ -29,8 +30,11 @@ public class ApiTestUnits extends SimpleTestUnits {
 	private static TagsCorresponder tagsCorresponder;
 	
 	public static void initializeCorresponder() {
-		TagsApiRequest tagsApiRequest = new TagsApiRequest();
-		tagsCorresponder = tagsApiRequest.processResponse(boxPlayApi.call(tagsApiRequest));
+		tagsCorresponder = new TagsApiRequest().call(boxPlayApi).selfProcess();
+		
+		if (tagsCorresponder == null) {
+			throw new IllegalStateException("Corresponder is null");
+		}
 	}
 	
 	public static class DumpApiTest {
@@ -50,10 +54,7 @@ public class ApiTestUnits extends SimpleTestUnits {
 			
 			/* Movies */
 			if (FETCH_MOVIES) {
-				MoviesListApiRequest moviesListApiRequest = new MoviesListApiRequest();
-				ApiResponse moviesListResponse = boxPlayApi.call(moviesListApiRequest);
-				
-				List<SimpleVideoStoreElement> movies = moviesListApiRequest.processResponse(moviesListResponse);
+				List<SimpleVideoStoreElement> movies = new MoviesListApiRequest().call(boxPlayApi).selfProcess();
 				$("| --- MOVIES: " + movies.size());
 				
 				for (SimpleVideoStoreElement video : movies) {
@@ -67,9 +68,7 @@ public class ApiTestUnits extends SimpleTestUnits {
 						$("| TAG >> " + tag);
 					}
 					
-					MovieApiRequest movieApiRequest = new MovieApiRequest(video.getId());
-					ApiResponse movieResponse = boxPlayApi.call(movieApiRequest);
-					MovieVideoStoreElement movie = movieApiRequest.processResponse(movieResponse);
+					MovieVideoStoreElement movie = new MovieApiRequest(video.getId()).call(boxPlayApi).selfProcess();
 					
 					$("| --- INSTANCE: " + (movie != null ? "VALID" : "NULL"));
 					
@@ -93,16 +92,11 @@ public class ApiTestUnits extends SimpleTestUnits {
 						$("| URL: " + movie.getUrl());
 					}
 				}
-				
-				$(moviesListResponse.getRawResponse());
 			}
 			
 			/* Series */
 			if (FETCH_SERIES) {
-				SeriesListApiRequest seriesListApiRequest = new SeriesListApiRequest(new RequestSettings.Builder().include(1).search("kono").build());
-				ApiResponse seriesListResponse = boxPlayApi.call(seriesListApiRequest);
-				
-				List<SimpleVideoStoreElement> seriesList = seriesListApiRequest.processResponse(seriesListResponse);
+				List<SimpleVideoStoreElement> seriesList = new SeriesListApiRequest(new RequestSettings.Builder().include(1).search("kono").build()).call(boxPlayApi).selfProcess();
 				$("| --- SERIES: " + seriesList.size());
 				
 				for (SimpleVideoStoreElement video : seriesList) {
@@ -116,9 +110,7 @@ public class ApiTestUnits extends SimpleTestUnits {
 						$("| TAG >> " + tag);
 					}
 					
-					SeriesApiRequest seriesApiRequest = new SeriesApiRequest(video.getId());
-					ApiResponse serieResponse = boxPlayApi.call(seriesApiRequest);
-					SeriesVideoStoreElement series = seriesApiRequest.processResponse(serieResponse);
+					SeriesVideoStoreElement series = new SeriesApiRequest(video.getId()).call(boxPlayApi).selfProcess();
 					
 					$("| --- INSTANCE: " + (series != null ? "VALID" : "NULL"));
 					
@@ -136,9 +128,18 @@ public class ApiTestUnits extends SimpleTestUnits {
 						}
 					}
 				}
-				
-				$(seriesListResponse.getRawResponse());
 			}
+		}
+		
+	}
+	
+	public static class IdentificationApiTest {
+		
+		public static void main(String[] args) {
+			$("STARTING");
+			
+			User user = new UserLoginApiRequest("thewhoosher", "placeholder").call(boxPlayApi).selfProcess();
+			$(user);
 		}
 		
 	}

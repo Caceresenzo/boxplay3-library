@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import caceresenzo.libs.boxplay.assets.BoxPlayAssets;
 import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 /**
@@ -147,7 +146,6 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 		
 		/* Extract "japanease smiley" encoded js at the end of the page */
 		jsCode = extractKeyDecryptorJavaScript(openloadHtml);
-		Logger.info(openloadHtml);
 		
 		if (!StringUtils.validate(htmlDom, jsCode)) {
 			getLogger().appendln("-- EXECUTOR VALIDITY").append("  >> htmlDom: ").appendln(StringUtils.validate(htmlDom)).append("  >> jsCode: ").appendln(StringUtils.validate(jsCode));

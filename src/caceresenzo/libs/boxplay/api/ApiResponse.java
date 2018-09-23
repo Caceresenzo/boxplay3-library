@@ -3,7 +3,6 @@ package caceresenzo.libs.boxplay.api;
 import caceresenzo.libs.boxplay.api.request.ApiRequest;
 import caceresenzo.libs.json.JsonAware;
 import caceresenzo.libs.json.JsonObject;
-import caceresenzo.libs.json.parser.JsonException;
 import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.parse.ParseUtils;
 
@@ -12,7 +11,7 @@ import caceresenzo.libs.parse.ParseUtils;
  * 
  * @author Enzo CACERES
  */
-public class ApiResponse {
+public class ApiResponse<T> {
 	/* Constants */
 	public static final String JSON_KEY_SUCCESS = "success";
 	public static final String JSON_KEY_STATUS = "status";
@@ -20,7 +19,7 @@ public class ApiResponse {
 	public static final String JSON_KEY_MESSAGE = "message";
 	
 	/* Source */
-	private final ApiRequest sourceRequest;
+	private final ApiRequest<T> sourceRequest;
 	private final String rawResponse;
 	
 	/* Response */
@@ -37,7 +36,7 @@ public class ApiResponse {
 	 * @param response
 	 *            Source {@link String} json
 	 */
-	public ApiResponse(ApiRequest sourceRequest, String response) {
+	public ApiResponse(ApiRequest<T> sourceRequest, String response) {
 		this.sourceRequest = sourceRequest;
 		this.rawResponse = response;
 		
@@ -70,7 +69,7 @@ public class ApiResponse {
 	/**
 	 * @return The {@link ApiRequest} used to fetch this {@link ApiResponse}
 	 */
-	public ApiRequest getSourceRequest() {
+	public ApiRequest<T> getSourceRequest() {
 		return sourceRequest;
 	}
 	
@@ -112,6 +111,10 @@ public class ApiResponse {
 	 */
 	public String getErrorMessage() {
 		return errorMessage;
+	}
+	
+	public T selfProcess() {
+		return sourceRequest.processResponse(this);
 	}
 	
 	public static enum ResponseStatus {

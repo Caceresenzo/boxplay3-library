@@ -27,7 +27,7 @@ public abstract class VideoListApiRequest<T extends BaseVideoStoreElement> exten
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> processResponse(ApiResponse apiResponse) {
+	public List<T> processResponse(ApiResponse<List<T>> apiResponse) {
 		List<T> items = new ArrayList<>();
 		
 		if (apiResponse.isUsable()) {
@@ -37,7 +37,7 @@ public abstract class VideoListApiRequest<T extends BaseVideoStoreElement> exten
 				long id = ParseUtils.parseLong(videoMap.get(JSON_KEY_ID), NO_ID);
 				String title = (String) videoMap.get(JSON_KEY_TITLE);
 				String imageUrl = (String) videoMap.get(JSON_KEY_IMAGE_URL);
-				String tagsMask = (String) videoMap.get(JSON_KEY_TAGS_MASK);
+				String tagsMask = "0"; // (String) videoMap.get(JSON_KEY_TAGS_MASK);
 				
 				items.add(createItem(id, title, imageUrl, tagsMask));
 			}

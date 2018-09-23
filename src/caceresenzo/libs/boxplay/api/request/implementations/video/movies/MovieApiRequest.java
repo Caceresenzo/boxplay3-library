@@ -45,7 +45,7 @@ public class MovieApiRequest extends ApiRequest<MovieVideoStoreElement> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public MovieVideoStoreElement processResponse(ApiResponse apiResponse) {
+	public MovieVideoStoreElement processResponse(ApiResponse<MovieVideoStoreElement> apiResponse) {
 		if (apiResponse.isUsable()) {
 			Map<String, Object> dataMap = (Map<String, Object>) apiResponse.getResponse();
 			
@@ -53,7 +53,7 @@ public class MovieApiRequest extends ApiRequest<MovieVideoStoreElement> {
 			long groupId = ParseUtils.parseLong(groupMap.get(JSON_KEY_GROUP_ITEM_ID), NO_ID);
 			String groupTitle = (String) groupMap.get(JSON_KEY_GROUP_ITEM_TITLE);
 			String groupImageUrl = (String) groupMap.get(JSON_KEY_GROUP_ITEM_IMAGE_URL);
-			String groupTagsMask = (String) groupMap.get(JSON_KEY_GROUP_ITEM_TAGS);
+			String groupTagsMask = "0"; // (String) groupMap.get(JSON_KEY_GROUP_ITEM_TAGS);
 			
 			SimpleVideoStoreElement parentGroup = null;
 			if (groupId != NO_ID) {

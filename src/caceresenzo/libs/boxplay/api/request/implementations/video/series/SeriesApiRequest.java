@@ -41,7 +41,7 @@ public class SeriesApiRequest extends ApiRequest<SeriesVideoStoreElement> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public SeriesVideoStoreElement processResponse(ApiResponse apiResponse) {
+	public SeriesVideoStoreElement processResponse(ApiResponse<SeriesVideoStoreElement> apiResponse) {
 		if (apiResponse.isUsable()) {
 			Map<String, Object> dataMap = (Map<String, Object>) apiResponse.getResponse();
 			
@@ -56,7 +56,7 @@ public class SeriesApiRequest extends ApiRequest<SeriesVideoStoreElement> {
 				long seasonId = ParseUtils.parseLong(seasonMap.get(JSON_KEY_SEASONS_ITEMS_ID), NO_ID);
 				String seasonTitle = (String) seasonMap.get(JSON_KEY_SEASONS_ITEMS_TITLE);
 				String seasonImageUrl = (String) seasonMap.get(JSON_KEY_SEASONS_ITEMS_IMAGE_URL);
-				String seasonTags = (String) seasonMap.get(JSON_KEY_SEASONS_ITEMS_TAGS);
+				String seasonTags = "0";// (String) seasonMap.get(JSON_KEY_SEASONS_ITEMS_TAGS);
 				
 				if (seasonId != NO_ID) {
 					seasons.add(new SeriesSeasonVideoStoreElement(seasonId, seasonTitle, seasonImageUrl, BigIntegerBitSet.fromHex(seasonTags)));
