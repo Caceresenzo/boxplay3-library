@@ -3,8 +3,8 @@ package caceresenzo.libs.boxplay.api.request.implementations.user.identification
 import java.util.HashMap;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.api.ApiResponse;
 import caceresenzo.libs.boxplay.api.request.implementations.user.UserApiRequest;
+import caceresenzo.libs.boxplay.api.response.ApiResponse;
 import caceresenzo.libs.boxplay.users.User;
 
 public class UserLoginApiRequest extends UserApiRequest<User> {

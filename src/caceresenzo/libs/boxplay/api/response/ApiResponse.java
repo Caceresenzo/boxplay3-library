@@ -1,4 +1,4 @@
-package caceresenzo.libs.boxplay.api;
+package caceresenzo.libs.boxplay.api.response;
 
 import caceresenzo.libs.boxplay.api.request.ApiRequest;
 import caceresenzo.libs.json.JsonAware;
@@ -12,6 +12,7 @@ import caceresenzo.libs.parse.ParseUtils;
  * @author Enzo CACERES
  */
 public class ApiResponse<T> {
+	
 	/* Constants */
 	public static final String JSON_KEY_SUCCESS = "success";
 	public static final String JSON_KEY_STATUS = "status";
@@ -24,7 +25,7 @@ public class ApiResponse<T> {
 	
 	/* Response */
 	private boolean success;
-	private ResponseStatus status;
+	private ApiResponseStatus status;
 	private String errorMessage;
 	private JsonAware response;
 	
@@ -44,13 +45,13 @@ public class ApiResponse<T> {
 			JsonObject json = (JsonObject) new JsonParser().parse(response);
 			
 			this.success = ParseUtils.parseBoolean(json.get(JSON_KEY_SUCCESS), false);
-			this.status = ResponseStatus.fromString(String.valueOf(JSON_KEY_STATUS));
-			
-			this.response = (JsonAware) new JsonParser().parse(ParseUtils.parseString(json.get(JSON_KEY_RESPONSE), null));
+			this.status = ApiResponseStatus.fromString((String) json.get(JSON_KEY_STATUS));
 			
 			if (status.isError()) {
 				this.errorMessage = ParseUtils.parseString(json.get(JSON_KEY_MESSAGE), null);
 			}
+			
+			this.response = (JsonAware) new JsonParser().parse(ParseUtils.parseString(json.get(JSON_KEY_RESPONSE), null));
 		} catch (Exception exception) {
 			this.success = false;
 		}
@@ -93,7 +94,7 @@ public class ApiResponse<T> {
 	/**
 	 * @return The status of the response
 	 */
-	public ResponseStatus getStatus() {
+	public ApiResponseStatus getStatus() {
 		return status;
 	}
 	
@@ -105,7 +106,7 @@ public class ApiResponse<T> {
 	}
 	
 	/**
-	 * If the {@link ResponseStatus} of the is an error, this will, sometimes, provide additionnal information
+	 * If the {@link ApiResponseStatus} of the is an error, this will, sometimes, provide additionnal information
 	 * 
 	 * @return Optional error message
 	 */
@@ -115,45 +116,6 @@ public class ApiResponse<T> {
 	
 	public T selfProcess() {
 		return sourceRequest.processResponse(this);
-	}
-	
-	public static enum ResponseStatus {
-		OK, //
-		ERR_MOVIE_NOT_FOUND, //
-		ERR_MOVIE_LIST_UNAVAILABLE, //
-		ERR_SERIES_NOT_FOUND, //
-		ERR_SEASON_NOT_FOUND, //
-		ERR_SERIES_LIST_UNAVAILABLE, //
-		ERR_INVALID_PAGE, //
-		ERR_INVALID_LIMIT, //
-		ERR_USER_LOGIN, //
-		ERR_USER_REGISTER, //
-		UNKNOWN; //
-		
-		/**
-		 * @return True if the status is an error
-		 */
-		public boolean isError() {
-			return toString().startsWith("ERR_");
-		}
-		
-		/**
-		 * Get a {@link ResponseStatus} from a {@link String}<br>
-		 * If the status if unknown, the value {@link ResponseStatus#UNKNOWN} will be returned
-		 * 
-		 * @param source
-		 *            Source string
-		 * @return Corresponding {@link ResponseStatus}
-		 */
-		public static ResponseStatus fromString(String source) {
-			for (ResponseStatus status : values()) {
-				if (status.toString().equalsIgnoreCase(source)) {
-					return status;
-				}
-			}
-			
-			return UNKNOWN;
-		}
 	}
 	
 }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.api.ApiResponse;
 import caceresenzo.libs.boxplay.api.request.ApiRequest;
+import caceresenzo.libs.boxplay.api.response.ApiResponse;
 import caceresenzo.libs.boxplay.store.video.implementations.SeriesVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.series.SeriesSeasonVideoStoreElement;
 import caceresenzo.libs.bytes.bitset.BigIntegerBitSet;

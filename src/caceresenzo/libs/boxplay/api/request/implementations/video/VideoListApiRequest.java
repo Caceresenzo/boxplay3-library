@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.api.ApiResponse;
 import caceresenzo.libs.boxplay.api.request.ApiRequest;
 import caceresenzo.libs.boxplay.api.request.RequestSettings;
+import caceresenzo.libs.boxplay.api.response.ApiResponse;
 import caceresenzo.libs.boxplay.store.video.BaseVideoStoreElement;
 import caceresenzo.libs.parse.ParseUtils;
 

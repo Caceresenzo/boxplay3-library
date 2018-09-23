@@ -2,8 +2,8 @@ package caceresenzo.libs.boxplay.api.request;
 
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.api.ApiResponse;
 import caceresenzo.libs.boxplay.api.BoxPlayApi;
+import caceresenzo.libs.boxplay.api.response.ApiResponse;
 
 /**
  * Abstract class used to implements other {@link ApiRequest}

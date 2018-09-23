@@ -13,6 +13,8 @@ import caceresenzo.libs.boxplay.api.request.implementations.video.movies.MovieAp
 import caceresenzo.libs.boxplay.api.request.implementations.video.movies.MoviesListApiRequest;
 import caceresenzo.libs.boxplay.api.request.implementations.video.series.SeriesApiRequest;
 import caceresenzo.libs.boxplay.api.request.implementations.video.series.SeriesListApiRequest;
+import caceresenzo.libs.boxplay.api.response.ApiResponse;
+import caceresenzo.libs.boxplay.api.response.ApiResponseStatus;
 import caceresenzo.libs.boxplay.store.video.TagsCorresponder;
 import caceresenzo.libs.boxplay.store.video.implementations.MovieVideoStoreElement;
 import caceresenzo.libs.boxplay.store.video.implementations.SeriesVideoStoreElement;
@@ -138,8 +140,10 @@ public class ApiTestUnits extends SimpleTestUnits {
 		public static void main(String[] args) {
 			$("STARTING");
 			
-			User user = new UserLoginApiRequest("thewhoosher", "placeholder").call(boxPlayApi).selfProcess();
-			$(user);
+			ApiResponse<User> userResponse = new UserLoginApiRequest("thewhooshe", "placeholder").call(boxPlayApi);
+			$(userResponse.getStatus());
+			$(userResponse.getRawResponse());
+			$(userResponse.selfProcess());
 		}
 		
 	}
@@ -199,6 +203,22 @@ public class ApiTestUnits extends SimpleTestUnits {
 				BigInteger bigInteger = new BigInteger(items[4], 10);
 				
 				$(String.format(sql, bigInteger.toString(16), items[0]));
+			}
+		}
+		
+	}
+	
+	public static class AndroidI18nExporter {
+		
+		public static void main(String[] args) {
+			$("STARTING");
+			
+			for (ApiResponseStatus status : ApiResponseStatus.values()) {
+				System.out.println(String.format("<string name=\"boxplay_identification_response_error_%s\">%s</string>", status.toString().toLowerCase(), status.toString()));
+			}
+			
+			for (ApiResponseStatus status : ApiResponseStatus.values()) {
+				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayApplication.getString(R.string.boxplay_identification_response_error_%s));", status.getClass().getSimpleName(), status.toString(), status.toString().toLowerCase()));
 			}
 		}
 		

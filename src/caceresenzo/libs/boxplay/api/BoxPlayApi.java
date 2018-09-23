@@ -3,9 +3,12 @@ package caceresenzo.libs.boxplay.api;
 import java.util.Map.Entry;
 
 import caceresenzo.libs.boxplay.api.request.ApiRequest;
+import caceresenzo.libs.boxplay.api.response.ApiResponse;
 import caceresenzo.libs.boxplay.users.User;
 import caceresenzo.libs.http.client.webb.Request;
+import caceresenzo.libs.http.client.webb.Response;
 import caceresenzo.libs.http.client.webb.Webb;
+import caceresenzo.libs.string.StringUtils;
 
 public class BoxPlayApi {
 	
@@ -16,7 +19,12 @@ public class BoxPlayApi {
 	public static final String API_URL = API_BASE_URL + "/v" + API_VERSION + "/";
 	
 	/* Token */
-	private final String token;
+	private String token;
+	
+	/* Constructor */
+	public BoxPlayApi() {
+		this((String) null);
+	}
 	
 	/* Constructor */
 	public BoxPlayApi(User user) {
@@ -26,6 +34,12 @@ public class BoxPlayApi {
 	/* Constructor */
 	public BoxPlayApi(String token) {
 		this.token = token;
+	}
+	
+	public BoxPlayApi changeToken(String newToken) {
+		this.token = newToken;
+		
+		return this;
 	}
 	
 	/**
@@ -47,7 +61,7 @@ public class BoxPlayApi {
 	 * @return A new forged url with the {@link BoxPlayApi} token
 	 */
 	private String forgeUrl(String forgedUrl) {
-		return API_URL + forgedUrl + "?token=" + token;
+		return API_URL + forgedUrl + (StringUtils.validate(token) ? "?token=" + token : "");
 	}
 	
 	/**
@@ -86,7 +100,13 @@ public class BoxPlayApi {
 		
 		String response = null;
 		try {
-			response = request.ensureSuccess().asString().getBody();
+			Response<String> clientResponse = request.asString();
+			
+			if (clientResponse.isSuccess()) {
+				response = clientResponse.getBody();
+			} else {
+				response = String.valueOf(clientResponse.getErrorBody());
+			}
 		} catch (Exception exception) {
 			;
 		}
