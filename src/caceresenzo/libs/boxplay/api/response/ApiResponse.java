@@ -54,6 +54,7 @@ public class ApiResponse<T> {
 			this.response = (JsonAware) new JsonParser().parse(ParseUtils.parseString(json.get(JSON_KEY_RESPONSE), null));
 		} catch (Exception exception) {
 			this.success = false;
+			this.status = ApiResponseStatus.UNKNOWN;
 		}
 	}
 	
