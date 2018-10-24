@@ -41,7 +41,7 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 	private final String searchBaseUrl;
 	
 	public VoirFilmProSearchAndGoVideoProvider() {
-		super("VOIRFILM.pro", "https://www.voirfilm.pro");
+		super("VOIRFILM.pro", "http://www.filmstreamingvk.pro/");
 		
 		this.searchBaseUrl = getSiteUrl() + "/index.php?do=search";
 		
