@@ -23,6 +23,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.mylist.MyListItem;
 import caceresenzo.libs.logger.Logger;
 
+@SuppressWarnings("all")
 public class MyListTestUnits {
 	
 	public static void main(String[] args) {

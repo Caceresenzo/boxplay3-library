@@ -25,8 +25,10 @@ import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.iterator.ByteArrayIterator;
+import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.parse.ParseUtils;
 
+@SuppressWarnings("unused")
 public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider, IHentaiVideoContentProvider {
 	
 	/* Provider Settings: Use full page instead of adkami's search bar, will be much longer but more precise (name only) */
@@ -175,7 +177,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 			String match = rowMatcher.group(0);
 			String content = rowMatcher.group(1);
 			
-			if (match.matches("\\<li\\sclass=\\\"saison\\\"\\>(.*?)\\<\\/li\\>")) {
+			if (match.matches("\\<li\\sclass=\\\"saison\\\"[\\s]*\\>(.*?)\\<\\/li\\>")) {
 				actualSeason = content;
 			} else {
 				Matcher episodeMatcher = getHelper().regex("\\<a\\shref=\\\"(.*?)\\\".*?>(.*?)\\<\\/a\\>", content);
@@ -245,7 +247,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 	}
 	
 	public void extractEverythingFromUrl(Map<String, SearchAndGoResult> actualWorkmap, String searchQuery, String targetUrl, SearchCapability type) {
-		String html = FakeProvider.getFakeProvider().getHelper().downloadPageCache(targetUrl); // Using a fake provider
+		String html = getHelper().downloadPage(targetUrl);
 		
 		if (html == null) {
 			return;

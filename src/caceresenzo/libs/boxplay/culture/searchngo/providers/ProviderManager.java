@@ -1,12 +1,15 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AdkamiSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamNuSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ProviderFlags;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ScanMangaSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.VoirFilmProSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchStrategy;
@@ -40,16 +43,22 @@ public enum ProviderManager {
 		return SearchAndGoProvider.createContext(providerClass);
 	}
 	
+	public static List<SearchAndGoProvider> createAll() {
+		return createAll(EnumSet.noneOf(ProviderFlags.class));
+	}
+	
 	/**
 	 * Create every {@link SearchAndGoProvider} and return it in a list
 	 * 
 	 * @return A list of all {@link SearchAndGoProvider} available
 	 */
-	public static List<SearchAndGoProvider> createAll() {
+	public static List<SearchAndGoProvider> createAll(Set<ProviderFlags> flags) {
 		List<SearchAndGoProvider> providers = new ArrayList<>();
 		
 		for (ProviderManager manager : ProviderManager.values()) {
-			providers.add(manager.create());
+			if (ProviderFlags.test(manager, flags)) {
+				providers.add(manager.create());
+			}
 		}
 		
 		return providers;

@@ -1,16 +1,17 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
-import caceresenzo.libs.network.Downloader;
+import caceresenzo.libs.http.client.webb.Request;
+import caceresenzo.libs.http.client.webb.Webb;
 
 /**
  * Helper class to provide content more quickly
@@ -64,7 +65,7 @@ public class ProviderHelper implements Serializable {
 	/**
 	 * See {@link #downloadPageCache(String, Map)} for more info
 	 * 
-	 * With this function, parameters will be null
+	 * With this function, headers will be null
 	 * 
 	 * @param url
 	 *            Target url
@@ -81,20 +82,20 @@ public class ProviderHelper implements Serializable {
 	 * 
 	 * @param url
 	 *            Target url
-	 * @param parameters
-	 *            Custom parameters, ignored if null
+	 * @param headers
+	 *            Custom headers, ignored if null
 	 * @return Page content
 	 * @throws IllegalArgumentException
 	 *             If the parent provider is null (like in static mode)
 	 */
-	public String downloadPageCache(String url, Map<String, String> parameters) {
+	public String downloadPageCache(String url, Map<String, String> headers) {
 		checkProviderValidity();
 		
 		if (parentProvider.isCacheSupported() && cache.containsKey(url) && cache.get(url) != null) {
 			return (String) cache.get(url);
 		}
 		
-		String content = downloadPage(url, parameters);
+		String content = downloadPage(url, headers);
 		
 		if (parentProvider.isCacheSupported()) {
 			cache.put(url, content);
@@ -108,9 +109,8 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * See {@link #downloadPage(String, Map)} for more info
-	 * 
-	 * With this function, parameters will be null
+	 * See {@link #downloadPage(String, Map)} for more info.<br>
+	 * With this function, headers will be null.
 	 * 
 	 * @param url
 	 *            Target url
@@ -121,26 +121,34 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Download a page content
-	 * 
-	 * If any error append when downloading, it will be just ignored, and will return null
+	 * Download a page content.<br>
+	 * If any error append when downloading, it will be just ignored, and will return null.
 	 * 
 	 * @param url
 	 *            Target url
-	 * @param parameters
-	 *            Custom parameters, ignored if null
+	 * @param headers
+	 *            Custom headers, ignored if null
 	 * @return Page content
 	 */
-	public String downloadPage(String url, Map<String, String> parameters) {
+	public String downloadPage(String url, Map<String, String> headers) {
 		try {
-			return Downloader.webget(url, parameters, Charset.forName("UTF-8"));
+			Webb webb = Webb.create(true);
+			Request request = webb.get(url);
+			
+			if (headers != null) {
+				for (Entry<String, String> entry : headers.entrySet()) {
+					request.header(entry.getKey(), entry.getValue());
+				}
+			}
+			
+			return request.ensureSuccess().asString().getBody();
 		} catch (Exception exception) {
 			return null;
 		}
 	}
 	
 	/**
-	 * Quickly reset the cache
+	 * Quickly reset the cache.
 	 * 
 	 * @return Himself, so you can do more function behind
 	 */
@@ -153,7 +161,7 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Allow basic html extraction like for h1, h2, ..., p, .... elements
+	 * Allow basic html extraction like for h1, h2, ..., p, .... elements.
 	 * 
 	 * @param html
 	 *            Source html
@@ -164,9 +172,8 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Allow you to extract some <a>...</a> data from html, but will only return the first
-	 * 
-	 * Html special char will also be escaped (See {@link AdditionalResultData#escapeHtmlChar(String)} for more details)
+	 * Allow you to extract some <a>...</a> data from html, but will only return the first.<br>
+	 * Html special char will also be escaped (See {@link AdditionalResultData#escapeHtmlChar(String)} for more details).
 	 * 
 	 * @param html
 	 *            Source html
@@ -183,9 +190,8 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Do the same thing as {{@link #extract(String, String, int)}
-	 * 
-	 * But use 1 as default grounp
+	 * Do the same thing as {{@link #extract(String, String, int)}.<br>
+	 * But use 1 as default group0
 	 * 
 	 * @param regex
 	 *            Your regex
@@ -198,7 +204,7 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Quickly extract first find of a match
+	 * Quickly extract first find of a match.
 	 * 
 	 * @param regex
 	 *            Your regex
@@ -219,7 +225,7 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Faster regex code (just quick access, not quicker code)
+	 * Faster regex code (just quick access, not quicker code).
 	 * 
 	 * @param regex
 	 *            Your regex
@@ -232,18 +238,18 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Some string found online are html-encoded, use this function to decode a string
+	 * Some string found online are html-encoded, use this function to decode a string.
 	 * 
 	 * @param source
 	 *            The source string
 	 * @return Escaped string
 	 */
-	public String escapeHtmlSpecialCharactere(String source) {
+	public String escapeHtmlSpecialCharacters(String source) {
 		return source; // TODO: Finish this function
 	}
 	
 	/**
-	 * Internal function to throw an exception if the parent provider is null
+	 * Internal function to throw an exception if the parent provider is null.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             if no valid parent provider is available
@@ -255,7 +261,7 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
-	 * Get the instance of the static helper
+	 * Get the instance of the static helper.
 	 * 
 	 * @return Static helper
 	 */

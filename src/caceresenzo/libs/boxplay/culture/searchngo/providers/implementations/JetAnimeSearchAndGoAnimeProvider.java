@@ -18,11 +18,14 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.ISubscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.cryptography.CloudflareUtils;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
 
-public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider {
+@SuppressWarnings("unused")
+public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider, ISubscribable {
 	
 	protected static final String ADDITIONAL_DATA_KEY_NAME = "Nom:";
 	protected static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Nom original:";
@@ -199,6 +202,12 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { OpenloadVideoExtractor.class };
+	}
+	
+	@Override
+	public Subscriber createSubscriber() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/**

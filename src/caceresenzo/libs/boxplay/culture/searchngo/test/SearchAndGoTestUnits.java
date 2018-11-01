@@ -55,7 +55,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "hell";
+		private static final String QUERY = "nichijou";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -85,9 +85,9 @@ public class SearchAndGoTestUnits {
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
 			// providers.add(ProviderManager.JETANIME.create());
-			providers.add(ProviderManager.VOIRFILM_PRO.create());
+			// providers.add(ProviderManager.VOIRFILM_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
-			// providers.add(ProviderManager.ADKAMI.create());
+			providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
 			// providers.add(ProviderManager.FULLSTREAM_NU.create());
 			
@@ -108,7 +108,7 @@ public class SearchAndGoTestUnits {
 				for (SearchAndGoResult searchAndGoResult : results) {
 					Logger.info("type: %-10s - name: %-60s - score: %s", searchAndGoResult.getType(), searchAndGoResult.getName(), searchAndGoResult.score());
 				}
-			} catch (final Exception exception) {
+			} catch (Exception exception) {
 				exception.printStackTrace();
 			}
 			

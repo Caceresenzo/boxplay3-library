@@ -247,7 +247,7 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 		Matcher matcher = getStaticHelper().regex("\\<a\\shref=\\\"(.*?)\\\"\\sclass=\\\"alpha-link\\\"\\>[\\s\\t\\n]*\\<h6\\sstyle=\\\".*?\\\"\\>(.*?)\\<\\/h6\\>[\\s\\t\\n]*\\<\\/a\\>", html);
 		
 		while (matcher.find()) {
-			items.add(new MangaLelItem(matcher.group(0).trim(), matcher.group(1).trim(), getStaticHelper().escapeHtmlSpecialCharactere(matcher.group(2).trim())));
+			items.add(new MangaLelItem(matcher.group(0).trim(), matcher.group(1).trim(), getStaticHelper().escapeHtmlSpecialCharacters(matcher.group(2).trim())));
 		}
 		
 		return items;

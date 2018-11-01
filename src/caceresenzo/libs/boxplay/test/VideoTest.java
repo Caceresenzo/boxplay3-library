@@ -1,9 +1,7 @@
 package caceresenzo.libs.boxplay.test;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +21,7 @@ import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
+@SuppressWarnings("all")
 public class VideoTest {
 	
 	public static void main(String[] args) throws IOException, JsonException {

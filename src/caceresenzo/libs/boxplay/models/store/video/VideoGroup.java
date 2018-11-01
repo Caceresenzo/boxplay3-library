@@ -122,6 +122,10 @@ public class VideoGroup extends VideoElement implements MyListable {
 		return ParseUtils.parseInt(seasons.get(0).getSeasonValue(), 0) != 0;
 	}
 	
+	public boolean isMovie() {
+		return !hasSeason();
+	}
+	
 	@Override
 	public String toUniqueString() {
 		return getSlug();
