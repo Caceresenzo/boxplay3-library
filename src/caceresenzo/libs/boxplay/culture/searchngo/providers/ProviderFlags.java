@@ -1,9 +1,8 @@
-package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
+package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.ISubscribable;
 
 public enum ProviderFlags {
