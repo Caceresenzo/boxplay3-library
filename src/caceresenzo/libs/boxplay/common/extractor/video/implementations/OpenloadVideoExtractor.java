@@ -14,6 +14,7 @@ import caceresenzo.libs.string.StringUtils;
  */
 public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	
+	/* Constants */
 	public static final String CODE_EXECUTOR_JS_FUNCTION_NAME = "myFunction";
 	public static final String FILE_DELETED = "We can't find the file you are looking for. It maybe got deleted by the owner or was removed due a copyright violation.";
 	
@@ -167,8 +168,8 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	
 	@Override
 	public boolean matchUrl(String baseUrl) {
-		/* Custom from provider: film.full-stream.nu/openload/ */
-		return baseUrl.matches(".*?(oload\\.stream|openload\\.co|oloadcdn\\.net|film\\.full-stream\\.nu\\/openload\\/).*?");
+		/* Custom from provider: full-stream/ */
+		return baseUrl.matches(".*?(oload\\.stream|oload\\.fun|openload\\.co|oloadcdn\\.net|full-stream\\.co\\/).*?");
 	}
 	
 }

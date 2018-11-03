@@ -23,7 +23,7 @@ import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.string.StringUtils;
 
-public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
+public class FilmStreamingVkProSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
 	public static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Titre Original:";
 	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genre:";
@@ -40,8 +40,8 @@ public class VoirFilmProSearchAndGoVideoProvider extends SearchAndGoProvider imp
 	
 	private final String searchBaseUrl;
 	
-	public VoirFilmProSearchAndGoVideoProvider() {
-		super("VOIRFILM.pro", "http://www.filmstreamingvk.pro/");
+	public FilmStreamingVkProSearchAndGoVideoProvider() {
+		super("FILMSTREAMINGVK.pro", "http://www.filmstreamingvk.pro/");
 		
 		this.searchBaseUrl = getSiteUrl() + "/index.php?do=search";
 		

@@ -1,17 +1,16 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
-import caceresenzo.libs.http.client.webb.Request;
-import caceresenzo.libs.http.client.webb.Webb;
+import caceresenzo.libs.network.Downloader;
 
 /**
  * Helper class to provide content more quickly
@@ -20,10 +19,13 @@ import caceresenzo.libs.http.client.webb.Webb;
  */
 public class ProviderHelper implements Serializable {
 	
+	/* Constants */
 	public static final int MAX_CACHE_CONTENT_SIZE = 10;
 	
+	/* Statics */
 	protected static ProviderHelper STATIC_HELPER = new ProviderHelper();
 	
+	/* Variables */
 	private SearchAndGoProvider parentProvider;
 	
 	private SearchEngine searchEngine;
@@ -132,17 +134,9 @@ public class ProviderHelper implements Serializable {
 	 */
 	public String downloadPage(String url, Map<String, String> headers) {
 		try {
-			Webb webb = Webb.create(true);
-			Request request = webb.get(url);
-			
-			if (headers != null) {
-				for (Entry<String, String> entry : headers.entrySet()) {
-					request.header(entry.getKey(), entry.getValue());
-				}
-			}
-			
-			return request.ensureSuccess().asString().getBody();
+			return Downloader.webget(url, headers, Charset.forName("UTF-8"));
 		} catch (Exception exception) {
+			// exception.printStackTrace();
 			return null;
 		}
 	}

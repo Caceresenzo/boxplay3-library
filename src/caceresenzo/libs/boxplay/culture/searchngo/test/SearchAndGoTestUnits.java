@@ -55,7 +55,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "nichijou";
+		private static final String QUERY = "game";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -87,9 +87,9 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.JETANIME.create());
 			// providers.add(ProviderManager.VOIRFILM_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
-			providers.add(ProviderManager.ADKAMI.create());
+			// providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
-			// providers.add(ProviderManager.FULLSTREAM_NU.create());
+			providers.add(ProviderManager.FULLSTREAM_CO.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
 			

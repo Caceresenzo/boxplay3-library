@@ -28,7 +28,7 @@ import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.string.StringUtils;
 
-public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
+public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
 	/* Constants */
 	public static final String VIDEO_NAME_FORMAT = "%S %S";
@@ -56,8 +56,8 @@ public class FullStreamNuSearchAndGoVideoProvider extends SearchAndGoProvider im
 	
 	private final String searchBaseUrl;
 	
-	public FullStreamNuSearchAndGoVideoProvider() {
-		super("Full-Stream.nu", "https://film.full-stream.nu");
+	public FullStreamCoSearchAndGoVideoProvider() {
+		super("Full-Stream.co", "https://full-stream.co/");
 		
 		this.searchBaseUrl = getSiteUrl() + "/index.php?do=search";
 		
