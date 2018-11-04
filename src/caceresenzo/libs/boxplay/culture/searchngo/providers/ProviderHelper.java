@@ -97,7 +97,7 @@ public class ProviderHelper implements Serializable {
 			return (String) cache.get(url);
 		}
 		
-		String content = downloadPage(url, headers);
+		String content = downloadPage(url, headers, parentProvider.getWorkingCharset());
 		
 		if (parentProvider.isCacheSupported()) {
 			cache.put(url, content);
@@ -119,7 +119,7 @@ public class ProviderHelper implements Serializable {
 	 * @return Page content
 	 */
 	public String downloadPage(String url) {
-		return downloadPage(url, null);
+		return downloadPage(url, null, "UTF-8");
 	}
 	
 	/**
@@ -132,11 +132,11 @@ public class ProviderHelper implements Serializable {
 	 *            Custom headers, ignored if null
 	 * @return Page content
 	 */
-	public String downloadPage(String url, Map<String, String> headers) {
+	public String downloadPage(String url, Map<String, String> headers, String charset) {
 		try {
-			return Downloader.webget(url, headers, Charset.forName("UTF-8"));
+			return Downloader.webget(url, headers, Charset.forName(charset));
 		} catch (Exception exception) {
-			// exception.printStackTrace();
+			exception.printStackTrace();
 			return null;
 		}
 	}

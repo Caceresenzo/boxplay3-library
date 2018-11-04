@@ -85,9 +85,12 @@ public class ProviderSearchCapability implements Serializable {
 	 */
 	public static enum SearchCapability implements Serializable {
 		ANIME(ContentViewerType.VIDEO), //
+		DRAMA(ContentViewerType.VIDEO), //
 		SERIES(ContentViewerType.VIDEO), //
 		VIDEO(ContentViewerType.VIDEO), //
 		HENTAI(ContentViewerType.VIDEO), //
+		TOKUSATSU(ContentViewerType.VIDEO), //
+		OST(ContentViewerType.MUSIC), //
 		MANGA(ContentViewerType.IMAGE), //
 		MOVIE(ContentViewerType.VIDEO), //
 		DEFAULT(null); //

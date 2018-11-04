@@ -2,7 +2,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.data;
 
 public enum AdditionalDataType {
 	
-	// Common data
+	/* Common data */
 	THUMBNAIL, //
 	NAME, //
 	ORIGINAL_NAME, //
@@ -28,12 +28,13 @@ public enum AdditionalDataType {
 	DURATION, //
 	RESUME, //
 	RATING, //
+	SIMPLE_HTML, //
 	
-	// Content data
+	/* Content data */
 	ITEM_VIDEO, //
 	ITEM_CHAPTER, //
 	
-	// Default
+	/* Default */
 	NULL;
 
 }

@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Set;
 
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AdkamiSearchAndGoVideoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AnimeUltimeSearchAndGoVideoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FilmStreamingVkProSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ScanMangaSearchAndGoMangaProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FilmStreamingVkProSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchStrategy;
 
 /**
@@ -22,6 +23,7 @@ public enum ProviderManager {
 	
 	JETANIME(JetAnimeSearchAndGoAnimeProvider.class), //
 	ADKAMI(AdkamiSearchAndGoVideoProvider.class), //
+	ANIMEULTIME(AnimeUltimeSearchAndGoVideoProvider.class), //
 	FILMSTREAMINGVK_PRO(FilmStreamingVkProSearchAndGoVideoProvider.class), //
 	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //

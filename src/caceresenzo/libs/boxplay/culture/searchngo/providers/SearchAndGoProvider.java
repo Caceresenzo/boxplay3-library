@@ -24,8 +24,13 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
  */
 public abstract class SearchAndGoProvider implements IContentProvider {
 	
+	/* Constants */
 	public static final int NO_VALUE = Integer.MIN_VALUE;
 	
+	public static final String CHARSET_UTF_8 = "UTF-8";
+	public static final String CHARSET_LATIN_1 = "ISO-8859-1";
+	
+	/* Variables */
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new EnumMap<>(AdditionalDataType.class);
 	
 	private final String siteName, siteUrl;
@@ -256,6 +261,17 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 */
 	public String getSiteUrl() {
 		return siteUrl;
+	}
+	
+	/**
+	 * Get what charset the provider will use the most.<br>
+	 * <br>
+	 * Default: {@link #CHARSET_UTF_8}
+	 * 
+	 * @return Used charset
+	 */
+	public String getWorkingCharset() {
+		return CHARSET_UTF_8;
 	}
 	
 	/**

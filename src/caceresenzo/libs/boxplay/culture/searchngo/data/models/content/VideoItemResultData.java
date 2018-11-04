@@ -14,6 +14,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleUrlData;
  */
 public class VideoItemResultData extends SimpleUrlData implements DisplayableString, ViewableContent {
 	
+	/* Variables */
 	private final IVideoContentProvider videoContentProvider;
 	private final String name;
 	

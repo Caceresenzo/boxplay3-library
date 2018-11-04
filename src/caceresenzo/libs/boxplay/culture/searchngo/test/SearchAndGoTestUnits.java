@@ -16,6 +16,7 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.Extrac
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
@@ -89,7 +90,8 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
-			providers.add(ProviderManager.FULLSTREAM_CO.create());
+			// providers.add(ProviderManager.FULLSTREAM_CO.create());
+			providers.add(ProviderManager.ANIMEULTIME.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
 			
@@ -119,6 +121,9 @@ public class SearchAndGoTestUnits {
 				Logger.$("\t" + result.getUrl());
 				Logger.$("\t" + result.getName());
 				Logger.$("\t" + result.getBestImageUrl());
+				if (result.hasDescription()) {
+					Logger.$("\t" + result.getDescription());
+				}
 				
 				/* Data */
 				Logger.$("");
@@ -146,6 +151,10 @@ public class SearchAndGoTestUnits {
 							ContentExtractor contentExtractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.VIDEO, url);
 							
 							Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
+							
+							// if (contentExtractor != null && contentExtractor instanceof VideoContentExtractor) {
+							// Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
+							// }
 						}
 						
 						Logger.$("");

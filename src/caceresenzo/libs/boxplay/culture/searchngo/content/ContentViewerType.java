@@ -7,6 +7,6 @@ package caceresenzo.libs.boxplay.culture.searchngo.content;
  */
 public enum ContentViewerType {
 	
-	VIDEO, IMAGE;
+	VIDEO, IMAGE, MUSIC;
 
 }

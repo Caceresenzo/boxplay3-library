@@ -7,6 +7,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.models.element.Imagable;
 import caceresenzo.libs.boxplay.mylist.MyListable;
+import caceresenzo.libs.string.StringUtils;
 
 /**
  * Class containing some displayable information for the frond-end
@@ -15,14 +16,17 @@ import caceresenzo.libs.boxplay.mylist.MyListable;
  */
 public class SearchAndGoResult extends Imagable implements MyListable {
 	
-	private static final int NO_SCORE = -1;
+	/* Constants */
+	public static final int NO_SCORE = -1;
 	
+	/* Variables */
 	private SearchAndGoProvider parentProvider;
 	private String name, url;
 	private SearchCapability type;
 	private Map<String, Object> requireHeaders;
 	
-	private int score = NO_SCORE;
+	private int score;
+	private String description;
 	
 	/**
 	 * Create a new {@link SearchAndGoResult} instance
@@ -74,6 +78,8 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 		this.url = url;
 		this.imageUrl = imageUrl;
 		this.type = type;
+		
+		this.score = NO_SCORE;
 	}
 	
 	/**
@@ -140,6 +146,35 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	public SearchAndGoResult score(int score) {
 		this.score = score;
 		return this;
+	}
+	
+	/**
+	 * Check if the description attached to this result is valid.
+	 * 
+	 * @return Validity state
+	 */
+	public boolean hasDescription() {
+		return StringUtils.validate(description);
+	}
+	
+	/**
+	 * Attach a description to this result.
+	 * 
+	 * @param description
+	 *            Target description.
+	 * @return Itself
+	 */
+	public SearchAndGoResult describe(String description) {
+		this.description = description;
+		
+		return this;
+	}
+	
+	/**
+	 * @return Attached description of this result
+	 */
+	public String getDescription() {
+		return description;
 	}
 	
 	/**
