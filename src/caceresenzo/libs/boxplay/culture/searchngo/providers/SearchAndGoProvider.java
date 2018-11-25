@@ -14,6 +14,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
+import caceresenzo.libs.http.client.webb.Webb;
 
 /**
  * Provider class
@@ -23,7 +24,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
  * @author Enzo CACERES
  */
 public abstract class SearchAndGoProvider implements IContentProvider {
-	
+
 	/* Constants */
 	public static final int NO_VALUE = Integer.MIN_VALUE;
 	
@@ -242,6 +243,24 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 * @return If the cache is supported
 	 */
 	public boolean isCacheSupported() {
+		return true;
+	}
+	
+	/**
+	 * Return if the provider need an advanced downloader to work, FALSE by default
+	 * 
+	 * @return If you want to use {@link Webb}
+	 */
+	public boolean isAdvancedDownloaderNeeded() {
+		return false;
+	}
+	
+	/**
+	 * Return if the provider need to use SSL excryption to work, TRUE by default
+	 * 
+	 * @return If you want to kept using ssl
+	 */
+	public boolean isSslNeeded() {
 		return true;
 	}
 	

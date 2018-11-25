@@ -29,25 +29,25 @@ public class ProviderCallback {
 		;
 	}
 	
-	public static void registerSearchallback(SearchCallback callback) {
+	public static void registerSearchCallback(SearchCallback callback) {
 		if (!searchCallbacks.contains(callback)) {
 			searchCallbacks.add(callback);
 		}
 	}
 	
-	public static void unregisterSearchallback(SearchCallback callback) {
+	public static void unregisterSearchCallback(SearchCallback callback) {
 		if (searchCallbacks.contains(callback)) {
 			searchCallbacks.remove(callback);
 		}
 	}
 	
-	public static void registerProviderSearchallback(ProviderSearchCallback callback) {
+	public static void registerProviderSearchCallback(ProviderSearchCallback callback) {
 		if (!providerSearchCallbacks.contains(callback)) {
 			providerSearchCallbacks.add(callback);
 		}
 	}
 	
-	public static void unregisterProviderSearchallback(ProviderSearchCallback callback) {
+	public static void unregisterProviderSearchCallback(ProviderSearchCallback callback) {
 		if (providerSearchCallbacks.contains(callback)) {
 			providerSearchCallbacks.remove(callback);
 		}

@@ -34,6 +34,10 @@ public enum ProviderFlags {
 	 * @return If the flags are present
 	 */
 	public static boolean test(ProviderManager provider, Set<ProviderFlags> flags) {
+		if (flags.isEmpty()) {
+			return true;
+		}
+		
 		for (ProviderFlags flag : ProviderFlags.values()) {
 			if (flag.getFlagTester().test(provider)) {
 				return true;

@@ -16,7 +16,6 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.Extrac
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
@@ -26,6 +25,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.completed.CompletedVideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
@@ -61,7 +61,7 @@ public class SearchAndGoTestUnits {
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
 			
-			ProviderCallback.registerProviderSearchallback(new ProviderSearchCallback() {
+			ProviderCallback.registerProviderSearchCallback(new ProviderSearchCallback() {
 				@Override
 				public void onProviderSorting(SearchAndGoProvider provider) {
 					;
@@ -91,7 +91,8 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
 			// providers.add(ProviderManager.FULLSTREAM_CO.create());
-			providers.add(ProviderManager.ANIMEULTIME.create());
+			// providers.add(ProviderManager.ANIMEULTIME.create());
+			providers.add(ProviderManager.HDSS_TO.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
 			
@@ -142,8 +143,16 @@ public class SearchAndGoTestUnits {
 				for (AdditionalResultData additionalData : additionalContent) {
 					Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
 					
-					if (provider instanceof IVideoContentProvider && additionalData.getData() instanceof VideoItemResultData) {
-						String[] urls = ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData());
+					if (provider instanceof IVideoContentProvider) {
+						
+						String[] urls;
+						if (additionalData.getData() instanceof CompletedVideoItemResultData) {
+							urls = ((CompletedVideoItemResultData) additionalData.getData()).getPlayerUrlsAsArray();
+						} else if (additionalData.getData() instanceof VideoItemResultData) {
+							urls = ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData());
+						} else {
+							throw new IllegalStateException("Invalid data class provided by a IVideoContentProvider: " + additionalData.getData().getClass().getSimpleName());
+						}
 						
 						for (String url : urls) {
 							Logger.$("\t\tIVideoContentProvider: " + url);

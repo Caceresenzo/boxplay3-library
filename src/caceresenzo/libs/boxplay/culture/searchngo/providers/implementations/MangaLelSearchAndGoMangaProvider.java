@@ -73,12 +73,22 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 	}
 	
 	@Override
+	public boolean isAdvancedDownloaderNeeded() {
+		return true;
+	}
+	
+	@Override
+	public boolean isSslNeeded() {
+		return false;
+	}
+	
+	@Override
 	public Map<String, SearchAndGoResult> processWork(String searchQuery) {
 		Map<String, SearchAndGoResult> result = createEmptyWorkMap();
 		
 		String html = getHelper().downloadPageCache(listApiUrl);
 		
-		if (html == null) {
+		if (!StringUtils.validate(html)) {
 			return result;
 		}
 		

@@ -16,7 +16,7 @@ public class VideoItemResultData extends SimpleUrlData implements DisplayableStr
 	
 	/* Variables */
 	private final IVideoContentProvider videoContentProvider;
-	private final String name;
+	protected final String name;
 	
 	/**
 	 * Constructor, create a new instance with parent content provider, an url and a name

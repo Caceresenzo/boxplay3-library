@@ -9,6 +9,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.Adka
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AnimeUltimeSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FilmStreamingVkProSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.HdssToSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ScanMangaSearchAndGoMangaProvider;
@@ -24,8 +25,11 @@ public enum ProviderManager {
 	JETANIME(JetAnimeSearchAndGoAnimeProvider.class), //
 	ADKAMI(AdkamiSearchAndGoVideoProvider.class), //
 	ANIMEULTIME(AnimeUltimeSearchAndGoVideoProvider.class), //
+	
 	FILMSTREAMINGVK_PRO(FilmStreamingVkProSearchAndGoVideoProvider.class), //
 	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
+	HDSS_TO(HdssToSearchAndGoVideoProvider.class),
+	
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //
 	SCANMANGA(ScanMangaSearchAndGoMangaProvider.class); //
 	
@@ -77,6 +81,16 @@ public enum ProviderManager {
 		for (SearchAndGoProvider provider : providers) {
 			provider.getHelper().getSearchEngine().searchStrategy(newSearchStrategy);
 		}
+	}
+
+	public static ProviderManager fromClass(String className) {
+		for (ProviderManager manager : values()) {
+			if (manager.providerClass.getSimpleName().equals(className)) {
+				return manager;
+			}
+		}
+		
+		return null;
 	}
 	
 }

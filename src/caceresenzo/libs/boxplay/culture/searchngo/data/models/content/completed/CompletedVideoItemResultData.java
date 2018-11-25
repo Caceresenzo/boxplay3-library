@@ -52,4 +52,9 @@ public class CompletedVideoItemResultData extends VideoItemResultData {
 		throw new IllegalStateException("Get a direct url from a CompletedVideoItemResultData is not possible.");
 	}
 	
+	@Override
+	public String toString() {
+		return "CompletedVideoItemResultData[playerUrls=" + playerUrls + ", name=" + name + "]";
+	}
+	
 }

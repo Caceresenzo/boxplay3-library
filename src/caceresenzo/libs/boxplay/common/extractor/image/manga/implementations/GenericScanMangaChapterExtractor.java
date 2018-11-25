@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 /**
@@ -21,7 +20,6 @@ public class GenericScanMangaChapterExtractor extends MangaChapterContentExtract
 		String html = getStaticHelper().downloadPage(chapterUrl);
 		
 		if (html == null) {
-			Logger.info("html is null");
 			return urls;
 		}
 		
@@ -29,7 +27,6 @@ public class GenericScanMangaChapterExtractor extends MangaChapterContentExtract
 		String jsCode = extractImagesSubUrlsJsContainer(html);
 		
 		if (!StringUtils.validate(baseImageUrl, jsCode)) {
-			Logger.info("string not valid: %s %s", StringUtils.validate(baseImageUrl), StringUtils.validate(jsCode));
 			return urls;
 		}
 		
@@ -39,7 +36,6 @@ public class GenericScanMangaChapterExtractor extends MangaChapterContentExtract
 			
 			if (imageSubUrl != null) {
 				urls.add(String.format(baseImageUrl, imageSubUrl));
-				// urls.add(String.format("http://88.125.214.43/scan-manga-image.php?url=%s&referer=%s", URLEncoder.encode(String.format(baseImageUrl, imageSubUrl)), URLEncoder.encode(chapterUrl)));
 			}
 		}
 		

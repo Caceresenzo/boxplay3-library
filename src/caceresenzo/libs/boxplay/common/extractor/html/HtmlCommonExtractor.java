@@ -16,15 +16,22 @@ public class HtmlCommonExtractor {
 	
 	/**
 	 * Already prepared regex for "a" link extraction<br>
-	 * 
-	 * Groups: 0: Full match, 1: Url, 2: Display string
+	 * Groups:<br>
+	 * <ul>
+	 * <li>0: Full match</li>
+	 * <li>1: Url</li>
+	 * <li>2: Display string</li>
+	 * </ul>
 	 */
 	public static final String COMMON_LINK_EXTRACTION_REGEX = "\\<a.*?href=\\\"(.*?)\\\"\\>(.*?)\\<\\/a\\>";
 	
 	/**
 	 * Already prepared regex for "li" list extraction<br>
-	 * 
-	 * Groups: 0: Full match, 1: Display string
+	 * Groups:<br>
+	 * <ul>
+	 * <li>0: Full match</li>
+	 * <li>1: Display string</li>
+	 * </ul>
 	 */
 	public static final String COMMON_LIST_EXTRACTION_REGEX = "\\<li.*?\\>(.*?)\\<\\/li\\>";
 	
@@ -45,7 +52,7 @@ public class HtmlCommonExtractor {
 	 * @return Target url, null if not found
 	 */
 	public static String extractIframeUrlFromHtml(String html) {
-		return ProviderHelper.getStaticHelper().extract("\\<iframe\\ssrc=\\\"(.*?)\".*?\\>\\<\\/iframe\\>", html);
+		return ProviderHelper.getStaticHelper().extract("\\<iframe.*?src=\\\"(.*?)\\\".*?\\>.*?\\<\\/iframe\\>", html);
 	}
 	
 	public static String escapeUnicode(String string) {

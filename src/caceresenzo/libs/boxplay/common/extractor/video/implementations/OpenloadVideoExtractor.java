@@ -168,8 +168,8 @@ public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
 	
 	@Override
 	public boolean matchUrl(String baseUrl) {
-		/* Custom from provider: full-stream/ */
-		return baseUrl.matches(".*?(oload\\.stream|oload\\.fun|openload\\.co|oloadcdn\\.net|full-stream\\.co\\/).*?");
+		/* Custom from provider: full-stream/, belike1.stream/ */
+		return baseUrl.matches(".*?(oload\\.stream|oload\\.fun|openload\\.co|oloadcdn\\.net|full-stream\\.co\\/|belike1\\.stream\\/).*?");
 	}
 	
 }

@@ -1,15 +1,20 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.UrlResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
+import caceresenzo.libs.http.client.webb.Request;
+import caceresenzo.libs.http.client.webb.Response;
+import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.network.Downloader;
 
 /**
@@ -62,6 +67,24 @@ public class ProviderHelper implements Serializable {
 	 */
 	public SearchEngine getSearchEngine() {
 		return searchEngine;
+	}
+	
+	/**
+	 * Encode some data to be used in an url.<br>
+	 * The encoding used is UTF-8.<br>
+	 * <br>
+	 * If encoding is not available, the original data will be returned.
+	 * 
+	 * @param data
+	 *            Target data to encode
+	 * @return Encoded data
+	 */
+	public String encodeUrl(String data) {
+		try {
+			return URLEncoder.encode(data, "UTF-8");
+		} catch (Exception exception) {
+			return data;
+		}
 	}
 	
 	/**
@@ -134,7 +157,25 @@ public class ProviderHelper implements Serializable {
 	 */
 	public String downloadPage(String url, Map<String, String> headers, String charset) {
 		try {
-			return Downloader.webget(url, headers, Charset.forName(charset));
+			if (parentProvider != null && parentProvider.isAdvancedDownloaderNeeded()) {
+				Request request = Webb.create(!parentProvider.isSslNeeded()).get(url);
+				
+				if (headers != null) {
+					for (Entry<String, String> entry : headers.entrySet()) {
+						request.header(entry.getKey(), entry.getValue());
+					}
+				}
+				
+				Response<String> response = request.asString();
+				
+				if (response.isSuccess()) {
+					return response.getBody();
+				} else {
+					return String.valueOf(response.getErrorBody());
+				}
+			} else {
+				return Downloader.webget(url, headers, Charset.forName(charset));
+			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			return null;
