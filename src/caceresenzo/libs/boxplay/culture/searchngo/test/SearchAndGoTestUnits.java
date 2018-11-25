@@ -28,6 +28,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemR
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.completed.CompletedVideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
@@ -323,6 +324,14 @@ public class SearchAndGoTestUnits {
 			
 			for (AdditionalDataType resultType : AdditionalDataType.values()) {
 				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayApplication.getString(R.string.boxplay_culture_searchngo_search_result_data_type_%s));", resultType.getClass().getSimpleName(), resultType.toString(), resultType.toString().toLowerCase()));
+			}
+			
+			for (SearchCapability capability : SearchCapability.values()) {
+				System.out.println(String.format("<string name=\"boxplay_culture_searchngo_search_result_type_%s\">%s</string>", capability.toString().toLowerCase(), capability.toString()));
+			}
+			
+			for (SearchCapability capability : SearchCapability.values()) {
+				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayApplication.getString(R.string.boxplay_culture_searchngo_search_result_type_%s));", capability.getClass().getSimpleName(), capability.toString(), capability.toString().toLowerCase()));
 			}
 		}
 		
