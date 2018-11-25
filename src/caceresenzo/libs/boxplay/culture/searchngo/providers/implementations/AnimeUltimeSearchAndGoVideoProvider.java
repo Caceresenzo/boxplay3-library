@@ -127,8 +127,6 @@ public class AnimeUltimeSearchAndGoVideoProvider extends SearchAndGoProvider imp
 		String mainHtmlContainer = extractMainPageHtmlContainer(html);
 		
 		if (!StringUtils.validate(html, mainHtmlContainer)) {
-			Logger.info(mainHtmlContainer);
-			System.exit(0);
 			return additionals;
 		}
 		
