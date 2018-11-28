@@ -1,6 +1,7 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,31 +15,40 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.completed.CompletedVideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.ISubscribable;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
+import caceresenzo.libs.boxplay.utils.Sandbox;
+import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.cryptography.CloudflareUtils;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
+import caceresenzo.libs.iterator.ByteArrayIterator;
+import caceresenzo.libs.logger.Logger;
+import caceresenzo.libs.string.StringUtils;
 
 @SuppressWarnings("unused")
 public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider, ISubscribable {
 	
-	protected static final String ADDITIONAL_DATA_KEY_NAME = "Nom:";
-	protected static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Nom original:";
-	protected static final String ADDITIONAL_DATA_KEY_ALTERNATIVE_NAME = "Nom Alternatif:";
-	protected static final String ADDITIONAL_DATA_KEY_GENDERS = "Genre\\(s\\):";
-	protected static final String ADDITIONAL_DATA_KEY_STATUS = "Statut:";
-	protected static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur\\(s\\):";
-	protected static final String ADDITIONAL_DATA_KEY_STUDIOS = "Studio\\(s\\):";
-	protected static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date de Sortie:";
-	protected static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis:";
+	/* Constants */
+	public static final String ADDITIONAL_DATA_KEY_NAME = "Nom:";
+	public static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Nom original:";
+	public static final String ADDITIONAL_DATA_KEY_ALTERNATIVE_NAME = "Nom Alternatif:";
+	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genre\\(s\\):";
+	public static final String ADDITIONAL_DATA_KEY_STATUS = "Statut:";
+	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur\\(s\\):";
+	public static final String ADDITIONAL_DATA_KEY_STUDIOS = "Studio\\(s\\):";
+	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date de Sortie:";
+	public static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis:";
 	
+	/* Variables */
 	private final String imageUrlFormat, rssUrl;
 	
+	/* Constructor */
 	public JetAnimeSearchAndGoAnimeProvider() {
 		super("JetAnime", "https://www.jetanime.co");
 		
@@ -58,7 +68,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.ANIME });
+		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.ANIME, SearchCapability.VIDEO });
 	}
 	
 	@Override
@@ -169,28 +179,31 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	
 	@Override
 	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
-		Webb webb = Webb.create();
-		webb.setDefaultHeader(Webb.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);
 		
-		String openloadIframeHtml = null;
+		String html = getHelper().downloadPageCache(videoItemResult.getUrl());
+		String formContainer = getHelper().extract("\\<form\\>[\\s]*(\\<input\\stype\\=\\\"hidden\\\".*?)\\<\\/form\\>", html);
 		
-		try {
-			openloadIframeHtml = webb //
-					.post(videoItemResult.getUrl()) //
-					.header("X-Requested-With", "XMLHttpRequest") //
-					.header("Content-Type", "application/x-www-form-urlencoded") //
-					.param("c", "b") //
-					.ensureSuccess() //
-					.asString().getBody(); //
-		} catch (Exception exception) {
+		if (!StringUtils.validate(html, formContainer)) {
 			return new String[] { null };
 		}
 		
-		if (openloadIframeHtml == null) {
-			return new String[] { null };
+		List<String> parts = new ArrayList<>();
+		
+		Matcher partMatcher = getHelper().regex("\\<input\\stype\\=\\\"hidden\\\"\\svalue\\=\\\"(.*?)\\\"[\\s]*\\/\\>", formContainer);
+		
+		while (partMatcher.find()) {
+			String part = partMatcher.group(1);
+			
+			if (!StringUtils.validate(part)) {
+				/* Don't allow any error, if one is bad, all will be bad */
+				
+				return new String[] { null };
+			}
+			
+			parts.add(part);
 		}
 		
-		return new String[] { HtmlCommonExtractor.extractIframeUrlFromHtml(openloadIframeHtml) };
+		return new String[] { HtmlCommonExtractor.extractIframeUrlFromHtml(new JetAnimeIframeDecoderSandbox().execute(parts)) };
 	}
 	
 	@Override
@@ -297,6 +310,45 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	public static class JetAnimeItem extends ResultItem {
 		public JetAnimeItem(String match, String url, String name) {
 			super(match, url, name);
+		}
+	}
+	
+	public static class JetAnimeIframeDecoderSandbox implements Sandbox<String, List<String>> {
+		@Override
+		public String execute(List<String> parts) {
+			Collections.reverse(parts);
+			
+			StringBuilder bigPartBuilder = new StringBuilder();
+			
+			for (int index = 0; index < parts.size(); index++) {
+				String part = parts.get(index);
+				
+				if (5 >= index) {
+					bigPartBuilder.append(new StringBuilder(part).reverse().toString());
+				} else {
+					bigPartBuilder.append(part);
+				}
+			}
+			
+			char[] characters = bigPartBuilder.toString().toCharArray();
+			
+			for (int i = 0; i < characters.length; i++) {
+				char character = characters[i];
+				
+				if (Character.isUpperCase(character)) {
+					characters[i] = Character.toLowerCase(character);
+				} else {
+					characters[i] = Character.toUpperCase(character);
+				}
+			}
+			
+			StringBuilder encodedContentBuilder = new StringBuilder();
+			
+			for (char character : characters) {
+				encodedContentBuilder.append(character);
+			}
+			
+			return new String(Base64.decode(encodedContentBuilder.toString()));
 		}
 	}
 	
