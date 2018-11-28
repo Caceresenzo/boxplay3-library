@@ -313,7 +313,13 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		}
 	}
 	
+	/**
+	 * This sandbox allow url decoding from base64 encoded part available on JetAnime's site
+	 * 
+	 * @author Enzo CACERE
+	 */
 	public static class JetAnimeIframeDecoderSandbox implements Sandbox<String, List<String>> {
+		
 		@Override
 		public String execute(List<String> parts) {
 			Collections.reverse(parts);
