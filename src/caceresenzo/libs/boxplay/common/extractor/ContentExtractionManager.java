@@ -12,6 +12,7 @@ import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVi
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData.ChapterType;
 import caceresenzo.libs.boxplay.culture.searchngo.test.FakeOpenloadVideoExtractor;
+import caceresenzo.libs.string.StringUtils;
 
 public class ContentExtractionManager {
 	
@@ -95,6 +96,10 @@ public class ContentExtractionManager {
 	 * @return An {@link ContentExtractor} class that have matched with your baseUrl
 	 */
 	private static Class<? extends ContentExtractor> getExtractorClassFromBaseUrl(ExtractorType extractorType, String baseUrl) {
+		if (!StringUtils.validate(baseUrl)) {
+			return null;
+		}
+		
 		for (Entry<Class<? extends ContentExtractor>, ContentExtractor> entry : EXTRACTORS.get(extractorType).entrySet()) {
 			InternetSource internetSource = entry.getValue();
 			
