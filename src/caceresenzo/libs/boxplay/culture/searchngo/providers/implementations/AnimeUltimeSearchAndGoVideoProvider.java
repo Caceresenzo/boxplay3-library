@@ -1,10 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -22,8 +18,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbUtils;
-import caceresenzo.libs.logger.Logger;
-import caceresenzo.libs.network.Downloader;
 import caceresenzo.libs.string.StringUtils;
 
 @SuppressWarnings("unused")
