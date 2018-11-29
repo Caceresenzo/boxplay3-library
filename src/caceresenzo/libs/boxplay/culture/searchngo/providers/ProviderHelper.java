@@ -3,7 +3,6 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -24,9 +23,6 @@ import caceresenzo.libs.network.Downloader;
  */
 public class ProviderHelper implements Serializable {
 	
-	/* Constants */
-	public static final int MAX_CACHE_CONTENT_SIZE = 10;
-	
 	/* Statics */
 	protected static ProviderHelper STATIC_HELPER = new ProviderHelper();
 	
@@ -34,8 +30,6 @@ public class ProviderHelper implements Serializable {
 	private SearchAndGoProvider parentProvider;
 	
 	private SearchEngine searchEngine;
-	
-	private Map<Object, Object> cache;
 	
 	/**
 	 * Create a non-contextualized helper, some function will not be available, like cache
@@ -54,10 +48,6 @@ public class ProviderHelper implements Serializable {
 		this.parentProvider = parentProvider;
 		
 		this.searchEngine = new SearchEngine();
-		
-		if (parentProvider != null) {
-			this.cache = new LinkedHashMap<>();
-		}
 	}
 	
 	/**
@@ -116,18 +106,14 @@ public class ProviderHelper implements Serializable {
 	public String downloadPageCache(String url, Map<String, String> headers) {
 		checkProviderValidity();
 		
-		if (parentProvider.isCacheSupported() && cache.containsKey(url) && cache.get(url) != null) {
-			return (String) cache.get(url);
+		if (parentProvider.isCacheSupported() && ProviderWeakCache.checkAndValidate(url)) {
+			return ProviderWeakCache.get(url);
 		}
 		
 		String content = downloadPage(url, headers, parentProvider.getWorkingCharset());
 		
 		if (parentProvider.isCacheSupported()) {
-			cache.put(url, content);
-		}
-		
-		while (cache.size() > MAX_CACHE_CONTENT_SIZE) {
-			cache.remove(cache.keySet().iterator().next());
+			ProviderWeakCache.push(url, content);
 		}
 		
 		return content;
@@ -189,8 +175,8 @@ public class ProviderHelper implements Serializable {
 	 */
 	public ProviderHelper resetCache() {
 		checkProviderValidity();
-		
-		cache.clear();
+
+		ProviderWeakCache.clear();
 		
 		return this;
 	}
@@ -309,7 +295,7 @@ public class ProviderHelper implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "ProviderHelper[cache.size=" + cache.size() + "]";
+		return "ProviderHelper[cacheSize=" + ProviderWeakCache.cacheSize() + "]";
 	}
 	
 }

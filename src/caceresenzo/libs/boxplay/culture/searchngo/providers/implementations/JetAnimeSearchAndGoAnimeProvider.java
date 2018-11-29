@@ -109,7 +109,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		String html = getHelper().downloadPageCache(result.getUrl());
 		String htmlContainer = extractInformationContainer(html);
 		
-		if (html == null || html.isEmpty() || htmlContainer == null || htmlContainer.isEmpty()) {
+		if (StringUtils.validate(html, htmlContainer)) {
 			return additionals;
 		}
 		

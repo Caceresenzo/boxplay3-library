@@ -27,6 +27,7 @@ import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.iterator.ByteArrayIterator;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.parse.ParseUtils;
+import caceresenzo.libs.string.StringUtils;
 
 @SuppressWarnings("unused")
 public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider, IHentaiVideoContentProvider {
@@ -169,7 +170,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 		String html = getHelper().downloadPageCache(result.getUrl());
 		String htmlContainer = extractEpisodeContainer(html);
 		
-		if (html == null || html.isEmpty() || htmlContainer == null || htmlContainer.isEmpty()) {
+		if (!StringUtils.validate(html, htmlContainer)) {
 			return additionals;
 		}
 		
@@ -211,7 +212,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 		
 		String html = getHelper().downloadPageCache(videoItemResult.getUrl());
 		
-		if (html == null || html.isEmpty()) {
+		if (!StringUtils.validate(html)) {
 			return new String[] { null };
 		}
 		
@@ -250,9 +251,9 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 	}
 	
 	public void extractEverythingFromUrl(Map<String, SearchAndGoResult> actualWorkmap, String searchQuery, String targetUrl, SearchCapability type) {
-		String html = getHelper().downloadPage(targetUrl);
+		String html = getHelper().downloadPageCache(targetUrl);
 		
-		if (html == null) {
+		if (!StringUtils.validate(html)) {
 			return;
 		}
 		
