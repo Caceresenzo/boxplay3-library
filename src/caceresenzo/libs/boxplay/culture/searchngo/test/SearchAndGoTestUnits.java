@@ -57,7 +57,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "tokyo ghoul";
+		private static final String QUERY = "lola";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -400,6 +400,18 @@ public class SearchAndGoTestUnits {
 			// if (!categories.isEmpty()) {
 			// additionals.add(new AdditionalResultData(AdditionalDataType.GENDERS, categories));
 			// }
+		}
+		
+	}
+	
+	public static class LoopTestUnitTest {
+		
+		public static final int LOOP_COUNT = 5;
+		
+		public static void main(String[] args) {
+			for (int i =0; i < LOOP_COUNT; i++) {
+				ExtractionTest.main(args);
+			}
 		}
 		
 	}

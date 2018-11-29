@@ -115,6 +115,9 @@ public class ProviderWeakCache {
 		return getCacheMap().size();
 	}
 	
+	/**
+	 * @return the {@link Map#toString()} function called with the cache map
+	 */
 	public static String convertToString() {
 		checkInstance();
 		
