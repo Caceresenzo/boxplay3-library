@@ -163,10 +163,10 @@ public class SearchAndGoTestUnits {
 							
 							Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
 							
-							if (contentExtractor instanceof VideoContentExtractor) {
-								Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
-								Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
-							}
+							// if (contentExtractor instanceof VideoContentExtractor) {
+							// Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
+							// Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
+							// }
 						}
 						
 						Logger.$("");

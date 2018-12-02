@@ -32,7 +32,7 @@ import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 @SuppressWarnings("unused")
-public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider, ISubscribable {
+public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
 	/* Constants */
 	public static final String ADDITIONAL_DATA_KEY_NAME = "Nom:";
@@ -109,7 +109,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		String html = getHelper().downloadPageCache(result.getUrl());
 		String htmlContainer = extractInformationContainer(html);
 		
-		if (StringUtils.validate(html, htmlContainer)) {
+		if (!StringUtils.validate(html, htmlContainer)) {
 			return additionals;
 		}
 		
@@ -141,7 +141,6 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		}
 		
 		String extractedResumeData = extractResumeData(htmlContainer);
-		
 		if (extractedResumeData != null) {
 			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResumeData.trim()));
 		}
@@ -155,7 +154,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		
 		String html = getHelper().downloadPageCache(result.getUrl());
 		
-		if (html == null || html.isEmpty()) {
+		if (!StringUtils.validate(html)) {
 			return additionals;
 		}
 		
@@ -215,12 +214,6 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { GenericOpenloadVideoExtractor.class };
-	}
-	
-	@Override
-	public Subscriber createSubscriber() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	/**

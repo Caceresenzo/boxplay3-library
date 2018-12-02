@@ -58,7 +58,7 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 				throw new NullPointerException("Download string is null.");
 			}
 			
-			getLogger().appendln("-- Finished > size=" + url.length());
+			getLogger().appendln("-- Finished > size=" + openloadHtml.length());
 		} catch (Exception exception) {
 			failed(true).notifyException(exception);
 			getLogger().appendln("-- Finished > failed=" + exception.getLocalizedMessage());
