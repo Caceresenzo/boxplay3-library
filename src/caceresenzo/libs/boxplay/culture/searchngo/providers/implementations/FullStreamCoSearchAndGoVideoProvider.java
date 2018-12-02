@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -430,7 +430,7 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { OpenloadVideoExtractor.class, GenericVidozaVideoExtractor.class };
+		return new Class[] { GenericOpenloadVideoExtractor.class, GenericVidozaVideoExtractor.class };
 	}
 	
 	private String makeRequestByCategory(String searchQuery, String category) {

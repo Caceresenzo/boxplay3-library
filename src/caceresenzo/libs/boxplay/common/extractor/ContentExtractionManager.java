@@ -8,10 +8,9 @@ import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.Gen
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.implementations.GenericScanMangaNovelChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericAnimeUltimateVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData.ChapterType;
-import caceresenzo.libs.boxplay.culture.searchngo.test.FakeOpenloadVideoExtractor;
 import caceresenzo.libs.string.StringUtils;
 
 public class ContentExtractionManager {
@@ -25,7 +24,7 @@ public class ContentExtractionManager {
 		}
 		
 		/* Video */
-		bindExtractor(ExtractorType.VIDEO, OpenloadVideoExtractor.class, new FakeOpenloadVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, GenericOpenloadVideoExtractor.class, new GenericOpenloadVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, GenericVidozaVideoExtractor.class, new GenericVidozaVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, GenericAnimeUltimateVideoExtractor.class, new GenericAnimeUltimateVideoExtractor());
 		

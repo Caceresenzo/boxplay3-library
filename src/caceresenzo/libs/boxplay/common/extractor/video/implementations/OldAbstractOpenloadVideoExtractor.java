@@ -12,7 +12,7 @@ import caceresenzo.libs.string.StringUtils;
  * 
  * @author Enzo CACERES
  */
-public abstract class OpenloadVideoExtractor extends VideoContentExtractor {
+public abstract class OldAbstractOpenloadVideoExtractor extends VideoContentExtractor {
 	
 	/* Constants */
 	public static final String CODE_EXECUTOR_JS_FUNCTION_NAME = "myFunction";

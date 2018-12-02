@@ -1,8 +1,8 @@
 package caceresenzo.libs.boxplay.culture.searchngo.test;
 
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.OpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.OldAbstractOpenloadVideoExtractor;
 
-public class FakeOpenloadVideoExtractor extends OpenloadVideoExtractor {
+public class FakeOpenloadVideoExtractor extends OldAbstractOpenloadVideoExtractor {
 	
 	public FakeOpenloadVideoExtractor() {
 		;

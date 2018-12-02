@@ -16,6 +16,7 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.Extrac
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
@@ -162,9 +163,10 @@ public class SearchAndGoTestUnits {
 							
 							Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
 							
-							// if (contentExtractor != null && contentExtractor instanceof VideoContentExtractor) {
-							// Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
-							// }
+							if (contentExtractor instanceof VideoContentExtractor) {
+								Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
+								Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
+							}
 						}
 						
 						Logger.$("");
@@ -409,7 +411,7 @@ public class SearchAndGoTestUnits {
 		public static final int LOOP_COUNT = 5;
 		
 		public static void main(String[] args) {
-			for (int i =0; i < LOOP_COUNT; i++) {
+			for (int i = 0; i < LOOP_COUNT; i++) {
 				ExtractionTest.main(args);
 			}
 		}
