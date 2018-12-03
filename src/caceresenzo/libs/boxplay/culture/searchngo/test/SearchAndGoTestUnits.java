@@ -16,7 +16,6 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.Extrac
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
@@ -58,7 +57,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "lola";
+		private static final String QUERY = "game";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -87,7 +86,8 @@ public class SearchAndGoTestUnits {
 			
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
-			providers.add(ProviderManager.JETANIME.create());
+			// providers.add(ProviderManager.JETANIME.create());
+			providers.add(ProviderManager.JAPSCAN.create());
 			// providers.add(ProviderManager.VOIRFILM_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
@@ -177,6 +177,8 @@ public class SearchAndGoTestUnits {
 						ChapterItemResultData chapterItem = (ChapterItemResultData) additionalData.getData();
 						String pageUrl = ((IMangaContentProvider) provider).extractMangaPageUrl(chapterItem);
 						ContentExtractor extractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.fromChapterType(chapterItem.getChapterType()), result.getUrl());
+						
+						Logger.$("\t\t | -> %s", extractor != null ? extractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
 						
 						if (extractor instanceof MangaChapterContentExtractor) { /* If null; it will skip */
 							int pageCount = 0;

@@ -10,6 +10,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.Anim
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FilmStreamingVkProSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.HdssToSearchAndGoVideoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JapScanSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ScanMangaSearchAndGoMangaProvider;
@@ -31,7 +32,8 @@ public enum ProviderManager {
 	HDSS_TO(HdssToSearchAndGoVideoProvider.class),
 	
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //
-	SCANMANGA(ScanMangaSearchAndGoMangaProvider.class); //
+	SCANMANGA(ScanMangaSearchAndGoMangaProvider.class), //
+	JAPSCAN(JapScanSearchAndGoMangaProvider.class); //
 	
 	private Class<? extends SearchAndGoProvider> providerClass;
 	
@@ -82,7 +84,7 @@ public enum ProviderManager {
 			provider.getHelper().getSearchEngine().searchStrategy(newSearchStrategy);
 		}
 	}
-
+	
 	public static ProviderManager fromClass(String className) {
 		for (ProviderManager manager : values()) {
 			if (manager.providerClass.getSimpleName().equals(className)) {

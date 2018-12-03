@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericJapScanChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.implementations.GenericScanMangaNovelChapterExtractor;
@@ -31,6 +32,7 @@ public class ContentExtractionManager {
 		/* Manga */
 		bindExtractor(ExtractorType.MANGA, GenericMangaLelChapterExtractor.class, new GenericMangaLelChapterExtractor());
 		bindExtractor(ExtractorType.MANGA, GenericScanMangaChapterExtractor.class, new GenericScanMangaChapterExtractor());
+		bindExtractor(ExtractorType.MANGA, GenericJapScanChapterExtractor.class, new GenericJapScanChapterExtractor());
 		
 		/* Novel */
 		bindExtractor(ExtractorType.NOVEL, GenericScanMangaNovelChapterExtractor.class, new GenericScanMangaNovelChapterExtractor());
