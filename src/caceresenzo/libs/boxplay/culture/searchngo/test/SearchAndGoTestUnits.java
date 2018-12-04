@@ -38,6 +38,7 @@ import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.http.client.webb.Request;
 import caceresenzo.libs.http.client.webb.Webb;
+import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.iterator.ByteArrayIterator;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.stream.StreamUtils;
@@ -51,7 +52,7 @@ import caceresenzo.libs.thread.ThreadUtils;
  */
 public class SearchAndGoTestUnits {
 	
-	public static final boolean ENABLED_MANGA_DOWNLOAD = true;
+	public static final boolean ENABLED_MANGA_DOWNLOAD = false;
 	public static final int MAX_THREAD_COUNT = 1;
 	public static final String MANGA_DOWNLOAD_BASE_PATH = "C:\\Users\\cacer\\Desktop\\manga_output\\";
 	public static int THREAD_COUNT = 0;
@@ -230,6 +231,8 @@ public class SearchAndGoTestUnits {
 						file.getParentFile().mkdirs();
 						
 						Request request = Webb.create().get(url).ensureSuccess().readTimeout(0).connectTimeout(0);
+						
+						request.header(WebbConstante.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);
 						
 						if (chapterItem.hasInitializedComplements()) {
 							@SuppressWarnings("unchecked")

@@ -22,7 +22,12 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	
 	/* Constants */
 	/**
-	 * TODO Documentation, group 1: cell content
+	 * Already prepared regex for cell div extraction.<br>
+	 * Groups:<br>
+	 * <ul>
+	 * <li>0: Full match</li>
+	 * <li>1: Cell content</li>
+	 * </ul>
 	 */
 	public static final String REGEX_CELL_EXTRACTION = "\\<div\\sclass\\=\\\"cell\\\"\\>(.*?)\\<\\/div\\>";
 	
