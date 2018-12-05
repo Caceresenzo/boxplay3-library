@@ -1,0 +1,180 @@
+<!-- <script src="https://oload.fun/assets/js/jquery.min.js"></script>  -->
+
+<div class="" style="display: none;">
+	<p style="" id="JF76GaT6cu">b25694ce859400d8e3b5c96686d2cb4eb4a64af40bf27ff6c4ed3bfe743c60780b5ad0be735e7e721b4846634c246f505a4a5b01427d7f4475017243675946017c67545e7a03725b514835694d757942027f637976680246524e6422735e52516701</p>
+	<p style="" class="" id="DtsBlkVFQx">640K ought to be enough for anybody</p>
+</div>
+
+<script type="text/javascript">
+	window.ffff = 'JF76GaT6cu';
+
+    const KEY_SWIFT_1 = (parseInt('257147517172', 8) - 101 + 0x4 - 1) / (22 - 0x8);
+   /////////////////////(parseInt('257147517172', 8) - 101 + 0x4 - 1) / (22 - 0x8)
+    const KEY_SWIFT_2 = parseInt('24372317706', 8) - 28;
+
+    debugger;
+
+    let sourceKey = document.getElementById(window.ffff).innerHTML;
+
+    let finalKey = '';
+
+    let editableKey = sourceKey;
+
+    let chunckSize = 72;
+    let chunck = editableKey.substring(0x0, chunckSize);
+
+    var _0x3d7b02 = [];
+
+    var _0x31f4aa = {
+        'k' : chunck,
+        'keyPart' : []
+    };
+
+    for (i = 0; i < chunck.length; i += 8) {
+	    chunckSize = i * 8;
+	    let data = chunck.substring(i, i + 8);
+	    let value = parseInt(data, 16);
+
+	    _0x31f4aa.keyPart.push(value);
+    }
+
+    _0x3d7b02 = _0x31f4aa.keyPart;
+
+    // 8
+    chunckSize = 72;
+
+    // 5
+    editableKey = editableKey.substring(chunckSize);
+
+    // 6
+    chunck = 0;
+
+    // 15
+    var _0x145894 = 0;
+
+    // 10
+    while (chunck < editableKey.length) {
+	    // 5
+	    let _0x5eb93a = 64;
+
+	    //8
+	    let _0x37c346 = 127;
+
+	    // 0
+	    let _0x896767 = 0;
+
+	    // 12
+	    let _0x1a873b = 0;
+
+	    // 13
+	    var _0x3d9c8e = 0;
+
+	    // 9
+	    var _0x31f4aa = {
+	        'mm' : 128,
+	        'xx' : 63
+	    };
+
+	    // 10
+	    do {
+		    // 4
+		    if (chunck + 1 >= editableKey.length) {
+			    _0x5eb93a = 143;
+		    }
+
+		    // 3
+		    var _0x1fa71e = editableKey.substring(chunck, chunck + 2);
+
+		    // 0
+		    chunck++;
+
+		    // 5
+		    chunck++;
+
+		    // 6
+		    _0x3d9c8e = parseInt(_0x1fa71e, 16);
+
+		    // 2
+		    if (_0x1a873b < 30) {
+			    var _0x332549 = _0x3d9c8e & _0x31f4aa.xx;
+			    _0x896767 += _0x332549 << _0x1a873b;
+		    } else {
+			    var _0x332549 = _0x3d9c8e & _0x31f4aa.xx;
+			    _0x896767 += _0x332549 * Math.pow(2, _0x1a873b);
+		    }
+
+		    // 1
+		    _0x1a873b += 6;
+	    } while (_0x3d9c8e >= _0x5eb93a);
+
+	    // 4
+	    var _0x59ce16 = 0x28a28dec;
+
+	    // 11
+	    var _1x4bfb36 = KEY_SWIFT_2;
+
+	    // 6
+	    var _0x30725e = _0x896767 ^ _0x3d7b02[_0x145894 % 9];
+
+	    // 3
+	    _0x30725e = (_0x30725e ^ KEY_SWIFT_1) ^ _1x4bfb36;
+
+	    // 1
+	    var _0x2de433 = (_0x5eb93a * 2) + _0x37c346;
+
+	    // 7
+	    for (i = 0; i < 4; i++) {
+		    // 2
+		    var _0x1a9381 = _0x30725e & _0x2de433;
+
+		    // 0
+		    var _0x1a0e90 = (chunckSize / 9) * i;
+
+		    // 5
+		    _0x1a9381 = _0x1a9381 >> _0x1a0e90;
+
+		    // 4
+		    var _0x3fa834 = String.fromCharCode(_0x1a9381 - 1);
+
+		    console.log(_0x3fa834)
+
+		    // 3
+		    if (_0x3fa834 != '$') {
+			    finalKey += _0x3fa834;
+		    }
+
+		    // 1
+		    _0x2de433 = _0x2de433 << (chunckSize / 9);
+	    }
+
+	    // 2
+	    _0x145894 += 1;
+    }
+
+    // 7
+    document.getElementById("DtsBlkVFQx").innerHTML = finalKey;
+
+    /*
+    $("#videooverlay,.title,.logocontainer").click(function() {
+        $("#videooverlay,.title,.logocontainer").hide();
+        var srclink = '/stream/' + $('#DtsBlkVFQx').text() + '?mime=true';
+        videojs("olvideo").src({
+            type : "video/mp4",
+            src : srclink
+        });
+    });
+     */
+    let value = document.getElementById("DtsBlkVFQx").innerHTML;
+    console.log(value + "   ----  https://oload.fun/stream/" + value + '?mime=true')
+    document.write("https://oload.fun/stream/" + value + '?mime=true')
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+	    if (this.readyState == 3) {
+		    document.write("https://oload.fun/stream/" + value + '?mime=true' + "<br>Status: " + this.status);
+		    xhttp.abort()
+	    }
+    };
+    xhttp.open("GET", "https://oload.fun/stream/" + value + '?mime=true', true);
+    xhttp.send();
+</script>
