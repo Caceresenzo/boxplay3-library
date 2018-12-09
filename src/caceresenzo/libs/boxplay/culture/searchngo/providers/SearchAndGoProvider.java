@@ -11,6 +11,7 @@ import java.util.Map;
 import caceresenzo.libs.boxplay.culture.searchngo.content.IContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.requirements.BaseSystemRequirement;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
@@ -24,7 +25,7 @@ import caceresenzo.libs.http.client.webb.Webb;
  * @author Enzo CACERES
  */
 public abstract class SearchAndGoProvider implements IContentProvider {
-
+	
 	/* Constants */
 	public static final int NO_VALUE = Integer.MIN_VALUE;
 	
@@ -40,6 +41,8 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	private final ProviderHelper helper;
 	
 	private boolean autosort;
+	
+	private List<BaseSystemRequirement> requirements;
 	
 	/**
 	 * Constructor
@@ -82,6 +85,29 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 */
 	public ProviderHelper getHelper() {
 		return helper;
+	}
+	
+	protected void require(Class<? extends BaseSystemRequirement> requirementClass) {
+		if (requirements == null) {
+			requirements = new ArrayList<>();
+		}
+		
+		try {
+			requirements.add(requirementClass.newInstance());
+		} catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T extends BaseSystemRequirement> T getRequirement(Class<T> requirementClass) {
+		for (BaseSystemRequirement requirement : requirements) {
+			if (requirement.getClass().equals(requirementClass)) {
+				return (T) requirement;
+			}
+		}
+		
+		return null;
 	}
 	
 	/**

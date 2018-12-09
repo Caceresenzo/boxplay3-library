@@ -79,4 +79,8 @@ public class HtmlCommonExtractor {
 		return string;
 	}
 	
+	public static String extractBaseFromUrl(String url) {
+		return ProviderHelper.getStaticHelper().extract("(http[s]*:\\/\\/.*?\\/)", url);
+	}
+	
 }

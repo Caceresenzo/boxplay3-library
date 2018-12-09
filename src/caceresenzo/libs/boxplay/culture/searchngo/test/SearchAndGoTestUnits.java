@@ -53,12 +53,12 @@ import caceresenzo.libs.thread.ThreadUtils;
 public class SearchAndGoTestUnits {
 	
 	public static final boolean ENABLED_MANGA_DOWNLOAD = false;
-	public static final int MAX_THREAD_COUNT = 1;
+	public static final int MAX_THREAD_COUNT = 3;
 	public static final String MANGA_DOWNLOAD_BASE_PATH = "C:\\Users\\cacer\\Desktop\\manga_output\\";
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "game";
+		private static final String QUERY = "no game no life";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -187,7 +187,7 @@ public class SearchAndGoTestUnits {
 								Logger.$(" |- Image URL: " + url);
 								
 								if (ENABLED_MANGA_DOWNLOAD) {
-									File file = new File(MANGA_DOWNLOAD_BASE_PATH, "WEBB_" + FileUtils.replaceIllegalChar(result.getName()) + "/" + FileUtils.replaceIllegalChar(additionalData.convert()) + "/" + FileUtils.replaceIllegalChar(String.format("PAGE %s.jpg", pageCount++)));
+									File file = new File(MANGA_DOWNLOAD_BASE_PATH, "WEBB_" + FileUtils.replaceIllegalChar(result.getName()) + "/" + FileUtils.replaceIllegalChar(additionalData.convert()).replace(".", "") + "/" + FileUtils.replaceIllegalChar(String.format("PAGE %s.jpg", pageCount++)));
 									
 									while (THREAD_COUNT >= MAX_THREAD_COUNT) {
 										ThreadUtils.sleep(100L);
@@ -255,6 +255,7 @@ public class SearchAndGoTestUnits {
 					}
 					
 					THREAD_COUNT--;
+					break;
 				}
 			}
 			

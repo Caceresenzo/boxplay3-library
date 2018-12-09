@@ -219,7 +219,7 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	 *            Target map you want to add
 	 * @return Itself
 	 */
-	public SearchAndGoResult requireHeaders(Map<String, Object> requireHeaders) {
+	public SearchAndGoResult requireHeaders(Map<String, String> requireHeaders) {
 		checkRequireHeaders();
 		
 		this.requireHeaders.putAll(requireHeaders);

@@ -8,49 +8,56 @@ import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
+import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericJapScanChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.requirements.implementations.CloudflareRequirement;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.http.client.webb.Webb;
+import caceresenzo.libs.http.client.webb.WebbConstante;
+import caceresenzo.libs.json.JsonArray;
+import caceresenzo.libs.json.JsonObject;
+import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.string.StringUtils;
 
 public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
 	
 	/* Constants */
-	/**
-	 * Already prepared regex for cell div extraction.<br>
-	 * Groups:<br>
-	 * <ul>
-	 * <li>0: Full match</li>
-	 * <li>1: Cell content</li>
-	 * </ul>
-	 */
-	public static final String REGEX_CELL_EXTRACTION = "\\<div\\sclass\\=\\\"cell\\\"\\>(.*?)\\<\\/div\\>";
+	public static final String SEARCH_JSON_KEY_NAME = "name";
+	public static final String SEARCH_JSON_KEY_IMAGE_URL = "image";
+	public static final String SEARCH_JSON_KEY_URL = "url";
 	
 	/* Static */
 	public static final Map<String, AdditionalDataType> COMMON_DATA_CORRESPONDANCES = new HashMap<>();
 	
 	static {
-		COMMON_DATA_CORRESPONDANCES.put("Auteur", AdditionalDataType.AUTHORS);
-		COMMON_DATA_CORRESPONDANCES.put("Nom Alternatif", AdditionalDataType.ALTERNATIVE_NAME);
-		COMMON_DATA_CORRESPONDANCES.put("Sortie Initial", AdditionalDataType.RELEASE_DATE);
-		COMMON_DATA_CORRESPONDANCES.put("Genre", AdditionalDataType.TYPE);
-		COMMON_DATA_CORRESPONDANCES.put("Fansubs", AdditionalDataType.TRADUCTION_TEAM);
-		COMMON_DATA_CORRESPONDANCES.put("Statut", AdditionalDataType.STATUS);
+		COMMON_DATA_CORRESPONDANCES.put("Nom(s) Alternatif(s):", AdditionalDataType.ALTERNATIVE_NAME);
+		// COMMON_DATA_CORRESPONDANCES.put("Origine:", AdditionalDataType.NULL);
+		COMMON_DATA_CORRESPONDANCES.put("Statut:", AdditionalDataType.STATUS);
+		COMMON_DATA_CORRESPONDANCES.put("Date Sortie:", AdditionalDataType.RELEASE_DATE);
+		COMMON_DATA_CORRESPONDANCES.put("Type(s):", AdditionalDataType.TYPE);
+		COMMON_DATA_CORRESPONDANCES.put("Artiste(s):", AdditionalDataType.ARTISTS);
+		COMMON_DATA_CORRESPONDANCES.put("Auteur(s):", AdditionalDataType.AUTHORS);
+		// COMMON_DATA_CORRESPONDANCES.put("Adaptation En Animé:", AdditionalDataType.NULL);
+		// COMMON_DATA_CORRESPONDANCES.put("Abonnement RSS:", AdditionalDataType.NULL);
 	}
 	
 	/* Variables */
-	private final String listApiUrl;
+	private final String searchApiUrl;
 	
 	/* Constructor */
 	public JapScanSearchAndGoMangaProvider() {
-		super("Japscan", "https://www.japscan.cc");
+		super("Japscan", "https://www.japscan.to");
 		
-		this.listApiUrl = getSiteUrl() + "/mangas/";
+		this.searchApiUrl = getSiteUrl() + "/search/";
+		
+		require(CloudflareRequirement.class);
 	}
 	
 	@Override
@@ -67,23 +74,29 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	public Map<String, SearchAndGoResult> processWork(String searchQuery) {
 		Map<String, SearchAndGoResult> result = createEmptyWorkMap();
 		
-		String html = getHelper().downloadPageCache(listApiUrl);
+		CloudflareRequirement cloudflareRequirement = getRequirement(CloudflareRequirement.class);
+		cloudflareRequirement.prepare(getSiteUrl()).executeOnlyIfNotUsable();
 		
-		if (!StringUtils.validate(html)) {
+		String json = Webb.create().post(searchApiUrl) //
+				.header(WebbConstante.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT) //
+				.header("cookie", cloudflareRequirement.getCookiesAsString()) //
+				.param("search", searchQuery) //
+				.asString().getBody();
+		
+		if (!StringUtils.validate(json)) {
 			return result;
 		}
 		
-		List<JapscanItem> items = extractMangaFromHtml(html);
+		List<JapscanItem> items = getMangaFromJson(json);
 		
 		for (JapscanItem item : items) {
-			String url = getSiteUrl() + item.getUrl();
-			String imageUrl = null;
 			String name = item.getName();
-			String description = item.getMoreContent();
+			String url = getSiteUrl() + item.getUrl();
+			String imageUrl = getSiteUrl() + item.getImageUrl();
 			
 			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);
 			if (score != 0) {
-				result.put(url, new SearchAndGoResult(this, item.getName(), url, imageUrl, SearchCapability.MANGA).score(score).describe(description));
+				result.put(url, new SearchAndGoResult(this, name, url, imageUrl, SearchCapability.MANGA).score(score).requireHeaders(cloudflareRequirement.getCookiesAsHeaderMap(null)));
 			}
 		}
 		
@@ -94,69 +107,70 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	protected List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result) {
 		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
 		
-		String html = getHelper().downloadPageCache(result.getUrl());
+		CloudflareRequirement cloudflareRequirement = getRequirement(CloudflareRequirement.class);
+		cloudflareRequirement.prepare(getSiteUrl()).executeOnlyIfNotUsable();
+		
+		if (!cloudflareRequirement.isUsable()) {
+			return additionals;
+		}
+		
+		String html = getHelper().downloadPageCache(result.getUrl(), cloudflareRequirement.getCookiesAsHeaderMap(null));
 		
 		if (!StringUtils.validate(html)) {
 			return additionals;
 		}
 		
 		/* Common */
-		Matcher commonDataHtmlContainerMatcher = getHelper().regex("\\<div\\sclass\\=\\\"table\\\"\\>[\\s]*\\<div\\sclass\\=\\\"thead\\\"\\>(.*?)\\<\\/div\\>[\\s]*\\<div\\sclass\\=\\\"row\\\"\\>(.*?)[\\s]*\\<\\/div\\>[\\s]*\\<\\/div\\>[\\s]*<h2", html);
-		if (commonDataHtmlContainerMatcher.find()) {
-			String extractedKeysHtmlContainer = commonDataHtmlContainerMatcher.group(1);
-			String extractedValuesHtmlContainer = commonDataHtmlContainerMatcher.group(2);
+		Matcher commonDataMatcher = getHelper().regex("\\<p\\sclass\\=\\\"mb-2\\\"\\>[\\s]*\\<span\\sclass\\=\\\"font-weight-bold\\\"\\>(.*?)\\<\\/span\\>[\\s]*(?:<i class\\=\\\".*?\\\"\\>.*?\\<\\/i\\>)*[\\s]*(.*?)[\\s]*\\<\\/p\\>", html);
+		
+		while (commonDataMatcher.find()) {
+			String type = commonDataMatcher.group(1);
+			AdditionalDataType correspondingType = COMMON_DATA_CORRESPONDANCES.get(type);
+			String content = commonDataMatcher.group(2);
 			
-			if (StringUtils.validate(extractedKeysHtmlContainer, extractedValuesHtmlContainer)) {
-				List<String> keys = new ArrayList<>();
-				List<Object> values = new ArrayList<>();
-				
-				Matcher keysMatcher = getHelper().regex(REGEX_CELL_EXTRACTION, extractedKeysHtmlContainer);
-				Matcher valuesMatcher = getHelper().regex(REGEX_CELL_EXTRACTION, extractedValuesHtmlContainer);
-				
-				while (keysMatcher.find()) {
-					String key = keysMatcher.group(1);
-					
-					keys.add(key.trim());
-				}
-				
-				while (valuesMatcher.find()) {
-					String value = valuesMatcher.group(1);
-					
-					values.add(value);
-				}
-				
-				if (keys.size() == values.size()) {
-					for (int i = 0; i < keys.size(); i++) {
-						String key = keys.get(i);
-						Object value = values.get(i);
-						AdditionalDataType correspondingDataType = COMMON_DATA_CORRESPONDANCES.get(key);
+			// Logger.raw("COMMON_DATA_CORRESPONDANCES.put(\"" + type + "\", AdditionalDataType.UNKNOWN)");
+			
+			if (correspondingType == null) {
+				/* Unknown or find something else */
+				continue;
+			}
+			
+			if (!StringUtils.validate(content)) {
+				continue;
+			}
+			
+			switch (correspondingType) {
+				case ALTERNATIVE_NAME: {
+					if (content.matches(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX)) {
+						List<String> alternativeNames = new ArrayList<>();
 						
-						if (correspondingDataType == null) {
-							continue;
-						}
+						Matcher alternativeNameMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, content);
 						
-						switch (correspondingDataType) {
-							case TRADUCTION_TEAM: {
-								/* If it has a link, escape it */
-								if (String.valueOf(value).matches(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX)) {
-									value = getHelper().extract(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, (String) value, 2);
-								}
-								break;
-							}
+						while (alternativeNameMatcher.find()) {
+							String name = alternativeNameMatcher.group(2);
 							
-							default: {
-								break;
+							if (StringUtils.validate(name)) {
+								alternativeNames.add(name);
 							}
 						}
 						
-						additionals.add(new AdditionalResultData(correspondingDataType, value));
+						if (!alternativeNames.isEmpty()) {
+							content = new AdditionalResultData(alternativeNames).convert();
+						}
 					}
+					break;
+				}
+				
+				default: {
+					break;
 				}
 			}
+			
+			additionals.add(new AdditionalResultData(correspondingType, content));
 		}
 		
 		/* Resume */
-		String extractedResume = getHelper().extract("\\<div\\sid\\=\\\"synopsis\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/div\\>", html);
+		String extractedResume = getHelper().extract("\\<div\\sclass\\=\\\"font-weight-bold\\\"\\>Synopsis:\\<\\/div\\>[\\s]*\\<p\\sclass\\=\\\"list-group-item\\slist-group-item-primary\\stext-justify\\\"\\>(.*?)\\<\\/p\\>", html);
 		if (extractedResume != null) {
 			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResume));
 		}
@@ -168,32 +182,36 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	protected List<AdditionalResultData> processFetchContent(SearchAndGoResult result) {
 		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
 		
-		String html = getHelper().downloadPageCache(result.getUrl());
-		String chaptersHtmlContainer = getHelper().extract("\\<h2\\sclass\\=\\\"bg-header\\\"\\>(?:Liste\\sDes\\sChapitres)\\<\\/h2\\>[\\s]*\\<div\\sid\\=\\\"liste_chapitres\\\"\\>(.*?)\\<\\/div\\>", html);
+		CloudflareRequirement cloudflareRequirement = getRequirement(CloudflareRequirement.class);
+		cloudflareRequirement.prepare(getSiteUrl()).executeOnlyIfNotUsable();
 		
-		if (!StringUtils.validate(html, chaptersHtmlContainer)) {
+		if (!cloudflareRequirement.isUsable()) {
 			return additionals;
 		}
 		
-		Matcher volumeHtmlContainerMatcher = getHelper().regex("\\<h2\\>(.*?)\\<\\/h2\\>[\\s]*\\<ul\\>(.*?)\\<\\/ul\\>", chaptersHtmlContainer);
+		String html = getHelper().downloadPageCache(result.getUrl(), cloudflareRequirement.getCookiesAsHeaderMap(null));
+		String htmlContentContainer = getHelper().extract("\\<div\\sclass\\=\\\"rounded-0\\scard-body\\\"\\>[\\s]*\\<div\\sid\\=\\\"chapters_list\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/div\\>[\\s]*\\<\\/div\\>[\\s]*\\<\\/div\\>[\\s]*\\<\\/div\\>[\\s]*\\<div\\sid\\=\\\"sidebar\\\"", html);
+		
+		if (!StringUtils.validate(html, htmlContentContainer)) {
+			return additionals;
+		}
+		
+		Matcher volumeHtmlContainerMatcher = getHelper().regex("(\\<h4\\sclass\\=\\\"text-truncate\\\"\\>.*?\\<\\/div\\>[\\s]*\\<\\/div\\>)", htmlContentContainer);
 		
 		while (volumeHtmlContainerMatcher.find()) {
-			String volume = volumeHtmlContainerMatcher.group(1);
-			String chaptersHtmlList = volumeHtmlContainerMatcher.group(2);
+			String volumeHtmlContainer = volumeHtmlContainerMatcher.group(1);
 			
-			Matcher chaptersMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LIST_EXTRACTION_REGEX, chaptersHtmlList);
+			String chapterListHtmlContainer = getHelper().extract("(\\<div\\sid\\=\\\"collapse-[\\d]*\\\"\\sclass\\=\\\"collapse[\\s]*\\\"\\saria-labelledby\\=\\\"heading-[\\d]*\\\"[\\s]*\\>.*?\\<\\/div\\>[\\s]*\\<\\/div\\>)", volumeHtmlContainer);
 			
-			while (chaptersMatcher.find()) {
-				String chapterHtmlLink = chaptersMatcher.group(1);
+			String volume = getHelper().extract("\\<span.*?\\>.*?\\<i\\sclass\\=\\\"fas\\sfa-plus-circle\\\"\\>\\<\\/i\\>[\\s]*(.*?)[\\s]*\\<\\/span\\>", volumeHtmlContainer);
+			
+			Matcher chapterMatcher = getHelper().regex("\\<a\\sclass\\=\\\"text-dark\\\"\\shref\\=\\\"(.*?)\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>", chapterListHtmlContainer);
+			
+			while (chapterMatcher.find()) {
+				String url = getSiteUrl() + chapterMatcher.group(1);
+				String title = chapterMatcher.group(2);
 				
-				Matcher chapterLinkMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, chapterHtmlLink);
-				
-				if (chapterLinkMatcher.find()) {
-					String url = getSiteUrl() + chapterLinkMatcher.group(1);
-					String chapter = chapterLinkMatcher.group(2);
-					
-					additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(this, url, volume, chapter, ChapterItemResultData.ChapterType.IMAGE_ARRAY)));
-				}
+				additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_CHAPTER, new ChapterItemResultData(this, url, volume, title, ChapterItemResultData.ChapterType.IMAGE_ARRAY).complements(SimpleData.REQUIRE_HTTP_HEADERS_COMPLEMENT, cloudflareRequirement.getCookiesAsHeaderMap(null))));
 			}
 		}
 		
@@ -203,7 +221,7 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { null };
+		return new Class[] { GenericJapScanChapterExtractor.class };
 	}
 	
 	@Override
@@ -212,27 +230,32 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	}
 	
 	/**
-	 * Extract all Manga present on the website.<br>
-	 * <br>
-	 * Regex: <a href="https://regex101.com/r/1v25Cd/1">regex101</a>
+	 * Get manga from a json source.<br>
 	 * 
-	 * @param html
-	 *            The downloaded html of list page
+	 * @param json
+	 *            The downloaded json of the /search/ post
 	 * @return A list of {@link JapscanItem} that you can work with.<br>
-	 *         That contain the full match, the url, the name, and a little bit more content such as the manga type and if it is always airing.
+	 *         That contain the full match, the url, the name and the image url.
 	 */
-	public static List<JapscanItem> extractMangaFromHtml(String html) {
+	public static List<JapscanItem> getMangaFromJson(String json) {
 		List<JapscanItem> items = new ArrayList<>();
 		
-		Matcher matcher = getStaticHelper().regex("\\<div\\sclass\\=\\\"row\\\"\\>[\\s]*\\<div\\sclass\\=\\\"cell\\\"\\>\\<a\\shref=\\\"(.*?)\\\"\\>(.*?)\\<\\/a\\>\\<\\/div\\>[\\s]*\\<div\\sclass\\=\\\"cell\\\"\\>(.*?)\\<\\/div\\>[\\s]*\\<div\\sclass\\=\\\"cell\\\"\\>(.*?)\\<\\/div\\>[\\s]*\\<div\\sclass\\=\\\"cell\\\"\\>.*?\\<\\/div\\>[\\s]*\\<\\/div\\>", html);
+		JsonArray jsonArray;
 		
-		while (matcher.find()) {
-			String match = matcher.group(0);
-			String suburl = matcher.group(1);
-			String name = matcher.group(2);
-			String moreContent = matcher.group(3) + "\n" + matcher.group(4);
+		try {
+			jsonArray = (JsonArray) new JsonParser().parse(json);
+		} catch (Exception exception) {
+			return items;
+		}
+		
+		for (Object jsonItem : jsonArray) {
+			JsonObject map = (JsonObject) jsonItem;
 			
-			items.add(new JapscanItem(match, suburl, name, moreContent));
+			String subUrl = map.getString(SEARCH_JSON_KEY_URL);
+			String name = map.getString(SEARCH_JSON_KEY_NAME);
+			String subImageUrl = map.getString(SEARCH_JSON_KEY_IMAGE_URL);
+			
+			items.add(new JapscanItem(subUrl, name, subImageUrl));
 		}
 		
 		return items;
@@ -244,16 +267,8 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	 * @author Enzo CACERES
 	 */
 	public static class JapscanItem extends ResultItem {
-		private String moreContent;
-		
-		public JapscanItem(String match, String url, String name, String moreContent) {
-			super(match, url, name);
-			
-			this.moreContent = moreContent;
-		}
-		
-		public String getMoreContent() {
-			return moreContent;
+		public JapscanItem(String url, String name, String imageUrl) {
+			super(null, url, name, imageUrl);
 		}
 	}
 	

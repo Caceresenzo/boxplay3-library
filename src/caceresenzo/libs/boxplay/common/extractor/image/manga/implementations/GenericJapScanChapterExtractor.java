@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
+import caceresenzo.libs.boxplay.culture.searchngo.requirements.implementations.CloudflareRequirement;
 import caceresenzo.libs.string.StringUtils;
 
 /**
@@ -18,7 +20,14 @@ public class GenericJapScanChapterExtractor extends MangaChapterContentExtractor
 	public List<String> getImageUrls(String chapterUrl) {
 		List<String> urls = createEmptyUrlList();
 		
-		String html = getStaticHelper().downloadPage(chapterUrl);
+		CloudflareRequirement cloudflareRequirement = new CloudflareRequirement();
+		cloudflareRequirement.prepare(HtmlCommonExtractor.extractBaseFromUrl(chapterUrl)).executeOnlyIfNotUsable();
+		
+		if (!cloudflareRequirement.isUsable()) {
+			return urls;
+		}
+		
+		String html = getStaticHelper().downloadPage(chapterUrl, cloudflareRequirement.getCookiesAsHeaderMap(null), "UTF-8");
 		String baseCdnUrl = extractBaseImagesDirectoryUrl(html);
 		List<String> images = extractImagesFiles(html);
 		
@@ -46,11 +55,10 @@ public class GenericJapScanChapterExtractor extends MangaChapterContentExtractor
 			return null;
 		}
 		
-		Matcher matcher = getStaticHelper().regex("\\<div\\sitemscope\\sitemtype\\=\\\"http\\:\\/\\/schema\\.org\\/Article\\\"\\>[\\s]*\\<a\\sid\\=\\\"img_link\\\"\\shref\\=\\\".*?\\\"\\>[\\s]*\\<img\\sdata\\-img\\=\\\"(.*?)\\\"\\sitemprop\\=\\\"image\\\"\\sid\\=\\\"image\".*?src=\"(.*?)\\\"\\s\\/\\>[\\s]*\\<\\/a\\>[\\s]*\\<\\/div\\>", html);
+		Matcher matcher = getStaticHelper().regex("\\<div\\sid\\=\\\"image\\\"\\sdata-src\\=\\\"(.*?)\\\".*?\\>[\\s]*\\<\\/div\\>", html);
 		
 		if (matcher.find()) {
-			// String actualImageFile = matcher.group(1);
-			String actualImageUrl = matcher.group(2);
+			String actualImageUrl = matcher.group(1);
 			
 			String[] urlParts = actualImageUrl.split("\\/");
 			
@@ -85,7 +93,7 @@ public class GenericJapScanChapterExtractor extends MangaChapterContentExtractor
 	public static List<String> extractImagesFiles(String html) {
 		List<String> images = new ArrayList<>();
 		
-		String htmlList = getStaticHelper().extract("\\<select\\sid\\=\\\"pages\\\"\\sname\\=\\\"pages\\\"\\>(.*?)\\<\\/select\\>", html);
+		String htmlList = getStaticHelper().extract("\\<select\\sid\\=\\\"pages\\\"\\>(.*?)\\<\\/select\\>", html);
 		
 		if (!StringUtils.validate(html, htmlList)) {
 			return images;
@@ -104,7 +112,7 @@ public class GenericJapScanChapterExtractor extends MangaChapterContentExtractor
 	
 	@Override
 	public boolean matchUrl(String baseUrl) {
-		return baseUrl.matches(".*?(japscan\\.cc).*?");
+		return baseUrl.matches(".*?(japscan\\.to).*?");
 	}
 	
 }
