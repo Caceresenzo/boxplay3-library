@@ -101,7 +101,7 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 				.header("Accept-Language", "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7") //
 				.asString().getBody();
 		
-		if (jsonString == null) {
+		if (!StringUtils.validate(jsonString)) {
 			return result;
 		}
 		

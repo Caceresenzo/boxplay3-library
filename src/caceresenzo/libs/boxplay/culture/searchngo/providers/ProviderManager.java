@@ -13,6 +13,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.Hdss
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JapScanSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaNeloSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ScanMangaSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchStrategy;
 
@@ -23,26 +24,32 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchStrategy;
  */
 public enum ProviderManager {
 	
+	/* Anime */
 	JETANIME(JetAnimeSearchAndGoAnimeProvider.class), //
 	ADKAMI(AdkamiSearchAndGoVideoProvider.class), //
 	ANIMEULTIME(AnimeUltimeSearchAndGoVideoProvider.class), //
 	
+	/* Movie / Series */
 	FILMSTREAMINGVK_PRO(FilmStreamingVkProSearchAndGoVideoProvider.class), //
 	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
 	HDSS_TO(HdssToSearchAndGoVideoProvider.class),
 	
+	/* Manga */
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //
 	SCANMANGA(ScanMangaSearchAndGoMangaProvider.class), //
-	JAPSCAN(JapScanSearchAndGoMangaProvider.class); //
+	JAPSCAN(JapScanSearchAndGoMangaProvider.class), //
+	MANGANELO(MangaNeloSearchAndGoMangaProvider.class); //
 	
+	/* Variables */
 	private Class<? extends SearchAndGoProvider> providerClass;
 	
+	/* Constructor */
 	private ProviderManager(Class<? extends SearchAndGoProvider> providerClass) {
 		this.providerClass = providerClass;
 	}
 	
 	/**
-	 * Create a new {@link SearchAndGoProvider} instance
+	 * Create a new {@link SearchAndGoProvider} instance.
 	 * 
 	 * @return The {@link SearchAndGoProvider} instance
 	 */
@@ -50,12 +57,17 @@ public enum ProviderManager {
 		return SearchAndGoProvider.createContext(providerClass);
 	}
 	
+	/**
+	 * Create every {@link SearchAndGoProvider} actually available.
+	 * 
+	 * @return A list containing all {@link SearchAndGoProvider} instanced
+	 */
 	public static List<SearchAndGoProvider> createAll() {
 		return createAll(EnumSet.noneOf(ProviderFlags.class));
 	}
 	
 	/**
-	 * Create every {@link SearchAndGoProvider} and return it in a list
+	 * Create every {@link SearchAndGoProvider} and return it in a list.
 	 * 
 	 * @return A list of all {@link SearchAndGoProvider} available
 	 */
@@ -72,7 +84,7 @@ public enum ProviderManager {
 	}
 	
 	/**
-	 * Apply the same {@link SearchStrategy} to a list of {@link SearchAndGoProvider}
+	 * Apply the same {@link SearchStrategy} to a list of {@link SearchAndGoProvider}.
 	 * 
 	 * @param providers
 	 *            Your {@link SearchAndGoProvider} list
@@ -85,6 +97,13 @@ public enum ProviderManager {
 		}
 	}
 	
+	/**
+	 * Get a {@link ProviderManager} instance by a {@link SearchAndGoProvider} class name.
+	 * 
+	 * @param className
+	 *            Target class name
+	 * @return {@link ProviderManager} if found, null if not.
+	 */
 	public static ProviderManager fromClass(String className) {
 		for (ProviderManager manager : values()) {
 			if (manager.providerClass.getSimpleName().equals(className)) {

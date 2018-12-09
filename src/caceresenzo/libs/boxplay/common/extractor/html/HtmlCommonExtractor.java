@@ -55,6 +55,13 @@ public class HtmlCommonExtractor {
 		return ProviderHelper.getStaticHelper().extract("\\<iframe.*?src=\\\"(.*?)\\\".*?\\>.*?\\<\\/iframe\\>", html);
 	}
 	
+	/**
+	 * Escape a lot of the unicode by programmatically finding them and escaping them with some regex.
+	 * 
+	 * @param string
+	 *            Source string
+	 * @return Escaped string
+	 */
 	public static String escapeUnicode(String string) {
 		if (!StringUtils.validate(string)) {
 			return string; // Null or empty
@@ -67,7 +74,6 @@ public class HtmlCommonExtractor {
 		}
 		
 		Matcher unicodeMatcher = ProviderHelper.getStaticHelper().regex("\\&\\#([\\d]*)[\\;]*", string);
-		
 		while (unicodeMatcher.find()) {
 			int charactere = ParseUtils.parseInt(unicodeMatcher.group(1), -1);
 			
@@ -79,8 +85,27 @@ public class HtmlCommonExtractor {
 		return string;
 	}
 	
+	/**
+	 * Get the base of a target url, this will return only the domain name with his http prefix, ignoring everything after it.
+	 * 
+	 * @param url
+	 *            Target url
+	 * @return Url base
+	 */
 	public static String extractBaseFromUrl(String url) {
 		return ProviderHelper.getStaticHelper().extract("(http[s]*:\\/\\/.*?\\/)", url);
+	}
+	
+	/**
+	 * Use it with a {@link String#replaceAll(String, String)} to escape tag that you don't want.<br>
+	 * This will create a little regex capable to remove only the tag with his arrows and will also remove all of his attributes like class, id...
+	 * 
+	 * @param tag
+	 *            Target tag you want to remove
+	 * @return Regex to use with {@link String#replaceAll(String, String)}
+	 */
+	public static String createTagReplacer(String tag) {
+		return String.format("\\<[\\/]{0,1}%s.*?\\>", tag);
 	}
 	
 }

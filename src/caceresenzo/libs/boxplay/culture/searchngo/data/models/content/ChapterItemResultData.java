@@ -6,22 +6,23 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.ViewableContent;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleUrlData;
+import caceresenzo.libs.string.StringUtils;
 
 /**
- * Holder class to contain an url and a name of a Chapter
+ * Holder class to contain an url and a name of a Chapter.
  * 
  * @author Enzo CACERES
  */
 public class ChapterItemResultData extends SimpleUrlData implements DisplayableString, ViewableContent {
 	
+	/* Variables */
 	private final IImageContentProvider imageContentProvider;
 	private final String name, title;
 	private final ChapterType chapterType;
 	
 	/**
-	 * Constructor, create a new instance with an url and a name only, title will be considered as null
-	 * 
-	 * These value will be {@link String#trim()}
+	 * Constructor, create a new instance with an url and a name only, title will be considered as null.<br>
+	 * These value will be {@link String#trim()}.
 	 * 
 	 * @param imageContentProvider
 	 *            Parent provider used to call this constructor
@@ -37,9 +38,8 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	}
 	
 	/**
-	 * Constructor, create a new instance with an url and a name
-	 * 
-	 * These value will be {@link String#trim()}
+	 * Constructor, create a new instance with an url and a name.<br>
+	 * These value will be {@link String#trim()}.
 	 * 
 	 * @param imageContentProvider
 	 *            Parent provider used to call this constructor
@@ -61,7 +61,7 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	}
 	
 	/**
-	 * Get the parent image content provider that has been used to generate this item
+	 * Get the parent image content provider that has been used to generate this item.
 	 * 
 	 * @return Parent provider
 	 */
@@ -70,7 +70,7 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	}
 	
 	/**
-	 * Get the name
+	 * Get the name.
 	 * 
 	 * @return The name
 	 */
@@ -79,7 +79,7 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	}
 	
 	/**
-	 * Get the chapter's title
+	 * Get the chapter's title.
 	 * 
 	 * @return The title
 	 */
@@ -88,7 +88,7 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	}
 	
 	/*
-	 * Get the {@link ChapterType} of this item
+	 * Get the {@link ChapterType} of this item.
 	 * 
 	 * @return Chapter type
 	 */
@@ -98,7 +98,14 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	
 	@Override
 	public String convertToDisplayableString() {
-		return getName() + (getTitle() != null && !getTitle().isEmpty() ? " - " + getTitle() : "");
+		if (StringUtils.validate(title, name)) {
+			return (title.trim() + " - " + name.trim()).trim();
+		} else if (StringUtils.validate(title)) {
+			return title.trim();
+		} else {
+			/* Supposed to be StringUtils.validate(name) == true */
+			return name.trim();
+		}
 	}
 	
 	@Override
@@ -115,7 +122,7 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	}
 	
 	/**
-	 * Type of an {@link ChapterItemResultData}, its can target a image list or a plain text novel
+	 * Type of an {@link ChapterItemResultData}, its can target a image list or a plain text novel.
 	 * 
 	 * @author Enzo CACERES
 	 */

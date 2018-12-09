@@ -309,6 +309,15 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	}
 	
 	/**
+	 * Get the provider main language for most of the content on the site.
+	 * 
+	 * @return Array of language
+	 */
+	public ProviderLanguage.Language[] getMainLanguage() {
+		return new ProviderLanguage.Language[]{ ProviderLanguage.Language.FRENCH };
+	}
+	
+	/**
 	 * Get what charset the provider will use the most.<br>
 	 * <br>
 	 * Default: {@link #CHARSET_UTF_8}

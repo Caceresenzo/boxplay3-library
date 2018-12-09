@@ -56,6 +56,7 @@ public class SearchAndGoTestUnits {
 	public static final boolean ENABLED_MANGA_DOWNLOAD = true;
 	
 	public static final int MAX_THREAD_COUNT = 3;
+	public static final int MAX_THREAD_DOWNLOAD_FAIL = 5;
 	
 	public static final String MANGA_DOWNLOAD_BASE_PATH = "C:\\Users\\cacer\\Desktop\\manga_output\\";
 	public static final int MANGA_DOWNLOAD_PAGE_MIN_CHARACTERS_COUNT = 5;
@@ -63,7 +64,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "Tate no Yuusha no Nariagari";
+		private static final String QUERY = "d-frag";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -93,7 +94,7 @@ public class SearchAndGoTestUnits {
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
 			// providers.add(ProviderManager.JETANIME.create());
-			providers.add(ProviderManager.JAPSCAN.create());
+			// providers.add(ProviderManager.JAPSCAN.create());
 			// providers.add(ProviderManager.VOIRFILM_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
@@ -101,6 +102,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.FULLSTREAM_CO.create());
 			// providers.add(ProviderManager.ANIMEULTIME.create());
 			// providers.add(ProviderManager.HDSS_TO.create());
+			providers.add(ProviderManager.MANGANELO.create());
 			
 			final List<SearchAndGoResult> results = new ArrayList<>();
 			
@@ -187,7 +189,7 @@ public class SearchAndGoTestUnits {
 						Logger.$("\t\t | -> %s", extractor != null ? extractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
 						
 						if (extractor instanceof MangaChapterContentExtractor) { /* If null; it will skip */
-							int pageCount = 0;
+							int pageCount = 1;
 							for (String url : ((MangaChapterContentExtractor) extractor).getImageUrls(pageUrl)) {
 								Logger.$(" |- Image URL: " + url);
 								
@@ -198,11 +200,13 @@ public class SearchAndGoTestUnits {
 									}
 									
 									/* Target: <manga> / <volume - chapter> / Page <page>.<image extension> */
-									String subfilePath = "WEBB_" + String.format("%s/%s/Page %s.%s", //
-											FileUtils.replaceIllegalChar(result.getName()), //
-											FileUtils.replaceIllegalChar(additionalData.convert()).replaceAll("[\\.]{2,}", " "), //
-											FileUtils.replaceIllegalChar(formattedPage), //
-											FileUtils.replaceIllegalChar(FileUtils.getExtension(UrlUtils.parseRessource(url)).replace(".", "")) //
+									String subfilePath = String.format("%s/%s/%s/%s/Page %s.%s", //
+											"WEBB",
+											FileUtils.replaceIllegalChar(result.getParentProvider().getSiteName()).trim(), //
+											FileUtils.replaceIllegalChar(result.getName()).trim(), //
+											FileUtils.replaceIllegalChar(additionalData.convert()).replaceAll("[\\.]{2,}", " ").trim(), //
+											FileUtils.replaceIllegalChar(formattedPage).trim(), //
+											FileUtils.replaceIllegalChar(FileUtils.getExtension(UrlUtils.parseRessource(url)).replace(".", "")).trim() //
 									);
 									
 									File file = new File(MANGA_DOWNLOAD_BASE_PATH, subfilePath);
@@ -243,6 +247,8 @@ public class SearchAndGoTestUnits {
 			
 			@Override
 			public void run() {
+				int retry = 0;
+				
 				while (true) {
 					try {
 						file.delete();
@@ -269,7 +275,10 @@ public class SearchAndGoTestUnits {
 					} catch (Exception exception) {
 						Logger.exception(exception, "[Webb] Failed to download file %s (url=%s)", file.getAbsolutePath(), url);
 						ThreadUtils.sleep(5000L);
-						continue;
+						
+						if (retry++ < MAX_THREAD_DOWNLOAD_FAIL) {
+							continue;
+						}
 					}
 					
 					THREAD_COUNT--;

@@ -13,6 +13,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.content.ContentViewerType;
  */
 public class ProviderSearchCapability implements Serializable {
 	
+	/* Variables */
 	private List<SearchCapability> capabilities;
 	
 	/**
