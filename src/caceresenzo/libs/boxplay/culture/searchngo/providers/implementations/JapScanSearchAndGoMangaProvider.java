@@ -77,6 +77,10 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 		CloudflareRequirement cloudflareRequirement = getRequirement(CloudflareRequirement.class);
 		cloudflareRequirement.prepare(getSiteUrl()).executeOnlyIfNotUsable();
 		
+		if (!cloudflareRequirement.isUsable()) {
+			return result;
+		}
+		
 		String json = Webb.create().post(searchApiUrl) //
 				.header(WebbConstante.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT) //
 				.header("cookie", cloudflareRequirement.getCookiesAsString()) //
@@ -196,17 +200,52 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 			return additionals;
 		}
 		
-		Matcher volumeHtmlContainerMatcher = getHelper().regex("(\\<h4\\sclass\\=\\\"text-truncate\\\"\\>.*?\\<\\/div\\>[\\s]*\\<\\/div\\>)", htmlContentContainer);
+		/* Listing */
+		List<JapScanCollapser> collapsers = new ArrayList<>();
+		List<JapScanCollapsed> collapseds = new ArrayList<>();
 		
-		while (volumeHtmlContainerMatcher.find()) {
-			String volumeHtmlContainer = volumeHtmlContainerMatcher.group(1);
+		Matcher collapserMatcher = getHelper().regex("\\<h4\\sclass\\=\\\"text-truncate\\\"\\>[\\s]*\\<span\\sdata-id\\=\\\"([\\d]*)\\\"\\sclass\\=\\\"text-danger\\\"\\sdata-toggle\\=\\\"collapse\\\"\\sdata-target\\=\\\"#collapse\\-([\\d]*)\\\"\\saria-expanded\\=\\\"false\\\"\\saria-controls\\=\\\"collapse-([\\d]*)\\\"\\>[\\s]*\\<i\\sclass\\=\\\"fas\\sfa-plus-circle\\\"\\>\\<\\/i\\>[\\s]*(.*?)[\\s]*\\<\\/span\\>[\\s]*\\<\\/h4\\>", htmlContentContainer);
+		while (collapserMatcher.find()) {
+			String targetId = collapserMatcher.group(1); /* or 2, or 3 */
+			String volume = collapserMatcher.group(4);
 			
-			String chapterListHtmlContainer = getHelper().extract("(\\<div\\sid\\=\\\"collapse-[\\d]*\\\"\\sclass\\=\\\"collapse[\\s]*\\\"\\saria-labelledby\\=\\\"heading-[\\d]*\\\"[\\s]*\\>.*?\\<\\/div\\>[\\s]*\\<\\/div\\>)", volumeHtmlContainer);
+			if (StringUtils.validate(targetId, volume)) {
+				collapsers.add(new JapScanCollapser(targetId, volume));
+			}
+		}
+		
+		Matcher collapsedMatcher = getHelper().regex("\\<div\\sid\\=\\\"collapse-([\\d]*)\\\"\\sclass\\=\\\"collapse.*?\\\"\\saria-labelledby\\=\\\"heading-[\\d]*\\\"[\\s]*\\>(.*?\\<\\/div\\>)[\\s]*\\<\\/div\\>", htmlContentContainer);
+		while (collapsedMatcher.find()) {
+			String id = collapsedMatcher.group(1);
+			String htmlContent = collapsedMatcher.group(2);
 			
-			String volume = getHelper().extract("\\<span.*?\\>.*?\\<i\\sclass\\=\\\"fas\\sfa-plus-circle\\\"\\>\\<\\/i\\>[\\s]*(.*?)[\\s]*\\<\\/span\\>", volumeHtmlContainer);
+			if (StringUtils.validate(id, htmlContent)) {
+				collapseds.add(new JapScanCollapsed(id, htmlContent));
+			}
+		}
+		
+		/* Processing */
+		for (JapScanCollapsed collapsed : collapseds) {
+			JapScanCollapser parentCollapser = null;
 			
-			Matcher chapterMatcher = getHelper().regex("\\<a\\sclass\\=\\\"text-dark\\\"\\shref\\=\\\"(.*?)\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>", chapterListHtmlContainer);
+			for (JapScanCollapser collapser : collapsers) {
+				if (collapser.getTargetId().equalsIgnoreCase(collapsed.getId())) {
+					/* In case of, using String.equalsIgnoreCase() */
+					parentCollapser = collapser;
+					break;
+				}
+			}
 			
+			collapsed.attachParentCollapser(parentCollapser);
+		}
+		
+		for (JapScanCollapsed collapsed : collapseds) {
+			String volume = "No Volume";
+			if (collapsed.hasParentCollapser()) {
+				volume = collapsed.getParentCollapser().getVolume();
+			}
+			
+			Matcher chapterMatcher = getHelper().regex("\\<a\\sclass\\=\\\"text-dark\\\"\\shref\\=\\\"(.*?)\\\"\\>[\\s]*(.*?)[\\s]*\\<\\/a\\>", collapsed.getHtmlContent());
 			while (chapterMatcher.find()) {
 				String url = getSiteUrl() + chapterMatcher.group(1);
 				String title = chapterMatcher.group(2);
@@ -270,6 +309,98 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 		public JapscanItem(String url, String name, String imageUrl) {
 			super(null, url, name, imageUrl);
 		}
+	}
+	
+	/**
+	 * Data holding class
+	 * 
+	 * @author Enzo CACERES
+	 */
+	public static class JapScanCollapser {
+		
+		/* Variables */
+		private final String targetId, volume;
+		
+		/* Constructor */
+		public JapScanCollapser(String targetId, String volume) {
+			this.targetId = targetId;
+			this.volume = volume;
+		}
+		
+		/**
+		 * @return Target to be the equal to a {@link JapScanCollapsed#getId()}
+		 */
+		public String getTargetId() {
+			return targetId;
+		}
+		
+		/**
+		 * @return Volume string
+		 */
+		public String getVolume() {
+			return volume;
+		}
+		
+	}
+	
+	/**
+	 * Data holding class
+	 * 
+	 * @author Enzo CACERES
+	 */
+	public static class JapScanCollapsed {
+		
+		/* Variables */
+		private final String id, htmlContent;
+		private JapScanCollapser parentCollapser;
+		
+		/* Constructor */
+		public JapScanCollapsed(String id, String htmlContent) {
+			this.id = id;
+			this.htmlContent = htmlContent;
+		}
+		
+		/**
+		 * @return Item collepse id
+		 */
+		public String getId() {
+			return id;
+		}
+		
+		/**
+		 * @return Html content with all chapters
+		 */
+		public String getHtmlContent() {
+			return htmlContent;
+		}
+		
+		/**
+		 * @return Attached parent {@link JapScanCollapser}
+		 */
+		public JapScanCollapser getParentCollapser() {
+			return parentCollapser;
+		}
+		
+		/**
+		 * Attach a parent {@link JapScanCollapser}.
+		 * 
+		 * @param collapser
+		 *            Target {@link JapScanCollapser}
+		 * @return Itself
+		 */
+		public JapScanCollapsed attachParentCollapser(JapScanCollapser collapser) {
+			this.parentCollapser = collapser;
+			
+			return this;
+		}
+		
+		/**
+		 * @return True if this item has a {@link JapScanCollapser} attached to it, false otherwise
+		 */
+		public boolean hasParentCollapser() {
+			return parentCollapser != null;
+		}
+		
 	}
 	
 }

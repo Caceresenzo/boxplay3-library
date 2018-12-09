@@ -44,6 +44,7 @@ import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.stream.StreamUtils;
 import caceresenzo.libs.string.StringUtils;
 import caceresenzo.libs.thread.ThreadUtils;
+import caceresenzo.libs.url.UrlUtils;
 
 /**
  * Basic Test Units
@@ -52,13 +53,17 @@ import caceresenzo.libs.thread.ThreadUtils;
  */
 public class SearchAndGoTestUnits {
 	
-	public static final boolean ENABLED_MANGA_DOWNLOAD = false;
+	public static final boolean ENABLED_MANGA_DOWNLOAD = true;
+	
 	public static final int MAX_THREAD_COUNT = 3;
+	
 	public static final String MANGA_DOWNLOAD_BASE_PATH = "C:\\Users\\cacer\\Desktop\\manga_output\\";
+	public static final int MANGA_DOWNLOAD_PAGE_MIN_CHARACTERS_COUNT = 5;
+	
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "no game no life";
+		private static final String QUERY = "Tate no Yuusha no Nariagari";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -187,7 +192,20 @@ public class SearchAndGoTestUnits {
 								Logger.$(" |- Image URL: " + url);
 								
 								if (ENABLED_MANGA_DOWNLOAD) {
-									File file = new File(MANGA_DOWNLOAD_BASE_PATH, "WEBB_" + FileUtils.replaceIllegalChar(result.getName()) + "/" + FileUtils.replaceIllegalChar(additionalData.convert()).replace(".", "") + "/" + FileUtils.replaceIllegalChar(String.format("PAGE %s.jpg", pageCount++)));
+									String formattedPage = String.valueOf(pageCount++);
+									while (formattedPage.length() < MANGA_DOWNLOAD_PAGE_MIN_CHARACTERS_COUNT) {
+										formattedPage = 0 + formattedPage;
+									}
+									
+									/* Target: <manga> / <volume - chapter> / Page <page>.<image extension> */
+									String subfilePath = "WEBB_" + String.format("%s/%s/Page %s.%s", //
+											FileUtils.replaceIllegalChar(result.getName()), //
+											FileUtils.replaceIllegalChar(additionalData.convert()).replaceAll("[\\.]{2,}", " "), //
+											FileUtils.replaceIllegalChar(formattedPage), //
+											FileUtils.replaceIllegalChar(FileUtils.getExtension(UrlUtils.parseRessource(url)).replace(".", "")) //
+									);
+									
+									File file = new File(MANGA_DOWNLOAD_BASE_PATH, subfilePath);
 									
 									while (THREAD_COUNT >= MAX_THREAD_COUNT) {
 										ThreadUtils.sleep(100L);
