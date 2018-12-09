@@ -211,12 +211,14 @@ public class SearchAndGoTestUnits {
 									
 									File file = new File(MANGA_DOWNLOAD_BASE_PATH, subfilePath);
 									
-									while (THREAD_COUNT >= MAX_THREAD_COUNT) {
-										ThreadUtils.sleep(100L);
+									if (!file.exists()) {
+										while (THREAD_COUNT >= MAX_THREAD_COUNT) {
+											ThreadUtils.sleep(100L);
+										}
+										
+										THREAD_COUNT++;
+										new DownloadWorker().applyData(chapterItem, file, url).start();
 									}
-									
-									THREAD_COUNT++;
-									new DownloadWorker().applyData(chapterItem, file, url).start();
 								}
 							}
 						} else if (extractor instanceof NovelChapterContentExtractor) {

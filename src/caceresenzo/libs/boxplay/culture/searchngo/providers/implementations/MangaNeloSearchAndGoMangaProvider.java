@@ -21,7 +21,6 @@ import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonParser;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
@@ -36,7 +35,7 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	private final String searchApiUrl;
 	
 	public MangaNeloSearchAndGoMangaProvider() {
-		super("Manga Nelo", "https://manganelo.com");
+		super("MangaNelo", "https://manganelo.com");
 		
 		this.searchApiUrl = getSiteUrl() + "/home_json_search";
 	}
@@ -55,8 +54,6 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 				.param("searchword", searchQuery.replace(" ", "_")) //
 				.param("search_style", "tentruyen") //
 				.asString().getBody();
-		
-		Logger.info(jsonString);
 		
 		if (!StringUtils.validate(jsonString)) {
 			return result;
