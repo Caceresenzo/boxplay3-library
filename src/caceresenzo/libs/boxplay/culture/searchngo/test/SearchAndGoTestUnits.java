@@ -53,7 +53,7 @@ import caceresenzo.libs.url.UrlUtils;
  */
 public class SearchAndGoTestUnits {
 	
-	public static final boolean ENABLED_MANGA_DOWNLOAD = true;
+	public static final boolean ENABLED_MANGA_DOWNLOAD = false;
 	
 	public static final int MAX_THREAD_COUNT = 3;
 	public static final int MAX_THREAD_DOWNLOAD_FAIL = 5;

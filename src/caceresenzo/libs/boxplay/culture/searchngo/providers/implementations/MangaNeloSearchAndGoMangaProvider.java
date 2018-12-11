@@ -1,7 +1,10 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
@@ -10,6 +13,8 @@ import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.Gen
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
+import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.RatingResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData.ChapterType;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
@@ -21,6 +26,7 @@ import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonParser;
+import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
 public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
@@ -31,9 +37,24 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	public static final String SEARCH_JSON_KEY_IMAGE_URL = "image";
 	public static final String SEARCH_JSON_KEY_LAST_CHAPTER = "lastchapter";
 	
+	/* Static */
+	public static final Map<String, AdditionalDataType> COMMON_DATA_CORRESPONDANCES = new HashMap<>();
+	
+	static {
+		COMMON_DATA_CORRESPONDANCES.put("Alternative", AdditionalDataType.ALTERNATIVE_NAME);
+		COMMON_DATA_CORRESPONDANCES.put("Author(s)", AdditionalDataType.AUTHORS);
+		COMMON_DATA_CORRESPONDANCES.put("Status", AdditionalDataType.STATUS);
+		COMMON_DATA_CORRESPONDANCES.put("Last updated", AdditionalDataType.LAST_UPDATED);
+		COMMON_DATA_CORRESPONDANCES.put("TransGroup", AdditionalDataType.TRADUCTION_TEAM);
+		COMMON_DATA_CORRESPONDANCES.put("View", AdditionalDataType.VIEWS);
+		COMMON_DATA_CORRESPONDANCES.put("Genres", AdditionalDataType.GENDERS);
+		COMMON_DATA_CORRESPONDANCES.put("Rating", AdditionalDataType.RATING);
+	}
+	
 	/* Variables */
 	private final String searchApiUrl;
 	
+	/* Constructor */
 	public MangaNeloSearchAndGoMangaProvider() {
 		super("MangaNelo", "https://manganelo.com");
 		
@@ -86,6 +107,124 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	@Override
 	protected List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result) {
 		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
+		
+		String html = getHelper().downloadPageCache(result.getUrl());
+		String htmlContainer = getHelper().extract("\\<ul\\sclass\\=\\\"manga-info-text\\\"\\>(.*?)\\<div\\sstyle\\=\\\"clear\\:[\\s]*both\\;\\\"\\>\\<\\/div\\>", html);
+		
+		if (!StringUtils.validate(html, htmlContainer)) {
+			return additionals;
+		}
+		
+		/* Common */
+		Matcher additionalItemsMatcher = getHelper().regex("\\<li.*?\\>(.*?)[\\s]*\\:[\\s]*(.*?)[\\s]*\\<\\/li\\>", htmlContainer);
+		while (additionalItemsMatcher.find()) {
+			String type = additionalItemsMatcher.group(1);
+			AdditionalDataType correspondingType = COMMON_DATA_CORRESPONDANCES.get(type);
+			String rawContent = additionalItemsMatcher.group(2);
+			
+			if (!StringUtils.validate(type, rawContent)) {
+				continue;
+			}
+			
+			if (correspondingType == null) {
+				for (Entry<String, AdditionalDataType> entry : COMMON_DATA_CORRESPONDANCES.entrySet()) {
+					String suffix = entry.getKey();
+					AdditionalDataType dataType = entry.getValue();
+					
+					if (type.endsWith(suffix)) {
+						correspondingType = dataType;
+						
+						break;
+					}
+				}
+				
+				if (correspondingType == null) {
+					/* Unknown */
+					continue;
+				}
+			}
+			
+			Object processedContent = null;
+			switch (correspondingType) {
+				case ALTERNATIVE_NAME: {
+					processedContent = rawContent.replace("</span>", "");
+					break;
+				}
+				
+				case LAST_UPDATED:
+				case VIEWS:
+				case STATUS: {
+					processedContent = rawContent.trim();
+					break;
+				}
+				
+				case AUTHORS: {
+					List<String> categories = new ArrayList<>();
+					
+					Matcher authorsMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, rawContent);
+					while (authorsMatcher.find()) {
+						String name = authorsMatcher.group(2);
+						
+						categories.add(name);
+					}
+					
+					if (!categories.isEmpty()) {
+						processedContent = categories;
+					}
+					break;
+				}
+				
+				case GENDERS: {
+					List<CategoryResultData> categories = new ArrayList<>();
+					
+					Matcher gendersMatcher = getHelper().regex(HtmlCommonExtractor.COMMON_LINK_EXTRACTION_REGEX, rawContent);
+					while (gendersMatcher.find()) {
+						String url = gendersMatcher.group(1);
+						String name = gendersMatcher.group(2);
+						
+						categories.add(new CategoryResultData(url, name));
+					}
+					
+					if (!categories.isEmpty()) {
+						processedContent = categories;
+					}
+					break;
+				}
+				
+				case RATING: {
+					/* Go to the next one */
+					if (additionalItemsMatcher.find()) {
+						String htmlRawContent = additionalItemsMatcher.group(2);
+						
+						final String metaRegexFormat = "\\<em\\sproperty\\=\\\"v:%s\\\"\\>(.*?)\\<\\/em\\>";
+						
+						float average = ParseUtils.parseFloat(getHelper().extract(String.format(metaRegexFormat, "average"), htmlRawContent), NO_VALUE);
+						int best = ParseUtils.parseInt(getHelper().extract(String.format(metaRegexFormat, "best"), htmlRawContent), NO_VALUE);
+						int votes = ParseUtils.parseInt(getHelper().extract(String.format(metaRegexFormat, "votes"), htmlRawContent), NO_VALUE);
+						
+						if (average != NO_VALUE && best != NO_VALUE && votes != NO_VALUE) {
+							processedContent = new RatingResultData(average, best, votes);
+						}
+					}
+					
+					break;
+				}
+				
+				default: {
+					continue;
+				}
+			}
+			
+			if (processedContent != null) {
+				additionals.add(new AdditionalResultData(correspondingType, processedContent));
+			}
+		}
+		
+		/* Resume */
+		String extractedResume = getHelper().extract("\\<div\\sid\\=\\\"noidungm\\\"\\sstyle\\=\\\".*?\\>[\\s]*\\<h2\\>\\<p.*?\\<\\/p\\>\\<\\/h2\\>(.*?)\\<\\/div\\>", htmlContainer);
+		if (extractedResume != null) {
+			additionals.add(new AdditionalResultData(AdditionalDataType.RESUME, extractedResume));
+		}
 		
 		return additionals;
 	}

@@ -23,7 +23,7 @@ public class HtmlCommonExtractor {
 	 * <li>2: Display string</li>
 	 * </ul>
 	 */
-	public static final String COMMON_LINK_EXTRACTION_REGEX = "\\<a.*?href=\\\"(.*?)\\\"\\>(.*?)\\<\\/a\\>";
+	public static final String COMMON_LINK_EXTRACTION_REGEX = "\\<a.*?href=[\\\"\\'](.*?)[\\\"\\']\\>(.*?)\\<\\/a\\>";
 	
 	/**
 	 * Already prepared regex for "li" list extraction<br>

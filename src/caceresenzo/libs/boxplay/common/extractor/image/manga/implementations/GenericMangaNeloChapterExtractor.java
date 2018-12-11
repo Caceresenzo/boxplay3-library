@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 /**

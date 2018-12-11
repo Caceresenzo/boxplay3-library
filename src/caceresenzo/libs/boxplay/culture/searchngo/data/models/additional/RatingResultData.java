@@ -10,8 +10,10 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
  */
 public class RatingResultData extends SimpleData implements DisplayableString {
 	
+	/* Constants */
 	public static final int NO_VALUE = -1;
 	
+	/* Variables */
 	private final float average;
 	private final int best, votes;
 	

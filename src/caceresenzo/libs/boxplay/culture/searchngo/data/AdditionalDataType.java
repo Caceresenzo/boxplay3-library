@@ -22,6 +22,7 @@ public enum AdditionalDataType {
 	ARTISTS, //
 	STUDIOS, //
 	CHANNELS, //
+	LAST_UPDATED, //
 	RELEASE_DATE, //
 	PUBLISHERS, //
 	VIEWS, //
