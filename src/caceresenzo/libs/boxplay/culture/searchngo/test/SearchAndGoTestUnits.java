@@ -67,7 +67,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "no game";
+		private static final String QUERY = "one piece";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();

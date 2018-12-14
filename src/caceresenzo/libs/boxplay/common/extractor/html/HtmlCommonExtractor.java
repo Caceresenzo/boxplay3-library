@@ -52,7 +52,7 @@ public class HtmlCommonExtractor {
 	 * @return Target url, null if not found
 	 */
 	public static String extractIframeUrlFromHtml(String html) {
-		return ProviderHelper.getStaticHelper().extract("\\<iframe.*?src=\\\"(.*?)\\\".*?\\>.*?\\<\\/iframe\\>", html);
+		return ProviderHelper.getStaticHelper().extract("\\<iframe.*?src=[\\\"\\'](.*?)[\\\"\\'].*?\\>.*?\\<\\/iframe\\>", html);
 	}
 	
 	/**

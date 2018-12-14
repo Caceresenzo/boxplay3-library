@@ -24,9 +24,11 @@ public enum AdditionalDataType {
 	CHANNELS, //
 	LAST_UPDATED, //
 	RELEASE_DATE, //
+	ANIMATION_STUDIO,
 	PUBLISHERS, //
 	VIEWS, //
 	DURATION, //
+	UNDER_LICENSE, //
 	RESUME, //
 	RATING, //
 	SIMPLE_HTML, //
