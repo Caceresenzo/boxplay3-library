@@ -1,7 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers.implementations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +19,8 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.utils.Sandbox;
-import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
-import caceresenzo.libs.iterator.ByteArrayIterator;
-import caceresenzo.libs.logger.Logger;
-import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
 public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider, IHentaiVideoContentProvider {
@@ -267,6 +262,8 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 	
 	@Override
 	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
+		List<String> urls = new ArrayList<>();
+		
 		String html = getHelper().downloadPageCache(videoItemResult.getUrl());
 		
 		if (!StringUtils.validate(html)) {
@@ -281,22 +278,23 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 			String decodedIframeHtml = new IAnimeIframeDecoderSandbox().execute(encodedIframeHtml);
 			String iframeUrl = HtmlCommonExtractor.extractIframeUrlFromHtml(decodedIframeHtml);
 			
-			// Logger.info("origin:: %s", videoItemResult.getUrl());
-			// Logger.info("url:: %s, frame:: %s", iframeUrl, decodedIframeHtml);
-			//
-			//
-			// String firstPassHtml = "" + Webb.create().get(iframeUrl) //
-			// .header(WebbConstante.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT) //
-			// .header("referer", videoItemResult.getUrl()) //
-			// .followRedirects(true) //
-			// .useCaches(false) //
-			// .asString().getStatusCode();
-			//
-			// Logger.info(firstPassHtml);
-			// System.exit(0);
+			/* Doing pretty network-intensive tasks... */
+			if (StringUtils.validate(iframeUrl)) {
+				String resolvedHtml = Webb.create().post(iframeUrl) //
+						.header(WebbConstante.HDR_USER_AGENT, WebbConstante.USER_AGENT_CHROME) //
+						.header("referer", iframeUrl) //
+						.param("submit.x", 0) //
+						.param("submit.y", 0) //
+						.asString().getBody();
+				
+				String extractedUrl = HtmlCommonExtractor.extractIframeUrlFromHtml(resolvedHtml);
+				if (extractedUrl != null) {
+					urls.add(extractedUrl.replace("\n", ""));
+				}
+			}
 		}
 		
-		return new String[] { videoItemResult.getUrl() };
+		return urls.toArray(new String[urls.size()]);
 	}
 	
 	@Override
