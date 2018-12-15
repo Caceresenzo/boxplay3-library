@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.IHentaiVideoContentProvider;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -252,7 +253,7 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { null };
+		return new Class[] { GenericOpenloadVideoExtractor.class };
 	}
 	
 	@Override

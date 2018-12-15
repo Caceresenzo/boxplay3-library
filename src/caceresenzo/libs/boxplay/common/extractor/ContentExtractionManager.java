@@ -10,7 +10,9 @@ import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.Gen
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.implementations.GenericScanMangaNovelChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericAnimeUltimateVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericGoUnlimitedVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidloxVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData.ChapterType;
 import caceresenzo.libs.string.StringUtils;
@@ -29,6 +31,8 @@ public class ContentExtractionManager {
 		bindExtractor(ExtractorType.VIDEO, GenericOpenloadVideoExtractor.class, new GenericOpenloadVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, GenericVidozaVideoExtractor.class, new GenericVidozaVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, GenericAnimeUltimateVideoExtractor.class, new GenericAnimeUltimateVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, GenericGoUnlimitedVideoExtractor.class, new GenericGoUnlimitedVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, GenericVidloxVideoExtractor.class, new GenericVidloxVideoExtractor());
 		
 		/* Manga */
 		bindExtractor(ExtractorType.MANGA, GenericMangaLelChapterExtractor.class, new GenericMangaLelChapterExtractor());
