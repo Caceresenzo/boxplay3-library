@@ -71,7 +71,7 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 		Matcher itemMatcher = getHelper().regex("\\<td\\salign\\=\\\"center\\\"\\>[\\s]*\\<table.*?\\>[\\s]*\\<tr.*?\\>[\\s]*\\<td.*?\\>[\\s]*\\<center\\>[\\s]*\\<span.*?>[\\s]*\\<titre6\\>[\\s]*(.*?)[\\s]*\\<\\/titre6\\>[\\s]*\\<\\/center\\>[\\s]*\\<\\/span\\>[\\s]*\\<\\/td\\>\\<\\/tr\\>\\<tr.*?\\>\\<td.*?\\>\\<center\\>\\<div\\sstyle\\=\\\"background:[\\s]*url\\(\\'(.*?)\\'\\)\\;.*?\\\"\\>\\<img\\ssrc\\=\\\"img\\/(.*?)\\..*?\\\".*?\\>\\<\\/div\\>\\<\\/center\\>\\<\\/td\\>\\<\\/tr\\>\\<tr\\>\\<td.*?\\>\\<center\\>.*?\\<\\/center\\>\\<\\/td\\>\\<td.*?\\>\\<center\\>.*?\\<\\/center\\>.*?\\<\\/td\\>\\<\\/tr\\>\\<td.*?\\>\\<center\\>\\<a\\shref\\=\\'(.*?)\\'.*?\\>.*?\\<\\/a\\>\\<center\\>\\<\\/td\\>\\<\\/tr\\>\\<\\/table\\>.*?\\<\\/td\\>", html);
 		while (itemMatcher.find()) {
 			String name = itemMatcher.group(1);
-			String imageUrl = getSiteUrl() + "/" + itemMatcher.group(2);
+			String subImageUrl = itemMatcher.group(2);
 			String typeHint = itemMatcher.group(3);
 			String url = getSiteUrl() + "/" + itemMatcher.group(4);
 			
@@ -100,6 +100,23 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 				default: {
 					/* Unknown type, ignore */
 					continue;
+				}
+			}
+			
+			String imageUrl;
+			switch (type) {
+				case HENTAI: {
+					if (subImageUrl.startsWith(subImageUrl)) {
+						imageUrl = subImageUrl;
+						
+						/* Break only if subImageUrl is already a direct image url, else, use default statement */
+						break;
+					}
+				}
+				
+				default: {
+					imageUrl = getSiteUrl() + "/" + subImageUrl;
+					break;
 				}
 			}
 			
@@ -157,7 +174,6 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 					}
 					
 					Object processedContent = rawContent;
-					;
 					switch (correspondingType) {
 						case GENDERS: {
 							List<CategoryResultData> categories = new ArrayList<>();
@@ -296,6 +312,11 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 		}
 		
 		return urls.toArray(new String[urls.size()]);
+	}
+	
+	@Override
+	public String getWorkingCharset() {
+		return CHARSET_LATIN_1;
 	}
 	
 	@Override
