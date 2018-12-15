@@ -10,6 +10,9 @@ import caceresenzo.libs.string.StringUtils;
 
 public class GenericGoUnlimitedVideoExtractor extends VideoContentExtractor {
 	
+	/* Constants */
+	public static final String FILE_DELETED_MESSAGE = "File was deleted";
+	
 	@Override
 	public String extractDirectVideoUrl(String url, VideoContentExtractorProgressCallback progressCallback) {
 		if (progressCallback != null) {
@@ -37,10 +40,28 @@ public class GenericGoUnlimitedVideoExtractor extends VideoContentExtractor {
 		
 		getLogger().separator();
 		
+		if (html.contains(FILE_DELETED_MESSAGE)) {
+			if (progressCallback != null) {
+				progressCallback.onFileNotAvailable();
+			}
+			
+			getLogger().appendln("Error: " + FILE_DELETED_MESSAGE);
+			
+			return null;
+		}
+		
+		if (progressCallback != null) {
+			progressCallback.onExtractingLink();
+		}
+		
 		try {
 			String directUrl = new GoUnlimitedDirectUrlComputingSandbox().execute(html);
 			
 			getLogger().appendln("Direct URL: " + directUrl);
+			
+			if (progressCallback != null) {
+				progressCallback.onFormattingResult();
+			}
 			
 			return directUrl;
 		} catch (Exception exception) {

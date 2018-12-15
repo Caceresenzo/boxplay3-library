@@ -17,6 +17,7 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.IHentaiVideoContentProvider;
+import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
@@ -53,7 +54,7 @@ import caceresenzo.libs.url.UrlUtils;
  * @author Enzo CACERES
  */
 public class SearchAndGoTestUnits {
-
+	
 	public static final boolean ALLOW_HENTAI = true;
 	
 	public static final boolean ENABLED_MANGA_DOWNLOAD = false;
@@ -67,7 +68,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "one piece";
+		private static final String QUERY = "no game";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -181,10 +182,10 @@ public class SearchAndGoTestUnits {
 							
 							Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
 							
-							// if (contentExtractor instanceof VideoContentExtractor) {
-							// Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
-							// Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
-							// }
+							if (contentExtractor instanceof VideoContentExtractor) {
+								Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
+								Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
+							}
 						}
 						
 						Logger.$("");

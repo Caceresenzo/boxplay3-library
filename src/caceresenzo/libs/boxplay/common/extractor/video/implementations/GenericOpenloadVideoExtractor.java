@@ -78,8 +78,14 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 		} else {
 			String extractedKey = new OpenloadUrlDecoderSandbox().execute(openloadHtml);
 			
+			getLogger().appendln("Computed key: " + extractedKey);
+			
 			if (!StringUtils.validate(extractedKey)) {
 				return null;
+			}
+			
+			if (progressCallback != null) {
+				progressCallback.onFormattingResult();
 			}
 			
 			return String.format(baseUrlFormat, extractedKey);

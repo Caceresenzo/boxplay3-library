@@ -9,6 +9,9 @@ import caceresenzo.libs.string.StringUtils;
 
 public class GenericVidloxVideoExtractor extends VideoContentExtractor {
 	
+	/* Constants */
+	public static final String FILE_DELETED_MESSAGE = "Error. The video was deleted.";
+	
 	@Override
 	public String extractDirectVideoUrl(String url, VideoContentExtractorProgressCallback progressCallback) {
 		if (progressCallback != null) {
@@ -36,6 +39,20 @@ public class GenericVidloxVideoExtractor extends VideoContentExtractor {
 		
 		getLogger().separator();
 		
+		if (html.contains(FILE_DELETED_MESSAGE)) {
+			if (progressCallback != null) {
+				progressCallback.onFileNotAvailable();
+			}
+			
+			getLogger().appendln("Error: " + FILE_DELETED_MESSAGE);
+			
+			return null;
+		}
+		
+		if (progressCallback != null) {
+			progressCallback.onExtractingLink();
+		}
+		
 		String allSources = getStaticHelper().extract("sources\\:\\s\\[(.*?)\\]", html);
 		
 		if (!StringUtils.validate(allSources)) {
@@ -51,10 +68,14 @@ public class GenericVidloxVideoExtractor extends VideoContentExtractor {
 			String source = sourceMatcher.group(1);
 			
 			getLogger().append("Checking: " + source + " -- ");
-
+			
 			/* Match first, hight, compatible file */
 			if (source.endsWith(".mp4")) {
 				getLogger().appendln("COMPATIBLE, RETURNING");
+				
+				if (progressCallback != null) {
+					progressCallback.onFormattingResult();
+				}
 				
 				return source;
 			} else {
