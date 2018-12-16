@@ -102,10 +102,11 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 			return (title.trim() + " - " + name.trim()).trim();
 		} else if (StringUtils.validate(title)) {
 			return title.trim();
-		} else {
-			/* Supposed to be StringUtils.validate(name) == true */
+		} else if (StringUtils.validate(name)) {
 			return name.trim();
 		}
+		
+		return null;
 	}
 	
 	@Override

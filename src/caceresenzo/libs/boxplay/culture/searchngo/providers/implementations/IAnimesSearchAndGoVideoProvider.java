@@ -17,6 +17,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.Categor
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
+import caceresenzo.libs.boxplay.culture.searchngo.requirements.implementations.CloudflareRequirement;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.utils.Sandbox;
@@ -49,6 +50,8 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 		super("I-ANIMES", "https://www.ianimes.co");
 		
 		this.searchUrlFormat = getSiteUrl() + "/resultat+%s.html";
+		
+		require(CloudflareRequirement.class);
 	}
 	
 	@Override
@@ -60,7 +63,14 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 	protected Map<String, SearchAndGoResult> processWork(String searchQuery) throws Exception {
 		Map<String, SearchAndGoResult> result = createEmptyWorkMap();
 		
-		String html = getHelper().downloadPageCache(String.format(searchUrlFormat, searchQuery.toUpperCase().replace(" ", "+")));
+		CloudflareRequirement cloudflareRequirement = getRequirement(CloudflareRequirement.class);
+		cloudflareRequirement.prepare(getSiteUrl()).executeOnlyIfNotUsable();
+		
+		if (!cloudflareRequirement.isUsable()) {
+			return result;
+		}
+		
+		String html = getHelper().downloadPageCache(String.format(searchUrlFormat, searchQuery.toUpperCase().replace(" ", "+")), cloudflareRequirement.getCookiesAsHeaderMap(null));
 		
 		if (!StringUtils.validate(html)) {
 			return result;
@@ -136,7 +146,14 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 	protected List<AdditionalResultData> processFetchMoreData(SearchAndGoResult result) {
 		List<AdditionalResultData> additionals = createEmptyAdditionalResultDataList();
 		
-		String html = getHelper().downloadPageCache(result.getUrl());
+		CloudflareRequirement cloudflareRequirement = getRequirement(CloudflareRequirement.class);
+		cloudflareRequirement.prepare(getSiteUrl()).executeOnlyIfNotUsable();
+		
+		if (!cloudflareRequirement.isUsable()) {
+			return additionals;
+		}
+		
+		String html = getHelper().downloadPageCache(result.getUrl(), cloudflareRequirement.getCookiesAsHeaderMap(null));
 		
 		switch (result.getType()) {
 			case ANIME:
@@ -230,7 +247,14 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 			case ANIME:
 			case SERIES:
 			case HENTAI: {
-				String html = getHelper().downloadPageCache(result.getUrl());
+				CloudflareRequirement cloudflareRequirement = getRequirement(CloudflareRequirement.class);
+				cloudflareRequirement.prepare(getSiteUrl()).executeOnlyIfNotUsable();
+				
+				if (!cloudflareRequirement.isUsable()) {
+					return additionals;
+				}
+				
+				String html = getHelper().downloadPageCache(result.getUrl(), cloudflareRequirement.getCookiesAsHeaderMap(null));
 				String htmlContainer = getHelper().extract("\\<ul\\sclass\\=\\'post_list\\sextra_posts_list\\'\\>\\<li\\sclass\\=\\\"cat_post_item-1\\sclearfix\\\"\\>(.*?)\\<\\/li\\><\\/ul\\>", html);
 				
 				if (!StringUtils.validate(htmlContainer)) {
