@@ -29,12 +29,12 @@ public enum ProviderManager {
 	JETANIME(JetAnimeSearchAndGoAnimeProvider.class), //
 	ADKAMI(AdkamiSearchAndGoVideoProvider.class), //
 	ANIMEULTIME(AnimeUltimeSearchAndGoVideoProvider.class), //
-	IANIMES(IAnimesSearchAndGoVideoProvider.class), //
+	// IANIMES(IAnimesSearchAndGoVideoProvider.class), /* Broken, cloudflare bypass is not working */
 	
 	/* Movie / Series */
 	FILMSTREAMINGVK_PRO(FilmStreamingVkProSearchAndGoVideoProvider.class), //
-	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
-	HDSS_TO(HdssToSearchAndGoVideoProvider.class),
+	// FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), /* Broken, "Request failed: 504 Gateway Time-out" */
+	// HDSS_TO(HdssToSearchAndGoVideoProvider.class), /* Broken, no extractor available */
 	
 	/* Manga */
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //

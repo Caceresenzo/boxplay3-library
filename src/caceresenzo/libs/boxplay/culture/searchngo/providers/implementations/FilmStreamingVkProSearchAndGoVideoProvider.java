@@ -201,6 +201,11 @@ public class FilmStreamingVkProSearchAndGoVideoProvider extends SearchAndGoProvi
 			String name = buttons.get(i);
 			String url = iframeUrls.get(i);
 			
+			if (url.equalsIgnoreCase("/player/play.php")) {
+				/* Avoid spam & fake content */
+				continue;
+			}
+			
 			additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new VideoItemResultData(this, url, name)));
 		}
 		

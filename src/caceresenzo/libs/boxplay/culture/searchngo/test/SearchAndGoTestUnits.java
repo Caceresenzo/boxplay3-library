@@ -68,7 +68,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "no game";
+		private static final String QUERY = "game";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -97,9 +97,9 @@ public class SearchAndGoTestUnits {
 			
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
-			// providers.add(ProviderManager.JETANIME.create());
+			providers.add(ProviderManager.JETANIME.create());
 			// providers.add(ProviderManager.JAPSCAN.create());
-			// providers.add(ProviderManager.VOIRFILM_PRO.create());
+			// providers.add(ProviderManager.FILMSTREAMINGVK_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
@@ -107,7 +107,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.ANIMEULTIME.create());
 			// providers.add(ProviderManager.HDSS_TO.create());
 			// providers.add(ProviderManager.MANGANELO.create());
-			providers.add(ProviderManager.IANIMES.create());
+			// providers.add(ProviderManager.IANIMES.create());
 			
 			for (SearchAndGoProvider provider : providers) {
 				if (provider instanceof IHentaiVideoContentProvider) {

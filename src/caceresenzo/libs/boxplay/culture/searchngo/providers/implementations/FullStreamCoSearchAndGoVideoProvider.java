@@ -433,13 +433,10 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 		return new Class[] { GenericOpenloadVideoExtractor.class, GenericVidozaVideoExtractor.class };
 	}
 	
-	private String makeRequestByCategory(String searchQuery, String category) {
-		Webb webb = Webb.create();
-		webb.setDefaultHeader(WebbConstante.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT);
-		
-		return webb //
+	private String makeRequestByCategory(String searchQuery, String category) {		
+		return Webb.create() //
 				.post(searchBaseUrl) //
-				.header("Content-Type", "application/x-www-form-urlencoded") //
+				.chromeUserAgent() //
 				
 				.param("do", "search") //
 				.param("subaction", "search") //

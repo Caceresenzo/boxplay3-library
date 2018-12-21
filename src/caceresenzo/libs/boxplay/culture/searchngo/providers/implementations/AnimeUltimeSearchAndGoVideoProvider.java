@@ -16,15 +16,19 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.http.client.webb.Response;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbUtils;
+import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 @SuppressWarnings("unused")
 public class AnimeUltimeSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {
 	
+	/* Variables */
 	private final String searchPostUrl;
 	
+	/* Constructor */
 	public AnimeUltimeSearchAndGoVideoProvider() {
 		super("Anime-Ultime", "http://www.anime-ultime.net");
 		
@@ -51,9 +55,11 @@ public class AnimeUltimeSearchAndGoVideoProvider extends SearchAndGoProvider imp
 		Map<String, SearchAndGoResult> result = createEmptyWorkMap();
 		
 		String html = Webb.create().post(searchPostUrl) //
-				.param("search", WebbUtils.urlEncode(searchQuery.replace(" ", "+"))) //
+				.chromeUserAgent() //
+				.param("search", searchQuery) //
 				.asString() //
 				.getBody(); //
+		
 		String htmlContainer = extractMainSearchResultHtmlContainer(html);
 		
 		if (!StringUtils.validate(html, htmlContainer)) {
@@ -90,7 +96,7 @@ public class AnimeUltimeSearchAndGoVideoProvider extends SearchAndGoProvider imp
 		if (!StringUtils.validate(html, mainHtmlContainer, itemInformationHtmlContainer)) {
 			return additionals;
 		}
-
+		
 		additionals.add(new AdditionalResultData(AdditionalDataType.SIMPLE_HTML, itemInformationHtmlContainer));
 		
 		return additionals;
