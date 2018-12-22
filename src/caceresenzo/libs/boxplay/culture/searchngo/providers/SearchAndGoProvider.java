@@ -17,6 +17,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.requirements.BaseSystemRequire
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
+import caceresenzo.libs.http.client.webb.Request;
 import caceresenzo.libs.http.client.webb.Webb;
 
 /**
@@ -290,6 +291,15 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 */
 	public boolean isAdvancedDownloaderNeeded() {
 		return false;
+	}
+	
+	/**
+	 * Return if the download should follow redirects.
+	 * 
+	 * @return If you want to use {@link Request#followRedirects(boolean)}.
+	 */
+	public boolean downloadShouldFollowRedirects() {
+		return true;
 	}
 	
 	/**

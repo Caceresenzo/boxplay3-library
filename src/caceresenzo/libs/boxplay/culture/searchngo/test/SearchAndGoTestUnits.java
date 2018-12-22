@@ -19,6 +19,7 @@ import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentE
 import caceresenzo.libs.boxplay.common.extractor.video.IHentaiVideoContentProvider;
 import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.LoggingCallbackDelegate;
+import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.OnlyExceptionLoggingCallbackDelegate;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
@@ -30,6 +31,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemR
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.completed.CompletedVideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderWeakCache;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
@@ -435,6 +437,33 @@ public class SearchAndGoTestUnits {
 		public static void main(String[] args) {
 			for (int i = 0; i < LOOP_COUNT; i++) {
 				ExtractionTest.main(args);
+			}
+		}
+		
+	}
+	
+	public static class CacheLoopTestUnitTest {
+		
+		public static final String QUERY = "game";
+		public static final int LOOP_COUNT = 5;
+		
+		public static void main(String[] args) throws Exception {
+			for (int i = 0; i < LOOP_COUNT; i++) {
+				Logger.info("---------------------- starting loop %s", i);
+				
+				List<SearchAndGoProvider> providers = new ArrayList<>();
+				// providers.add(ProviderManager.JETANIME.create());
+				providers.addAll(ProviderManager.createAll());
+				
+				Map<String, SearchAndGoResult> workmap = SearchAndGoProvider.provide(providers, QUERY, false, new OnlyExceptionLoggingCallbackDelegate());
+				
+				for (SearchAndGoResult result : workmap.values()) {
+					Logger.info("%-90s --> %s", result.getName(), result.getUrl());
+				}
+				
+				Logger.info("size before destroy: " + ProviderWeakCache.cacheSize());
+				Logger.info("cache memory size: " + ProviderWeakCache.computeMemorySizeAndDestroy());
+				Logger.info("size after destroy: " + ProviderWeakCache.cacheSize());
 			}
 		}
 		

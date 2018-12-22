@@ -15,19 +15,12 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.completed.CompletedVideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.ISubscribable;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
-import caceresenzo.libs.http.client.webb.Webb;
-import caceresenzo.libs.http.client.webb.WebbConstante;
-import caceresenzo.libs.iterator.ByteArrayIterator;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.reversing.cloudflare.CloudflareUtils;
 import caceresenzo.libs.string.StringUtils;
 
@@ -84,7 +77,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		
 		String html = getHelper().downloadPageCache(getSiteUrl());
 		
-		if (html == null) {
+		if (!StringUtils.validate(html)) {
 			return result;
 		}
 		
@@ -102,6 +95,11 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public boolean isAdvancedDownloaderNeeded() {
+		return true;
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
 import caceresenzo.libs.http.client.webb.Request;
 import caceresenzo.libs.http.client.webb.Response;
 import caceresenzo.libs.http.client.webb.Webb;
+import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.network.Downloader;
 
 /**
@@ -144,7 +145,10 @@ public class ProviderHelper implements Serializable {
 	public String downloadPage(String url, Map<String, String> headers, String charset) {
 		try {
 			if (parentProvider != null && parentProvider.isAdvancedDownloaderNeeded()) {
-				Request request = Webb.create(!parentProvider.isSslNeeded()).get(url);
+				Request request = Webb.create(!parentProvider.isSslNeeded()).get(url) //
+						.chromeUserAgent() //
+						.followRedirects(parentProvider.downloadShouldFollowRedirects()) //
+						.header(WebbConstante.HDR_ACCEPT_ENCODING, "gzip;q=0,deflate,sdch");
 				
 				if (headers != null) {
 					for (Entry<String, String> entry : headers.entrySet()) {
@@ -157,6 +161,10 @@ public class ProviderHelper implements Serializable {
 				if (response.isSuccess()) {
 					return response.getBody();
 				} else {
+					if (response.getErrorBody() == null) {
+						return null;
+					}
+					
 					return String.valueOf(response.getErrorBody());
 				}
 			} else {
@@ -175,7 +183,7 @@ public class ProviderHelper implements Serializable {
 	 */
 	public ProviderHelper resetCache() {
 		checkProviderValidity();
-
+		
 		ProviderWeakCache.clear();
 		
 		return this;

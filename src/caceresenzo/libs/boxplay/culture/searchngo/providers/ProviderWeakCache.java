@@ -35,9 +35,9 @@ public class ProviderWeakCache {
 	 * If the cache size is more than {@link #MAX_CACHE_CONTENT_SIZE}, the first key of the map will be deleted.
 	 * 
 	 * @param key
-	 *            Cache data key
+	 *            Cache data key.
 	 * @param value
-	 *            Data to cache
+	 *            Data to cache.
 	 */
 	public static void push(String key, String value) {
 		checkInstance();
@@ -78,11 +78,11 @@ public class ProviderWeakCache {
 	}
 	
 	/**
-	 * Call {@link #check(String)} and validate the content returned by {@link #get(String)}.<br>
+	 * Call {@link #check(String)} and validate the content returned by {@link #get(String)}.
 	 * 
 	 * @param key
-	 *            Cache data key
-	 * @return True if cached data is valid and present, false if not
+	 *            Cache data key.
+	 * @return True if cached data is valid and present, false if not.
 	 */
 	public static boolean checkAndValidate(String key) {
 		return check(key) && StringUtils.validate(get(key));
@@ -92,8 +92,8 @@ public class ProviderWeakCache {
 	 * Get cached data if present, return null if no data is found with the key.
 	 * 
 	 * @param key
-	 *            Cache data key
-	 * @return Content if has data, null if not
+	 *            Cache data key.
+	 * @return Content if has data, null if not.
 	 */
 	public static String get(String key) {
 		if (check(key)) {
@@ -148,6 +148,21 @@ public class ProviderWeakCache {
 	public static int computeCacheMemorySize() {
 		checkInstance();
 		
+		int mapSize = -1;
+		try {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+			
+			objectOutputStream.writeObject(new HashMap<String, String>());
+			objectOutputStream.close();
+			
+			mapSize = byteArrayOutputStream.size();
+			byteArrayOutputStream.reset();
+			byteArrayOutputStream.close();
+		} catch (Exception exception) {
+			;
+		}
+		
 		try {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -155,10 +170,17 @@ public class ProviderWeakCache {
 			objectOutputStream.writeObject(WEAK_CACHE_REFERENCE.get());
 			objectOutputStream.close();
 			
-			/* 82 is memory size for an empty map */
-			int size = byteArrayOutputStream.size() - 82;
+			int size = byteArrayOutputStream.size();
 			byteArrayOutputStream.reset();
 			byteArrayOutputStream.close();
+			
+			if (mapSize != -1) {
+				size -= mapSize;
+				
+				// if (size < 0) {
+				// size = 0;
+				// }
+			}
 			
 			return size;
 		} catch (IOException exception) {
@@ -178,7 +200,7 @@ public class ProviderWeakCache {
 	/**
 	 * @return The weak cache map reference, can be null.
 	 */
-	private static Map<String, String> getCacheMap() {
+	public static Map<String, String> getCacheMap() {
 		return WEAK_CACHE_REFERENCE.get();
 	}
 	
