@@ -8,6 +8,7 @@ import java.util.Set;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AdkamiSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AnimeUltimeSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FilmStreamingVkProSearchAndGoVideoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JapScanSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
@@ -30,7 +31,7 @@ public enum ProviderManager {
 	
 	/* Movie / Series */
 	FILMSTREAMINGVK_PRO(FilmStreamingVkProSearchAndGoVideoProvider.class), //
-	// FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), /* Broken, "Request failed: 504 Gateway Time-out" */
+	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
 	// HDSS_TO(HdssToSearchAndGoVideoProvider.class), /* Broken, no extractor available */
 	
 	/* Manga */
