@@ -11,8 +11,8 @@ import java.util.regex.Matcher;
 
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -25,7 +25,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.http.client.webb.Webb;
-import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.string.StringUtils;
 
 public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider {

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.culture.searchngo.callback.ContentProviderCallback.VideoContentProviderCallback;
-import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.SearchCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
@@ -19,8 +17,6 @@ public class ProviderCallback {
 	
 	private static List<SearchCallback> searchCallbacks = new ArrayList<>();
 	private static List<ProviderSearchCallback> providerSearchCallbacks = new ArrayList<>();
-	
-	private static List<VideoContentProviderCallback> videoContentProviderCallbacks = new ArrayList<>();
 	
 	/**
 	 * Disabled constructor, static only
@@ -50,18 +46,6 @@ public class ProviderCallback {
 	public static void unregisterProviderSearchCallback(ProviderSearchCallback callback) {
 		if (providerSearchCallbacks.contains(callback)) {
 			providerSearchCallbacks.remove(callback);
-		}
-	}
-	
-	public static void registerVideoContentProviderCallback(VideoContentProviderCallback callback) {
-		if (!videoContentProviderCallbacks.contains(callback)) {
-			videoContentProviderCallbacks.add(callback);
-		}
-	}
-	
-	public static void unregisterVideoContentProviderCallback(VideoContentProviderCallback callback) {
-		if (videoContentProviderCallbacks.contains(callback)) {
-			videoContentProviderCallbacks.remove(callback);
 		}
 	}
 	
@@ -106,11 +90,4 @@ public class ProviderCallback {
 			callback.onProviderFailed(provider, exception);
 		}
 	}
-	
-	public static void onVideoUrlExtracted(VideoItemResultData videoResult, String extractedUrl) {
-		for (VideoContentProviderCallback callback : videoContentProviderCallbacks) {
-			callback.onVideoUrlExtracted(videoResult, extractedUrl);
-		}
-	}
-	
 }

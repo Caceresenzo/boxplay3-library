@@ -314,7 +314,7 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 * @return Array of language
 	 */
 	public ProviderLanguage.Language[] getMainLanguage() {
-		return new ProviderLanguage.Language[]{ ProviderLanguage.Language.FRENCH };
+		return new ProviderLanguage.Language[] { ProviderLanguage.Language.FRENCH };
 	}
 	
 	/**
@@ -354,6 +354,23 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 */
 	public void autosort(boolean autosort) {
 		this.autosort = autosort;
+	}
+	
+	/**
+	 * Get the source {@link ProviderManager} used to create this instance of a {@link SearchAndGoProvider}.
+	 * 
+	 * @return Target {@link ProviderManager}
+	 * @throws IllegalStateException
+	 *             If the provider don't have a source {@link ProviderManager}. Should not happen.
+	 */
+	public ProviderManager getSourceManager() {
+		ProviderManager manager = ProviderManager.fromClass(this.getClass().getSimpleName());
+		
+		if (manager == null) {
+			throw new IllegalStateException("This provider don't have a source manager.");
+		}
+		
+		return manager;
 	}
 	
 	/**
