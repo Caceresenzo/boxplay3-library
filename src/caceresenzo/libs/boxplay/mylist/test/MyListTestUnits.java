@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.LoggingCallbackDelegate;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
@@ -44,7 +45,7 @@ public class MyListTestUnits {
 			
 			try {
 				for (SearchAndGoProvider provider : providers) {
-					Map<String, SearchAndGoResult> workmap = provider.work(QUERY);
+					Map<String, SearchAndGoResult> workmap = provider.work(QUERY, new LoggingCallbackDelegate());
 					
 					ResultScoreSorter.sortWorkmap(workmap, QUERY, provider.getHelper().getSearchEngine());
 					

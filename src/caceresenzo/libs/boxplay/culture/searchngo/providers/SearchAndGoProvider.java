@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.CallbackDelegate;
+import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.SilentCallbackDelegate;
 import caceresenzo.libs.boxplay.culture.searchngo.content.IContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -125,26 +127,28 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	 * 
 	 * @param searchQuery
 	 *            If any, that an user input for searching custom content.
+	 * @param callbackDelegate
+	 *            Callback delegater
 	 * @return A map containing all result found. The map's key is the unique identifier, and the value is the result.
 	 */
-	public Map<String, SearchAndGoResult> work(String searchQuery) {
+	public Map<String, SearchAndGoResult> work(String searchQuery, CallbackDelegate callbackDelegate) {
 		Map<String, SearchAndGoResult> workmap;
 		
-		ProviderCallback.onProviderSearchStarting(this);
+		callbackDelegate.onProviderSearchStarting(this);
 		
 		try {
 			workmap = processWork(searchQuery);
 		} catch (Exception exception) {
-			ProviderCallback.onProviderFailed(this, exception);
+			callbackDelegate.onProviderFailed(this, exception);
 			return createEmptyWorkMap();
 		}
 		
 		if (isAutosortEnabled()) {
-			ProviderCallback.onProviderSorting(this);
+			callbackDelegate.onProviderSorting(this);
 			ResultScoreSorter.sortWorkmap(workmap, searchQuery, getHelper().getSearchEngine());
 		}
 		
-		ProviderCallback.onProviderSearchFinished(this, workmap);
+		callbackDelegate.onProviderSearchFinished(this, workmap);
 		
 		return workmap;
 	}
@@ -397,17 +401,21 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 		}
 	}
 	
-	public static Map<String, SearchAndGoResult> provide(List<SearchAndGoProvider> providers, String query, boolean autosort) throws Exception {
-		ProviderCallback.onSearchStarting();
+	public static Map<String, SearchAndGoResult> provide(List<SearchAndGoProvider> providers, String query, boolean autosort, CallbackDelegate callbackDelegate) throws Exception {
+		if (callbackDelegate == null) {
+			callbackDelegate = new SilentCallbackDelegate();
+		}
+		
+		callbackDelegate.onSearchStarting();
 		
 		Map<String, SearchAndGoResult> workmap = createEmptyWorkMap();
 		
 		try {
 			for (SearchAndGoProvider provider : providers) {
-				workmap.putAll(provider.work(query));
+				workmap.putAll(provider.work(query, callbackDelegate));
 			}
 		} catch (Exception exception) {
-			ProviderCallback.onSearchFail(exception);
+			callbackDelegate.onSearchFail(exception);
 			throw exception;
 		}
 		
@@ -415,7 +423,7 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 			ResultScoreSorter.sortWorkmap(workmap, query, new SearchEngine());
 		}
 		
-		ProviderCallback.onSearchFinished(workmap);
+		callbackDelegate.onSearchFinished(workmap);
 		
 		return workmap;
 	}

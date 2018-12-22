@@ -18,7 +18,7 @@ import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContent
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.IHentaiVideoContentProvider;
 import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
-import caceresenzo.libs.boxplay.culture.searchngo.callback.ProviderSearchCallback;
+import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.LoggingCallbackDelegate;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
@@ -28,7 +28,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.Categor
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.completed.CompletedVideoItemResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderCallback;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
@@ -73,28 +72,6 @@ public class SearchAndGoTestUnits {
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
 			
-			ProviderCallback.registerProviderSearchCallback(new ProviderSearchCallback() {
-				@Override
-				public void onProviderSorting(SearchAndGoProvider provider) {
-					;
-				}
-				
-				@Override
-				public void onProviderSearchStarting(SearchAndGoProvider provider) {
-					;
-				}
-				
-				@Override
-				public void onProviderSearchFinished(SearchAndGoProvider provider, Map<String, SearchAndGoResult> workmap) {
-					;
-				}
-				
-				@Override
-				public void onProviderFailed(SearchAndGoProvider provider, Exception exception) {
-					exception.printStackTrace();
-				}
-			});
-			
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
 			providers.add(ProviderManager.JETANIME.create());
@@ -119,7 +96,7 @@ public class SearchAndGoTestUnits {
 			
 			try {
 				for (SearchAndGoProvider provider : providers) {
-					Map<String, SearchAndGoResult> workmap = provider.work(QUERY);
+					Map<String, SearchAndGoResult> workmap = provider.work(QUERY, new LoggingCallbackDelegate());
 					
 					ResultScoreSorter.sortWorkmap(workmap, QUERY, provider.getHelper().getSearchEngine());
 					
