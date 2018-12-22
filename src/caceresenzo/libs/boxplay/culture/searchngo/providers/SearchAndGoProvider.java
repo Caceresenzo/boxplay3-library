@@ -32,26 +32,18 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	public static final String CHARSET_UTF_8 = "UTF-8";
 	public static final String CHARSET_LATIN_1 = "ISO-8859-1";
 	
-	/* Variables */
+	/* Deprecated */
+	@Deprecated /* TODO Change most of the older system */
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE = new EnumMap<>(AdditionalDataType.class);
 	
+	/* Variables */
 	private final String siteName, siteUrl;
 	private final ProviderSearchCapability searchCapability;
-	
 	private final ProviderHelper helper;
-	
 	private boolean autosort;
-	
 	private List<BaseSystemRequirement> requirements;
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param siteName
-	 *            Site name
-	 * @param siteUrl
-	 *            Site base url
-	 */
+	/* Constructor */
 	protected SearchAndGoProvider(String siteName, String siteUrl) {
 		this.siteName = siteName;
 		this.siteUrl = siteUrl;
@@ -63,30 +55,36 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	}
 	
 	/**
-	 * Used to create the search capability instance
+	 * Used to create the search capability instance.
 	 * 
-	 * @return Exemple: new ProviderSearchCapability(new SearchCapability[] { SearchCapability.ANIME });
+	 * @return Exemple: <code>return ProviderSearchCapability.fromArray(SearchCapability.VIDEO);</code>
 	 */
 	protected abstract ProviderSearchCapability createSearchCapability();
 	
 	/**
-	 * Get Provider's Search Capability
+	 * Get Provider's Search Capability.
 	 * 
-	 * @return The instance
+	 * @return Stored search capabilities created with {@link #createSearchCapability()}.
 	 */
 	public ProviderSearchCapability getSearchCapability() {
 		return searchCapability;
 	}
 	
 	/**
-	 * Get the Provider's special Helper
+	 * Get the Provider's special Helper.
 	 * 
-	 * @return An Helper instance
+	 * @return An Helper instance.
 	 */
 	public ProviderHelper getHelper() {
 		return helper;
 	}
 	
+	/**
+	 * Add to the local provider's requirements list a specified requirement.
+	 * 
+	 * @param requirementClass
+	 *            Target requirement class.
+	 */
 	protected void require(Class<? extends BaseSystemRequirement> requirementClass) {
 		if (requirements == null) {
 			requirements = new ArrayList<>();
@@ -95,30 +93,39 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 		try {
 			requirements.add(requirementClass.newInstance());
 		} catch (Exception exception) {
-			throw new RuntimeException(exception);
+			throw new IllegalStateException(exception);
 		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected <T extends BaseSystemRequirement> T getRequirement(Class<T> requirementClass) {
-		for (BaseSystemRequirement requirement : requirements) {
-			if (requirement.getClass().equals(requirementClass)) {
-				return (T) requirement;
-			}
-		}
-		
-		return null;
 	}
 	
 	/**
-	 * Main function called when starting to work
+	 * Get requirement instance by its class.
 	 * 
-	 * This function will use Internet, please call it in another thread!!!
+	 * @param requirementClass
+	 *            Target requirement class.
+	 * @return Target instance.
+	 * @throws IllegalStateException
+	 *             If you try to get a requirement without calling {@link #require(Class)} in the constructor before.
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T extends BaseSystemRequirement> T getRequirement(Class<T> requirementClass) {
+		if (requirements != null) {
+			for (BaseSystemRequirement requirement : requirements) {
+				if (requirement.getClass().equals(requirementClass)) {
+					return (T) requirement;
+				}
+			}
+		}
+		
+		throw new IllegalStateException("Can't get a requirement that has not been required before.");
+	}
+	
+	/**
+	 * Main function called when starting to work.<br>
+	 * This function will use Internet, please call it in another thread.
 	 * 
 	 * @param searchQuery
-	 *            If any, that an user input for searching custom content
-	 * @return A map containing all result found. The map's key is the unique identifier, and the value is the result
-	 * 
+	 *            If any, that an user input for searching custom content.
+	 * @return A map containing all result found. The map's key is the unique identifier, and the value is the result.
 	 */
 	public Map<String, SearchAndGoResult> work(String searchQuery) {
 		Map<String, SearchAndGoResult> workmap;

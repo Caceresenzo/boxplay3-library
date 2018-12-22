@@ -62,7 +62,9 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.MANGA });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.MANGA //
+		);
 	}
 	
 	@Override

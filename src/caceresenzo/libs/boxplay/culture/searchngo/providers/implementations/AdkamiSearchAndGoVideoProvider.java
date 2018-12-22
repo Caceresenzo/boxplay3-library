@@ -60,7 +60,13 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.ANIME, SearchCapability.MOVIE, SearchCapability.SERIES, SearchCapability.DRAMA, SearchCapability.HENTAI, SearchCapability.VIDEO });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.ANIME, //
+				SearchCapability.MOVIE, //
+				SearchCapability.SERIES, //
+				SearchCapability.DRAMA, //
+				SearchCapability.HENTAI //
+		);
 	}
 	
 	@Override

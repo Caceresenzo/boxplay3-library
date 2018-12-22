@@ -73,7 +73,10 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.MOVIE, SearchCapability.SERIES });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.MOVIE, //
+				SearchCapability.SERIES //
+		);
 	}
 	
 	@Override
@@ -432,7 +435,7 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 		return new Class[] { GenericOpenloadVideoExtractor.class, GenericVidozaVideoExtractor.class };
 	}
 	
-	private String makeRequestByCategory(String searchQuery, String category) {		
+	private String makeRequestByCategory(String searchQuery, String category) {
 		return Webb.create() //
 				.post(searchBaseUrl) //
 				.chromeUserAgent() //

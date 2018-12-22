@@ -68,7 +68,9 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.ANIME, SearchCapability.VIDEO });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.ANIME //
+		);
 	}
 	
 	@Override

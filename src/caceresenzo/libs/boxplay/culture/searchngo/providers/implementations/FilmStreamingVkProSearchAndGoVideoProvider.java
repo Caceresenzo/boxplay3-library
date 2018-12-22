@@ -64,7 +64,10 @@ public class FilmStreamingVkProSearchAndGoVideoProvider extends SearchAndGoProvi
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.MOVIE, SearchCapability.SERIES });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.MOVIE, //
+				SearchCapability.SERIES //
+		);
 	}
 	
 	@Override

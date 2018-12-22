@@ -51,7 +51,9 @@ public class HdssToSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.MOVIE, SearchCapability.VIDEO });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.MOVIE //
+		);
 	}
 	
 	@Override

@@ -42,7 +42,12 @@ public class AnimeUltimeSearchAndGoVideoProvider extends SearchAndGoProvider imp
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new SearchCapability[] { SearchCapability.ANIME, SearchCapability.DRAMA, /* SearchCapability.OST, */ SearchCapability.TOKUSATSU });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.ANIME, //
+				SearchCapability.DRAMA, //
+				/* SearchCapability.OST, */
+				SearchCapability.TOKUSATSU //
+		);
 	}
 	
 	@Override

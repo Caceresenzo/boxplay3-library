@@ -56,7 +56,12 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 	
 	@Override
 	protected ProviderSearchCapability createSearchCapability() {
-		return new ProviderSearchCapability(new ProviderSearchCapability.SearchCapability[] { SearchCapability.VIDEO, SearchCapability.ANIME, SearchCapability.MOVIE, SearchCapability.SERIES, SearchCapability.HENTAI, });
+		return ProviderSearchCapability.fromArray( //
+				SearchCapability.ANIME, //
+				SearchCapability.MOVIE, //
+				SearchCapability.SERIES, //
+				SearchCapability.HENTAI //
+		);
 	}
 	
 	@Override

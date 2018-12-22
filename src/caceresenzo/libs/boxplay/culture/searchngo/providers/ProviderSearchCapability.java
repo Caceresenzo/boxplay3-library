@@ -79,36 +79,64 @@ public class ProviderSearchCapability implements Serializable {
 		return "ProviderSearchCapability[capabilities=" + capabilities + "]";
 	}
 	
+	public static ProviderSearchCapability fromArray(SearchCapability... capabilities) {
+		return new ProviderSearchCapability(capabilities);
+	}
+	
 	/**
-	 * Enum class referencing all supported capability available for providers
+	 * Enum class referencing all supported capability available for providers.
 	 * 
 	 * @author Enzo CACERES
 	 */
 	public static enum SearchCapability implements Serializable {
-		ANIME(ContentViewerType.VIDEO), //
-		DRAMA(ContentViewerType.VIDEO), //
-		SERIES(ContentViewerType.VIDEO), //
+		/* Parent */
 		VIDEO(ContentViewerType.VIDEO), //
-		HENTAI(ContentViewerType.VIDEO), //
-		TOKUSATSU(ContentViewerType.VIDEO), //
-		OST(ContentViewerType.MUSIC), //
-		MANGA(ContentViewerType.IMAGE), //
-		MOVIE(ContentViewerType.VIDEO), //
+		MUSIC(ContentViewerType.MUSIC), //
+		IMAGE(ContentViewerType.IMAGE), //
+		
+		/* Video */
+		ANIME(ContentViewerType.VIDEO, VIDEO), //
+		DRAMA(ContentViewerType.VIDEO, VIDEO), //
+		SERIES(ContentViewerType.VIDEO, VIDEO), //
+		MOVIE(ContentViewerType.VIDEO, VIDEO), //
+		HENTAI(ContentViewerType.VIDEO, VIDEO), //
+		TOKUSATSU(ContentViewerType.VIDEO, VIDEO), //
+		
+		/* Audio */
+		OST(ContentViewerType.MUSIC, MUSIC), //
+		
+		/* Image */
+		MANGA(ContentViewerType.IMAGE, IMAGE), //
+		
+		/* Other */
 		DEFAULT(null); //
 		
-		private ContentViewerType viewerType;
+		/* Variables */
+		private final ContentViewerType viewerType;
+		private final SearchCapability[] parents;
 		
-		private SearchCapability(ContentViewerType viewerType) {
+		/* Constructor */
+		private SearchCapability(ContentViewerType viewerType, SearchCapability... parents) {
 			this.viewerType = viewerType;
+			this.parents = parents;
 		}
 		
 		/**
-		 * Get the supposed viewer used to display this result
+		 * Get the supposed viewer used to display this result.
 		 * 
-		 * @return The ViewerType
+		 * @return Needed {@link ContentViewerType}.
 		 */
 		public ContentViewerType getViewerType() {
 			return viewerType;
+		}
+		
+		/**
+		 * Get {@link SearchCapability} parent that are supposed the be able to be used as a common replacer.
+		 * 
+		 * @return Parent array.
+		 */
+		public SearchCapability[] getParents() {
+			return parents;
 		}
 	}
 	
