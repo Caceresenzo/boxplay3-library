@@ -1,5 +1,8 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +25,6 @@ public class ProviderWeakCache {
 	/* Constructor */
 	private ProviderWeakCache() {
 		throw new IllegalStateException("Can't instanciate");
-	}
-	
-	private static void checkInstance() {
-		if (WEAK_CACHE_REFERENCE == null || getCacheMap() == null) {
-			WEAK_CACHE_REFERENCE = new SoftReference<>(new HashMap<String, String>());
-		}
 	}
 	
 	/**
@@ -57,7 +54,8 @@ public class ProviderWeakCache {
 	}
 	
 	/**
-	 * Check if cached data is available from the key.
+	 * Check if cached data is available from the key.<br>
+	 * This will also be checking the validity of the cached value. Sometimes, cached value are nulls but key tell that they are valid.
 	 * 
 	 * @param key
 	 *            Cache data key
@@ -66,7 +64,17 @@ public class ProviderWeakCache {
 	public static boolean check(String key) {
 		checkInstance();
 		
-		return getCacheMap().containsKey(key);
+		if (getCacheMap().containsKey(key)) {
+			if (!StringUtils.validate(getCacheMap().get(key))) {
+				getCacheMap().remove(key);
+				
+				return false;
+			}
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -102,6 +110,23 @@ public class ProviderWeakCache {
 		checkInstance();
 		
 		getCacheMap().clear();
+		WEAK_CACHE_REFERENCE = null;
+		checkInstance();
+	}
+	
+	/**
+	 * Get memory size of the cache and clear cached values.
+	 * 
+	 * @return Cache memory size.
+	 */
+	public static int computeMemorySizeAndDestroy() {
+		checkInstance();
+		
+		int size = computeCacheMemorySize();
+		
+		clear();
+		
+		return size;
 	}
 	
 	/**
@@ -116,7 +141,33 @@ public class ProviderWeakCache {
 	}
 	
 	/**
-	 * @return the {@link Map#toString()} function called with the cache map
+	 * Compute an aproximative octe count used by the cache.
+	 * 
+	 * @return Map's memory size in byte
+	 */
+	public static int computeCacheMemorySize() {
+		checkInstance();
+		
+		try {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+			
+			objectOutputStream.writeObject(WEAK_CACHE_REFERENCE.get());
+			objectOutputStream.close();
+			
+			/* 82 is memory size for an empty map */
+			int size = byteArrayOutputStream.size() - 82;
+			byteArrayOutputStream.reset();
+			byteArrayOutputStream.close();
+			
+			return size;
+		} catch (IOException exception) {
+			return -1;
+		}
+	}
+	
+	/**
+	 * @return the {@link Map#toString()} function called with the cache map.
 	 */
 	public static String convertToString() {
 		checkInstance();
@@ -129,6 +180,15 @@ public class ProviderWeakCache {
 	 */
 	private static Map<String, String> getCacheMap() {
 		return WEAK_CACHE_REFERENCE.get();
+	}
+	
+	/**
+	 * Check {@link SoftReference} and {@link Map} instances validity.
+	 */
+	private static void checkInstance() {
+		if (WEAK_CACHE_REFERENCE == null || getCacheMap() == null) {
+			WEAK_CACHE_REFERENCE = new SoftReference<>(new HashMap<String, String>());
+		}
 	}
 	
 }
