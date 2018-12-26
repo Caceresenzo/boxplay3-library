@@ -25,8 +25,8 @@ import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.mylist.MyListItem;
 import caceresenzo.libs.boxplay.mylist.binder.ListItemBinder;
+import caceresenzo.libs.boxplay.mylist.binder.ListItemBinderManager;
 import caceresenzo.libs.boxplay.mylist.binder.implementations.JsonListItemBinder;
-import caceresenzo.libs.boxplay.mylist.builder.ListItemBuilder;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.test.SimpleTestUnits;
@@ -65,7 +65,7 @@ public class MyListTestUnits extends SimpleTestUnits {
 			for (SearchAndGoResult result : results) {
 				SearchAndGoProvider provider = result.getParentProvider();
 				
-				items.add(new MyListItem<SearchAndGoResult>(result));
+				items.add(new MyListItem<SearchAndGoResult>(result, 0));
 			}
 			/* EXTRACTION END */
 			
@@ -116,7 +116,7 @@ public class MyListTestUnits extends SimpleTestUnits {
 		
 	}
 	
-	public static class BinderAndBuilderTestUnit extends MyListTestUnits {
+	public static class BinderTestUnit extends MyListTestUnits {
 		
 		public static void main(String[] args) {
 			SearchAndGoResult result = new SearchAndGoResult(ProviderManager.JETANIME.create(), "Hello", "http://google.com", "http://some.com/image.png", SearchCapability.MOVIE);
@@ -128,6 +128,28 @@ public class MyListTestUnits extends SimpleTestUnits {
 			Logger.info("Converted: %s", converted);
 			
 			Logger.info("Restored: %s", binder.restoreItemFromString(converted));
+		}
+		
+	}
+	
+	public static class BinderAndBuilderTestUnit extends MyListTestUnits {
+		
+		public static void main(String[] args) {
+			SearchAndGoResult result = new SearchAndGoResult(ProviderManager.JETANIME.create(), "Hello", "http://google.com", "http://some.com/image.png", SearchCapability.MOVIE);
+			
+			Object anObject = result;
+			
+			if (ListItemBinderManager.hasCorrespondingBinder(anObject.getClass())) {
+				ListItemBinder binder = ListItemBinderManager.getCorrespondingBinder(anObject.getClass());
+				
+				String converted = binder.convertItemToString(result);
+				
+				Logger.info("Converted: %s", converted);
+				
+				Logger.info("Restored: %s", binder.restoreItemFromString(converted));
+			} else {
+				Logger.info("No binder found.");
+			}
 		}
 		
 	}

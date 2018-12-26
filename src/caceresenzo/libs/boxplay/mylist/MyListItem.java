@@ -2,24 +2,51 @@ package caceresenzo.libs.boxplay.mylist;
 
 public class MyListItem<T> implements MyListable {
 	
-	private final T savedItem;
+	/* Variables */
+	private final T item;
+	private int position;
 	
-	public MyListItem(T savedItem) {
-		this.savedItem = savedItem;
+	/* Constructor */
+	public MyListItem(T item, int position) {
+		this.item = item;
+		this.position = position;
 	}
 	
-	public T getSavedItem() {
-		return savedItem;
+	/**
+	 * @return Contained item.
+	 */
+	public T getItem() {
+		return item;
+	}
+	
+	/**
+	 * Update the list position of this item.
+	 * 
+	 * @param position
+	 *            New position.
+	 * @return Itself
+	 */
+	public MyListItem<T> updatePosition(int position) {
+		this.position = position;
+		
+		return this;
+	}
+	
+	/**
+	 * @return Item's position in a list.
+	 */
+	public int getPosition() {
+		return position;
 	}
 	
 	@Override
 	public String toString() {
-		return "MyListItem[savedItem=" + savedItem + "]";
+		return "MyListItem[savedItem=" + item + "]";
 	}
 	
 	@Override
 	public String toUniqueString() {
-		return savedItem.toString();
+		return item.toString();
 	}
 	
 }
