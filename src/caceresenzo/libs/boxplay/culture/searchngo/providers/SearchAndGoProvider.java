@@ -21,9 +21,9 @@ import caceresenzo.libs.http.client.webb.Request;
 import caceresenzo.libs.http.client.webb.Webb;
 
 /**
- * Provider class
- * 
- * This is an abstract class that need to be extend. Once extend, do all your data-gathering for SEARCHING ONLY in the {@link #processWork(String)} function
+ * Provider class.<br>
+ * This is an abstract class that need to be extend.<br>
+ * Once extend, do all your data-gathering for SEARCHING ONLY in the {@link #processWork(String)} function.
  * 
  * @author Enzo CACERES
  */

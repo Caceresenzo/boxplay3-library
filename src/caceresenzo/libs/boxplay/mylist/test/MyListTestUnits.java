@@ -17,15 +17,22 @@ import java.util.List;
 import java.util.Map;
 
 import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.LoggingCallbackDelegate;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.FakeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.mylist.MyListItem;
+import caceresenzo.libs.boxplay.mylist.binder.ListItemBinder;
+import caceresenzo.libs.boxplay.mylist.binder.implementations.JsonListItemBinder;
+import caceresenzo.libs.boxplay.mylist.builder.ListItemBuilder;
+import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.logger.Logger;
+import caceresenzo.libs.test.SimpleTestUnits;
 
 @SuppressWarnings("all")
-public class MyListTestUnits {
+public class MyListTestUnits extends SimpleTestUnits {
 	
 	public static void main(String[] args) {
 		;
@@ -105,6 +112,22 @@ public class MyListTestUnits {
 			} catch (Exception exception) {
 				Logger.exception(exception);
 			}
+		}
+		
+	}
+	
+	public static class BinderAndBuilderTestUnit extends MyListTestUnits {
+		
+		public static void main(String[] args) {
+			SearchAndGoResult result = new SearchAndGoResult(ProviderManager.JETANIME.create(), "Hello", "http://google.com", "http://some.com/image.png", SearchCapability.MOVIE);
+			
+			ListItemBinder binder = new SearchAndGoResult.ItemBinder();
+			
+			String converted = binder.convertItemToString(result);
+			
+			Logger.info("Converted: %s", converted);
+			
+			Logger.info("Restored: %s", binder.restoreItemFromString(converted));
 		}
 		
 	}

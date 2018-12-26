@@ -138,6 +138,23 @@ public class ProviderSearchCapability implements Serializable {
 		public SearchCapability[] getParents() {
 			return parents;
 		}
+		
+		/**
+		 * Get a {@link SearchCapability} instance by a string.
+		 * 
+		 * @param string
+		 *            Target string.
+		 * @return {@link SearchCapability} if found, {@link #DEFAULT} if not.
+		 */
+		public static SearchCapability fromString(String string) {
+			for (SearchCapability capability : values()) {
+				if (capability.toString().equalsIgnoreCase(string)) {
+					return capability;
+				}
+			}
+			
+			return DEFAULT;
+		}
 	}
 	
 }

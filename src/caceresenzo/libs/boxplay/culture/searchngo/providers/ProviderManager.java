@@ -58,6 +58,13 @@ public enum ProviderManager {
 	}
 	
 	/**
+	 * @return Attached class for this {@link ProviderManager}.
+	 */
+	public Class<? extends SearchAndGoProvider> getProviderClass() {
+		return providerClass;
+	}
+	
+	/**
 	 * Create every {@link SearchAndGoProvider} actually available.
 	 * 
 	 * @return A list containing all {@link SearchAndGoProvider} instanced
@@ -98,15 +105,32 @@ public enum ProviderManager {
 	}
 	
 	/**
-	 * Get a {@link ProviderManager} instance by a {@link SearchAndGoProvider} class name.
+	 * Get a {@link ProviderManager} instance by his {@link SearchAndGoProvider} class name.
 	 * 
 	 * @param className
-	 *            Target class name
+	 *            Target class name.
 	 * @return {@link ProviderManager} if found, null if not.
 	 */
 	public static ProviderManager fromClass(String className) {
 		for (ProviderManager manager : values()) {
-			if (manager.providerClass.getSimpleName().equals(className)) {
+			if (manager.getProviderClass().getSimpleName().equals(className)) {
+				return manager;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get a {@link ProviderManager} instance by a string.
+	 * 
+	 * @param string
+	 *            Target string.
+	 * @return {@link ProviderManager} if found, null if not.
+	 */
+	public static ProviderManager fromString(String string) {
+		for (ProviderManager manager : values()) {
+			if (manager.toString().equalsIgnoreCase(string)) {
 				return manager;
 			}
 		}

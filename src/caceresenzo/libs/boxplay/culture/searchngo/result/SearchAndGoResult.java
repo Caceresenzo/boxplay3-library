@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.models.element.Imagable;
 import caceresenzo.libs.boxplay.mylist.MyListable;
+import caceresenzo.libs.boxplay.mylist.binder.implementations.JsonListItemBinder;
+import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.string.StringUtils;
 
 /**
@@ -235,6 +238,59 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	@Override
 	public String toString() {
 		return "SearchAndGoResult[parentProvider=" + parentProvider + ", name=" + name + ", url=" + url + ", type=" + type + ", score=" + score + "]";
+	}
+	
+	/**
+	 * Item binder for {@link SearchAndGoResult}.
+	 * 
+	 * @author Enzo CACERES
+	 */
+	public static class ItemBinder extends JsonListItemBinder<SearchAndGoResult> {
+		
+		/* Kind */
+		public static final String KIND = SearchAndGoResult.class.getSimpleName();
+		
+		/* Json keys */
+		public static final String JSON_KEY_PARENT_PROVIDER = "parent_provider";
+		public static final String JSON_KEY_NAME = "name";
+		public static final String JSON_KEY_IMAGE_URL = "image_url";
+		public static final String JSON_KEY_URL = "url";
+		public static final String JSON_KEY_TYPE = "type";
+		
+		@Override
+		protected JsonObject convert(SearchAndGoResult item) {
+			JsonObject jsonObject = new JsonObject();
+			
+			jsonObject.put(JSON_KEY_PARENT_PROVIDER, item.getParentProvider().getSourceManager().toString());
+			jsonObject.put(JSON_KEY_NAME, item.getName());
+			jsonObject.put(JSON_KEY_IMAGE_URL, item.getImageUrl());
+			jsonObject.put(JSON_KEY_URL, item.getUrl());
+			jsonObject.put(JSON_KEY_TYPE, item.getType().toString());
+			
+			return jsonObject;
+		}
+		
+		@Override
+		protected SearchAndGoResult restore(JsonObject source) {
+			ProviderManager parentManager = ProviderManager.fromString(source.getString(JSON_KEY_PARENT_PROVIDER));
+			
+			if (parentManager == null) {
+				return null;
+			}
+			
+			SearchAndGoProvider parentProvider = parentManager.create();
+			String name = source.getString(JSON_KEY_NAME);
+			String imageUrl = source.getString(JSON_KEY_IMAGE_URL);
+			String url = source.getString(JSON_KEY_URL);
+			SearchCapability type = SearchCapability.fromString(source.getString(JSON_KEY_TYPE));
+			
+			return new SearchAndGoResult(parentProvider, name, url, imageUrl, type);
+		}
+		
+		@Override
+		public String getKind() {
+			return KIND;
+		}
 	}
 	
 }
