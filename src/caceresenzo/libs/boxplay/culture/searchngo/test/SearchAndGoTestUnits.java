@@ -69,18 +69,18 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "game";
+		private static final String QUERY = "koe no katachi";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
 			
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
-			providers.add(ProviderManager.JETANIME.create());
+			// providers.add(ProviderManager.JETANIME.create());
 			// providers.add(ProviderManager.JAPSCAN.create());
 			// providers.add(ProviderManager.FILMSTREAMINGVK_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
-			// providers.add(ProviderManager.ADKAMI.create());
+			providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
 			// providers.add(ProviderManager.FULLSTREAM_CO.create());
 			// providers.add(ProviderManager.ANIMEULTIME.create());

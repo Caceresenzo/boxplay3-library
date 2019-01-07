@@ -222,12 +222,35 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 			return new String[] { null };
 		}
 		
+		/* Iframes */
+		urls.addAll(extractVideoUrlFromPattern(html, "\\<iframe.*?data-src=\\\"[\\s]*(.*?)[\\s]*\\\".*?\\>\\<\\/iframe\\>"));
+		
+		/* Redirections */
+		urls.addAll(extractVideoUrlFromPattern(html, "\\<div\\sclass\\=\\\"lecteur\\-video\\srow\\\"\\>[\\s]*\\<div\\sclass\\=\\\"title\\\"\\>.*?\\<\\/div\\>[\\s]*\\<a.*?data-url\\=\\\"(.*?)\\\"\\>.*?\\<\\/a\\>.*?\\<\\/div\\>"));
+		
+		String[] urlsArray = new String[urls.size()];
+		return urls.toArray(urlsArray);
+	}
+	
+	/**
+	 * Extract video url from a source matcher.<br>
+	 * Adkami provide "iframed-player" but also redirection, this function avoid same code 2 times.
+	 * 
+	 * @param source
+	 *            Source html.
+	 * @param pattern
+	 *            Used regex pattern to get encoded base url.
+	 * @return A {@link List} to add to the main url list.
+	 */
+	private List<String> extractVideoUrlFromPattern(String source, String pattern) {
+		List<String> urls = new ArrayList<>();
+		
 		AdkamiIframeDecoderSandbox sandbox = new AdkamiIframeDecoderSandbox();
 		
-		Matcher iframeMatcher = getHelper().regex("\\<iframe.*?data-src=\\\"[\\s]*(.*?)[\\s]*\\\".*?\\>\\<\\/iframe\\>", html);
+		Matcher redirectionMatcher = getHelper().regex(pattern, source);
 		
-		while (iframeMatcher.find()) {
-			String baseUrl = iframeMatcher.group(1);
+		while (redirectionMatcher.find()) {
+			String baseUrl = redirectionMatcher.group(1);
 			
 			if (baseUrl != null) {
 				String sandboxedUrl = sandbox.execute(baseUrl);
@@ -242,8 +265,7 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 			}
 		}
 		
-		String[] urlsArray = new String[urls.size()];
-		return urls.toArray(urlsArray);
+		return urls;
 	}
 	
 	@Override
