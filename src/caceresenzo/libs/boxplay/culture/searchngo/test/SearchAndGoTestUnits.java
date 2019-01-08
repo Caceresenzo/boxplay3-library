@@ -16,8 +16,10 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.Extrac
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.IHentaiVideoContentProvider;
+import caceresenzo.libs.boxplay.common.extractor.video.QualitableVideoContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.model.VideoQuality;
+import caceresenzo.libs.boxplay.common.extractor.video.modifiers.IHentaiVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.LoggingCallbackDelegate;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.OnlyExceptionLoggingCallbackDelegate;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
@@ -163,7 +165,26 @@ public class SearchAndGoTestUnits {
 							
 							if (contentExtractor instanceof VideoContentExtractor) {
 								Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
-								Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
+								
+								// Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
+							} else if (contentExtractor instanceof QualitableVideoContentExtractor) {
+								List<VideoQuality> qualities = ((QualitableVideoContentExtractor) contentExtractor).extractVideoQualities(url);
+								
+								if (qualities != null) {
+									if (qualities.isEmpty()) {
+										Logger.info("\t\t\t | -> NO QUALITY AVAILABLE");
+									} else {
+										for (VideoQuality quality : qualities) {
+											Logger.info("\t\t\t | -> %-20s --> %s", quality.getResolution(), quality.getVideoUrl());
+										}
+									}
+								} else {
+									Logger.info("\t\t\t | -> NO QUALITY FOUND");
+								}
+							} else {
+								if (contentExtractor != null) {
+									throw new IllegalStateException("Not handled video content extractor.");
+								}
 							}
 						}
 						

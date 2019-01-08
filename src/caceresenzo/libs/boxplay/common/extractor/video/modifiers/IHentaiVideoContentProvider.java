@@ -1,4 +1,4 @@
-package caceresenzo.libs.boxplay.common.extractor.video;
+package caceresenzo.libs.boxplay.common.extractor.video.modifiers;
 
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 
