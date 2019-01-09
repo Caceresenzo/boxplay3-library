@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import caceresenzo.libs.boxplay.common.extractor.video.QualitableVideoContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.VideoQualityContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.model.VideoQuality;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
@@ -13,11 +13,11 @@ import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.string.StringUtils;
 
 /**
- * Video quality extractor for the site VEVio.
+ * Video quality extractor for the site <a href="https://vev.io/">VEVio</a>.
  * 
  * @author Enzo CACERES
  */
-public class GenericVevioQualitableVideoExtractor extends QualitableVideoContentExtractor {
+public class GenericVevioVideoQualityExtractor extends VideoQualityContentExtractor {
 	
 	/* Constants */
 	public static final String API_URL_FORMAT = "https://vev.io/api/serve/video/%s";

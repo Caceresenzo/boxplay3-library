@@ -16,7 +16,7 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.Extrac
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.QualitableVideoContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.VideoQualityContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.model.VideoQuality;
 import caceresenzo.libs.boxplay.common.extractor.video.modifiers.IHentaiVideoContentProvider;
@@ -167,8 +167,8 @@ public class SearchAndGoTestUnits {
 								Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
 								
 								// Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
-							} else if (contentExtractor instanceof QualitableVideoContentExtractor) {
-								List<VideoQuality> qualities = ((QualitableVideoContentExtractor) contentExtractor).extractVideoQualities(url);
+							} else if (contentExtractor instanceof VideoQualityContentExtractor) {
+								List<VideoQuality> qualities = ((VideoQualityContentExtractor) contentExtractor).extractVideoQualities(url);
 								
 								if (qualities != null) {
 									if (qualities.isEmpty()) {

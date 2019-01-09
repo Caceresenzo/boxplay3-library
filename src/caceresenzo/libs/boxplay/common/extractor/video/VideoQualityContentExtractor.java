@@ -11,7 +11,7 @@ import caceresenzo.libs.boxplay.common.extractor.video.model.VideoQuality;
  * 
  * @author Enzo CACERES
  */
-public abstract class QualitableVideoContentExtractor extends BaseVideoContentExtractor {
+public abstract class VideoQualityContentExtractor extends BaseVideoContentExtractor {
 	
 	/**
 	 * Same as {@link #extractVideoQualities(String, VideoContentExtractorProgressCallback)} but with a callback considered as null.
