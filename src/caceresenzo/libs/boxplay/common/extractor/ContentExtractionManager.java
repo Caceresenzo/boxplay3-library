@@ -12,6 +12,7 @@ import caceresenzo.libs.boxplay.common.extractor.text.novel.implementations.Gene
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericAnimeUltimateVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericGoUnlimitedVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericStreamangoVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVevioVideoQualityExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidloxVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
@@ -20,7 +21,7 @@ import caceresenzo.libs.string.StringUtils;
 
 public class ContentExtractionManager {
 	
-	/* Map(Type && Map(Class && Instance)) */
+	/* Statics */
 	private static final Map<ExtractorType, Map<Class<? extends ContentExtractor>, ContentExtractor>> EXTRACTORS = new HashMap<>();
 	
 	static {
@@ -34,6 +35,7 @@ public class ContentExtractionManager {
 		bindExtractor(ExtractorType.VIDEO, GenericAnimeUltimateVideoExtractor.class, new GenericAnimeUltimateVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, GenericGoUnlimitedVideoExtractor.class, new GenericGoUnlimitedVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, GenericVidloxVideoExtractor.class, new GenericVidloxVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, GenericStreamangoVideoExtractor.class, new GenericStreamangoVideoExtractor());
 		
 		/* Video with qualities */
 		bindExtractor(ExtractorType.VIDEO, GenericVevioVideoQualityExtractor.class, new GenericVevioVideoQualityExtractor());
@@ -54,28 +56,28 @@ public class ContentExtractionManager {
 	}
 	
 	/**
-	 * Bind a new extractor from a base class
+	 * Bind a new extractor from a base class.
 	 * 
 	 * @param type
-	 *            {@link ContentExtractor} extracted data type
+	 *            {@link ContentExtractor} extracted data type.
 	 * @param extractorClass
-	 *            Base {@link ContentExtractor} class
+	 *            Base {@link ContentExtractor} class.
 	 * @param unusedExtractor
 	 *            An instance that will not be used (only for {@link ContentExtractor#matchUrl(String)})
-	 * @return Your new registered {@link ContentExtractor}
+	 * @return Your new registered {@link ContentExtractor}.
 	 */
 	public static ContentExtractor bindExtractor(ExtractorType type, Class<? extends ContentExtractor> extractorClass, ContentExtractor unusedExtractor) {
 		return EXTRACTORS.get(type).put(extractorClass, unusedExtractor);
 	}
 	
 	/**
-	 * Get a new extractor from a base url
+	 * Get a new extractor from a base url.
 	 * 
 	 * @param extractorType
-	 *            Type of extractor ({@link ExtractorType})
+	 *            Type of extractor ({@link ExtractorType}).
 	 * @param baseUrl
-	 *            Base url of your result/item to extract
-	 * @return A new instance of an extractor, null if not found or failed to initialize
+	 *            Base url of your result/item to extract.
+	 * @return A new instance of an extractor, null if not found or failed to initialize.
 	 */
 	public static ContentExtractor getExtractorFromBaseUrl(ExtractorType extractorType, String baseUrl) {
 		if (baseUrl == null) {
@@ -98,13 +100,13 @@ public class ContentExtractionManager {
 	}
 	
 	/**
-	 * Get a {@link ContentExtractor} class used for checking or instancing
+	 * Get a {@link ContentExtractor} class used for checking or instancing.
 	 * 
 	 * @param extractorType
-	 *            Type of extractor ({@link ExtractorType})
+	 *            Type of extractor ({@link ExtractorType}).
 	 * @param baseUrl
-	 *            Base url of your result/item to extract
-	 * @return An {@link ContentExtractor} class that have matched with your baseUrl
+	 *            Base url of your result/item to extract.
+	 * @return A {@link ContentExtractor} class that have matched with your baseUrl.
 	 */
 	private static Class<? extends ContentExtractor> getExtractorClassFromBaseUrl(ExtractorType extractorType, String baseUrl) {
 		if (!StringUtils.validate(baseUrl)) {
@@ -123,20 +125,20 @@ public class ContentExtractionManager {
 	}
 	
 	/**
-	 * Check if your baseUrl have any compatible {@link ContentExtractor} actually registered
+	 * Check if your baseUrl have any compatible {@link ContentExtractor} actually registered.
 	 * 
 	 * @param extractorType
-	 *            Type of extractor ({@link ExtractorType})
+	 *            Type of extractor ({@link ExtractorType}).
 	 * @param baseUrl
-	 *            Base url of your result/item to check
-	 * @return If a compatible {@link ContentExtractor} has been found
+	 *            Base url of your result/item to check.
+	 * @return If a compatible {@link ContentExtractor} has been found.
 	 */
 	public static boolean hasCompatibleExtractor(ExtractorType extractorType, String baseUrl) {
 		return getExtractorClassFromBaseUrl(extractorType, baseUrl) != null;
 	}
 	
 	/**
-	 * When registering/and getting a {@link ContentExtractor}, a {@link ExtractorType} is required because some site have multiple ressources on their site
+	 * When registering/and getting a {@link ContentExtractor}, a {@link ExtractorType} is required because some site have multiple ressources on their site.
 	 * 
 	 * @author Enzo CACERES
 	 */
@@ -144,11 +146,11 @@ public class ContentExtractionManager {
 		VIDEO, MANGA, NOVEL;
 		
 		/**
-		 * Get a low-corresponding {@link ExtractorType} from a {@link ChapterType}
+		 * Get a low-corresponding {@link ExtractorType} from a {@link ChapterType}.
 		 * 
 		 * @param chapterType
-		 *            Target {@link ChapterType} to convert
-		 * @return Corresponding {@link ExtractorType}, null if not found
+		 *            Target {@link ChapterType} to convert.
+		 * @return Corresponding {@link ExtractorType}, null if not found.
 		 */
 		public static ExtractorType fromChapterType(ChapterType chapterType) {
 			switch (chapterType) {
