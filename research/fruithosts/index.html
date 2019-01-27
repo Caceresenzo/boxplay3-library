@@ -1,0 +1,39 @@
+<html>
+<head>
+
+<script type="text/javascript" src="decoder.js"></script>
+</head>
+<body>
+	<div id="output"></div>
+
+	<script type="text/javascript">
+		var decodeCount = 0;
+        var outputElement = document.getElementById("output");
+
+        function decodeDelegate(encoded, aNumber) {
+	        let id = decodeCount++;
+	        outputElement.innerHTML += "<div id=\"item-" + id + "\"><p id=\"url-" + id + "\"></p><p id=\"status-" + id + "\">Reponse: </p></div><hr>";
+
+	        let urlElement = document.getElementById("url-" + id);
+	        let statusElement = document.getElementById("status-" + id);
+
+	        let decodedUrl = "http:" + d(encoded, aNumber);
+
+	        urlElement.innerHTML = decodedUrl;
+
+	        let xhttp = new XMLHttpRequest();
+	        xhttp.onreadystatechange = function() {
+		        statusElement.innerHTML += this.status + "<br>";
+		        if (this.readyState == 3) {
+			        xhttp.abort();
+		        }
+	        };
+	        xhttp.open("GET", decodedUrl, true);
+	        xhttp.send();
+        }
+
+        decodeDelegate('=uDap5rXqafRppvN=6HbqeDK=qwRpJ3NtKLfqanRw6zcvqTPpZIP6NwI6t=L6N=Ps9gI=98O6OIQ=9/Cl5bWl7bVvaUR6N0K', 46);
+        decodeDelegate('kuDa15rX2afR1pvNk6Hb2eDKkqwR1aLb2aLVx67V0qHey6zQzpIPmNwImt=LnN4M49gIk98OmOIQk9/C0Kz79crv7asRm9kO', 94);
+	</script>
+</body>
+</html>
