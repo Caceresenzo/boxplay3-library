@@ -71,7 +71,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "koe no katachi";
+		private static final String QUERY = "trinity";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -82,7 +82,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.JAPSCAN.create());
 			// providers.add(ProviderManager.FILMSTREAMINGVK_PRO.create());
 			// providers.add(ProviderManager.MANGALEL.create());
-			providers.add(ProviderManager.ADKAMI.create());
+			// providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
 			// providers.add(ProviderManager.FULLSTREAM_CO.create());
 			// providers.add(ProviderManager.ANIMEULTIME.create());

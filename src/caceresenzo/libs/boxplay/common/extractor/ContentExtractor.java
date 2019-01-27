@@ -112,6 +112,16 @@ public abstract class ContentExtractor implements IExtractor, InternetSource {
 	}
 	
 	/**
+	 * Tell if the {@link ContentExtractor} can output the same result whatever the client used, or if he need a specific client doing specific thing to be able to work correctly.<br>
+	 * Exemple: IP sensitive client. The client needs to access some ressource by itself, before being processed by the {@link ContentExtractor}.
+	 * 
+	 * @return If the client is sensitive to its environment.
+	 */
+	public boolean isClientSensitive() {
+		return false;
+	}
+	
+	/**
 	 * Get the static provider helper instance more quickly
 	 * 
 	 * @return {@link ProviderHelper#getStaticHelper()}

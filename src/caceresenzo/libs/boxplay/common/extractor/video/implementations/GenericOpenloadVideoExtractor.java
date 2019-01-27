@@ -22,7 +22,7 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 	public static final String FILE_DELETED = "We can't find the file you are looking for. It maybe got deleted by the owner or was removed due a copyright violation.";
 	
 	/**
-	 * This regex is used to extract the "japanease smiley" encoded java script at the end of the page that is used to decypher a key to watch the video
+	 * This regex is used to extract the "japanease smiley" encoded javascript at the end of the page that is used to decypher a key to watch the video
 	 */
 	public static final String REGEX_DOM_DATA_EXTRACTOR = "\\<div\\sclass=\\\"\\\"\\sstyle=\\\"display:none;\\\"\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sid=\\\"(.*?)\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sclass=\\\"\\\"\\sid=\\\"DtsBlkVFQx\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]*\\<\\/div\\>";
 	
@@ -105,6 +105,11 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 		}
 		
 		return !html.contains(FILE_DELETED);
+	}
+	
+	@Override
+	public boolean isClientSensitive() {
+		return true;
 	}
 	
 	@Override
