@@ -3,14 +3,14 @@ package caceresenzo.libs.boxplay.culture.searchngo.providers;
 import java.util.EnumSet;
 import java.util.Set;
 
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.ISubscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
 
 public enum ProviderFlags {
 	
 	SUBSCRIBABLE(new FlagTester() {
 		@Override
 		public boolean test(ProviderManager provider) {
-			return ISubscribable.class.isInstance(provider);
+			return Subscribable.class.isInstance(provider);
 		}
 	});
 	

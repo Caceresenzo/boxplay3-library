@@ -3,9 +3,10 @@ package caceresenzo.libs.boxplay.culture.searchngo.result;
 import java.util.HashMap;
 import java.util.Map;
 
-import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.boxplay.models.element.Imagable;
 import caceresenzo.libs.boxplay.mylist.MyListable;
 import caceresenzo.libs.boxplay.mylist.binder.implementations.JsonListItemBinder;
@@ -26,10 +27,13 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	private SearchAndGoProvider parentProvider;
 	private String name, url;
 	private SearchCapability type;
-	private Map<String, Object> requireHeaders;
+	private Map<String, String> requireHeaders;
 	
 	private int score;
 	private String description;
+	
+	private Class<? extends Subscriber> subscriberClass;
+	private String subscriberTargetUrl;
 	
 	/**
 	 * Create a new {@link SearchAndGoResult} instance
@@ -194,7 +198,7 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	 * 
 	 * @return {@link #requireHeaders} or null
 	 */
-	public Map<String, Object> getRequireHeaders() {
+	public Map<String, String> getRequireHeaders() {
 		return requireHeaders;
 	}
 	
@@ -210,7 +214,7 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	public SearchAndGoResult requireHeader(String key, Object value) {
 		checkRequireHeaders();
 		
-		requireHeaders.put(key, value);
+		requireHeaders.put(key, String.valueOf(value));
 		
 		return this;
 	}
@@ -228,6 +232,31 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 		this.requireHeaders.putAll(requireHeaders);
 		
 		return this;
+	}
+	
+	/**
+	 * Make this {@link SearchAndGoResult} subscribable.
+	 * 
+	 * @param subscriberClass
+	 *            Required class for the {@link Subscriber}.
+	 * @param url
+	 *            Target subscribable url (like RSS or directly html).
+	 */
+	public void subscribableWith(Class<? extends Subscriber> subscriberClass, String url) {
+		this.subscriberClass = subscriberClass;
+		this.subscriberTargetUrl = url;
+	}
+	
+	/**
+	 * @return If this {@link SearchAndGoResult} is ready to be subscribed.
+	 * @see #subscribableWith(Class, String)
+	 */
+	public boolean isSubscribable() {
+		return subscriberClass != null;
+	}
+	
+	public String getSubscriberTargetUrl() {
+		return subscriberTargetUrl;
 	}
 	
 	@Override
