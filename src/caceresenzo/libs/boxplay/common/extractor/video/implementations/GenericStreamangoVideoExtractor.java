@@ -191,7 +191,13 @@ public class GenericStreamangoVideoExtractor extends VideoContentExtractor {
 			}
 			
 			// 8
-			return _0x59b81a;
+			// return _0x59b81a;
+			String url = _0x59b81a;
+			if (!url.startsWith("http:")) {
+				url = "http:" + url;
+			}
+			
+			return url;
 		}
 		
 	}
