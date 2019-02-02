@@ -6,7 +6,6 @@ import java.util.Map;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.boxplay.models.element.Imagable;
 import caceresenzo.libs.boxplay.mylist.MyListable;
 import caceresenzo.libs.boxplay.mylist.binder.implementations.JsonListItemBinder;
@@ -32,7 +31,6 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	private int score;
 	private String description;
 	
-	private Class<? extends Subscriber> subscriberClass;
 	private String subscriberTargetUrl;
 	
 	/**
@@ -237,22 +235,19 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	/**
 	 * Make this {@link SearchAndGoResult} subscribable.
 	 * 
-	 * @param subscriberClass
-	 *            Required class for the {@link Subscriber}.
 	 * @param url
 	 *            Target subscribable url (like RSS or directly html).
 	 */
-	public void subscribableWith(Class<? extends Subscriber> subscriberClass, String url) {
-		this.subscriberClass = subscriberClass;
+	public void subscribableAt(String url) {
 		this.subscriberTargetUrl = url;
 	}
 	
 	/**
 	 * @return If this {@link SearchAndGoResult} is ready to be subscribed.
-	 * @see #subscribableWith(Class, String)
+	 * @see #subscribableAt(Class, String)
 	 */
 	public boolean isSubscribable() {
-		return subscriberClass != null;
+		return subscriberTargetUrl != null;
 	}
 	
 	public String getSubscriberTargetUrl() {

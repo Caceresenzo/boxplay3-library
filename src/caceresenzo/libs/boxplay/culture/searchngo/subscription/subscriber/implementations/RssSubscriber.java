@@ -37,7 +37,7 @@ public class RssSubscriber extends Subscriber {
 			;
 		}
 		
-		return null;
+		return resolvedItems;
 	}
 	
 }

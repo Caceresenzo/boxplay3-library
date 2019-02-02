@@ -1,5 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -41,7 +42,8 @@ public enum ProviderManager {
 	MANGANELO(MangaNeloSearchAndGoMangaProvider.class); //
 	
 	/* Variables */
-	private Class<? extends SearchAndGoProvider> providerClass;
+	private final Class<? extends SearchAndGoProvider> providerClass;
+	private WeakReference<SearchAndGoProvider> weakInstance;
 	
 	/* Constructor */
 	private ProviderManager(Class<? extends SearchAndGoProvider> providerClass) {
@@ -54,7 +56,11 @@ public enum ProviderManager {
 	 * @return The {@link SearchAndGoProvider} instance
 	 */
 	public SearchAndGoProvider create() {
-		return SearchAndGoProvider.createContext(providerClass);
+		if (weakInstance != null && weakInstance.get() != null) {
+			return weakInstance.get();
+		}
+		
+		return (weakInstance = new WeakReference<SearchAndGoProvider>(SearchAndGoProvider.createContext(providerClass))).get();
 	}
 	
 	/**

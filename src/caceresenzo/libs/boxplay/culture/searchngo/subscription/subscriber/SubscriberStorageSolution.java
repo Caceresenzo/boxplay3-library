@@ -54,6 +54,13 @@ public abstract class SubscriberStorageSolution {
 		return toFile(result).exists();
 	}
 	
+	/**
+	 * Get items that are stored locally. If no file are present, it will return an empty list.
+	 * 
+	 * @param result
+	 *            Target result.
+	 * @return A {@link List} of {@link SubscriptionItem} reconstructed from local file.
+	 */
 	public List<SubscriptionItem> getLocalStorageItems(SearchAndGoResult result) {
 		List<SubscriptionItem> items = new ArrayList<>();
 		
@@ -89,6 +96,15 @@ public abstract class SubscriberStorageSolution {
 		return items;
 	}
 	
+	/**
+	 * Update items in the local storage.<br>
+	 * The target file will be deleted and re-created.
+	 * 
+	 * @param result
+	 *            Target result.
+	 * @param items
+	 *            Items to update.
+	 */
 	public void updateLocalStorageItems(SearchAndGoResult result, List<SubscriptionItem> items) {
 		File resultFile = toFile(result);
 		
@@ -112,7 +128,7 @@ public abstract class SubscriberStorageSolution {
 			
 			FileUtils.writeStringToFile(jsonArray.toJsonString(), resultFile);
 		} catch (Exception exception) {
-			;
+			exception.printStackTrace();
 		}
 	}
 	
@@ -192,7 +208,7 @@ public abstract class SubscriberStorageSolution {
 			@Override
 			public int compare(SubscriptionItem o1, SubscriptionItem o2) {
 				try {
-					return new Date(o2.getDate()).compareTo(new Date(o1.getDate()));
+					return new Date(o1.getDate()).compareTo(new Date(o2.getDate()));
 				} catch (Exception exception) {
 					exception.printStackTrace();
 					return 0;

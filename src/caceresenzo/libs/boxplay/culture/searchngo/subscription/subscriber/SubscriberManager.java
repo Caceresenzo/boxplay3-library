@@ -19,6 +19,14 @@ public class SubscriberManager {
 	private List<SearchAndGoResult> results;
 	
 	/* Constructor */
+	/**
+	 * Create a {@link SubscriberManager} instance.
+	 * 
+	 * @param storageSolution
+	 *            Target storage solution to handle file management.
+	 * @throws NullPointerException
+	 *             If the <code>storageSolution</code> is null.
+	 */
 	public SubscriberManager(SubscriberStorageSolution storageSolution) {
 		this.storageSolution = Objects.requireNonNull(storageSolution, "Storage solution can't be null");
 		this.subscribers = new HashMap<>();
@@ -56,8 +64,15 @@ public class SubscriberManager {
 	}
 	
 	/**
+	 * Start fetching all items previously loaded.
 	 * 
 	 * @param callback
+	 *            Progression callback.
+	 * @throws NullPointerException
+	 *             If you forgot to call load() before.
+	 * @throws NullPointerException
+	 *             If the <code>callback</code> is null.
+	 * @see #load(List)
 	 */
 	public void fetchAll(SubscriberCallback callback) {
 		Objects.requireNonNull(results, "Result list is null. Have you call load() before?");

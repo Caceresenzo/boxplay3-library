@@ -33,6 +33,8 @@ public abstract class Subscriber {
 				if (!newItems.isEmpty()) {
 					onNewContent(newItems.get(newItems.size() - 1), callback);
 				}
+			} else {
+				storageSolution.updateLocalStorageItems(result, resolvedItems);
 			}
 		}
 	}
