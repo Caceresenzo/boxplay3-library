@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.update.SubscriptionItem;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.item.SubscriptionItem;
 import caceresenzo.libs.boxplay.mylist.MyListable;
 import caceresenzo.libs.cryptography.MD5;
 import caceresenzo.libs.filesystem.FileUtils;
@@ -78,7 +78,7 @@ public abstract class SubscriberStorageSolution {
 					String date = itemMap.getString(JSON_KEY_DATE);
 					String url = itemMap.getString(JSON_KEY_URL);
 					
-					items.add(new SubscriptionItem() //
+					items.add(new SubscriptionItem(result.getParentProvider()) //
 							.setContent(content) //
 							.setDate(date) //
 							.setUrl(url) //

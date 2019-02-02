@@ -221,7 +221,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	
 	@Override
 	public Subscriber createSubscriber() {
-		return new RssSubscriber(this);
+		return new RssSubscriber();
 	}
 	
 	/**
