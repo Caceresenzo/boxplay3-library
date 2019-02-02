@@ -1,7 +1,9 @@
 package caceresenzo.libs.boxplay.culture.searchngo.result;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
@@ -198,6 +200,25 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	 */
 	public Map<String, String> getRequireHeaders() {
 		return requireHeaders;
+	}
+	
+	/**
+	 * Same has {@link #getRequireHeaders()}, but this time get a {@link Map} with {@link String} as keys and {@link Object} as values.
+	 * 
+	 * @return {@link #requireHeaders} or null.
+	 * @see #getRequireHeaders()
+	 */
+	public Map<String, Object> getRequireHeaders2() {
+		Map<String, Object> convertedMap = null;
+		if (requireHeaders != null) {
+			convertedMap = new HashMap<>();
+			
+			for (Entry<String, String> entry : requireHeaders.entrySet()) {
+				convertedMap.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return convertedMap;
 	}
 	
 	/**
