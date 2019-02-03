@@ -1,5 +1,7 @@
 package caceresenzo.libs.boxplay.mylist;
 
+import caceresenzo.libs.boxplay.mylist.binder.ListItemBinder;
+
 public class MyListItem<T> implements MyListable {
 	
 	/* Variables */
@@ -47,6 +49,11 @@ public class MyListItem<T> implements MyListable {
 	@Override
 	public String toUniqueString() {
 		return item.toString();
+	}
+	
+	@Override
+	public ListItemBinder createCompatibleBinder() {
+		return null;
 	}
 	
 }

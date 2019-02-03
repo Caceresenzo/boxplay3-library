@@ -8,6 +8,7 @@ import caceresenzo.libs.boxplay.models.element.enums.ElementLanguage;
 import caceresenzo.libs.boxplay.models.element.implementations.VideoElement;
 import caceresenzo.libs.boxplay.models.store.video.enums.VideoFileType;
 import caceresenzo.libs.boxplay.mylist.MyListable;
+import caceresenzo.libs.boxplay.mylist.binder.ListItemBinder;
 import caceresenzo.libs.parse.ParseUtils;
 
 public class VideoGroup extends VideoElement implements MyListable {
@@ -129,6 +130,12 @@ public class VideoGroup extends VideoElement implements MyListable {
 	@Override
 	public String toUniqueString() {
 		return getSlug();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public ListItemBinder createCompatibleBinder() {
+		return null;
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package caceresenzo.libs.boxplay.culture.searchngo.result;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +9,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.models.element.Imagable;
 import caceresenzo.libs.boxplay.mylist.MyListable;
+import caceresenzo.libs.boxplay.mylist.binder.ListItemBinder;
 import caceresenzo.libs.boxplay.mylist.binder.implementations.JsonListItemBinder;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.string.StringUtils;
@@ -278,6 +278,12 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	@Override
 	public String toUniqueString() {
 		return String.format("%s:%s", type, name);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public ListItemBinder createCompatibleBinder() {
+		return new SearchAndGoResult.ItemBinder();
 	}
 	
 	@Override
