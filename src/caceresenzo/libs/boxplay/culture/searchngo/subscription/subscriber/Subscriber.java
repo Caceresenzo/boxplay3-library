@@ -1,5 +1,7 @@
 package caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber;
 
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,10 +36,10 @@ public abstract class Subscriber {
 		
 		if (resolvedItems != null) {
 			if (storageSolution.hasStorage(result)) {
-				List<SubscriptionItem> newItems = storageSolution.compareWithLocal(result, resolvedItems);
+				List<SubscriptionItem> newItems = storageSolution.compareWithLocal(result, resolvedItems, createSubscriptionItemComparator());
 				
 				if (!newItems.isEmpty()) {
-					onNewContent(newItems.get(newItems.size() - 1), callback);
+					onNewContent(newItems.get(0), callback);
 				}
 			} else {
 				storageSolution.updateLocalStorageItems(result, resolvedItems);
@@ -77,7 +79,7 @@ public abstract class Subscriber {
 	 * @param result
 	 *            Target result to clean up.
 	 */
-	protected void cleanUp(SubscriberStorageSolution storageSolution, SearchAndGoResult result) {
+	public void cleanUp(SubscriberStorageSolution storageSolution, SearchAndGoResult result) {
 		try {
 			storageSolution.toFile(result).delete();
 		} catch (Exception exception) {
@@ -95,6 +97,27 @@ public abstract class Subscriber {
 	 */
 	protected String downloadResult(SearchAndGoResult result) {
 		return ProviderHelper.getStaticHelper().downloadPage(result.getSubscriberTargetUrl(), result.getRequireHeaders(), result.getParentProvider().getWorkingCharset());
+	}
+	
+	/**
+	 * Create a {@link Comparator} that will be used to sort {@link SubscriptionItem} from the older to the newest.<br>
+	 * By default this is the date that is used to compare items.
+	 * 
+	 * @return A {@link Comparator} instance.
+	 */
+	public Comparator<SubscriptionItem> createSubscriptionItemComparator() {
+		return new Comparator<SubscriptionItem>() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public int compare(SubscriptionItem o1, SubscriptionItem o2) {
+				try {
+					return new Date(o1.getDate()).compareTo(new Date(o2.getDate()));
+				} catch (Exception exception) {
+					exception.printStackTrace();
+					return 0;
+				}
+			}
+		};
 	}
 	
 	/**

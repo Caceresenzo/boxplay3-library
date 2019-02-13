@@ -21,7 +21,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.RssSubscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.reversing.cloudflare.CloudflareUtils;
@@ -42,14 +42,14 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	public static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis:";
 	
 	/* Variables */
-	private final String imageUrlFormat, rssUrl;
+	private final String imageUrlFormat, rssUrlFormat;
 	
 	/* Constructor */
 	public JetAnimeSearchAndGoAnimeProvider() {
 		super("JetAnime", "https://www.jetanime.co");
 		
 		imageUrlFormat = getSiteUrl() + "/assets/imgs/%s.jpg";
-		rssUrl = getSiteUrl() + "/rss/";
+		rssUrlFormat = getSiteUrl() + "/rss/%s/";
 		
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.NAME, ADDITIONAL_DATA_KEY_NAME);
 		ADDITIONAL_DATA_CORRESPONDANCE.put(AdditionalDataType.ORIGINAL_NAME, ADDITIONAL_DATA_KEY_ORIGINAL_NAME);
@@ -87,13 +87,20 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		List<JetAnimeItem> resultItems = extractAnimeFromHtml(html);
 		
 		for (JetAnimeItem animeItem : resultItems) {
+			String slug = animeItem.getUrl().replaceAll("(\\/anime\\/|\\/)", "");
+			
 			String url = getSiteUrl() + animeItem.getUrl();
-			String imageUrl = String.format(imageUrlFormat, animeItem.getUrl().replaceAll("(\\/anime\\/|\\/)", ""));
+			String imageUrl = String.format(imageUrlFormat, slug);
 			String name = animeItem.getName();
+			// String subscriptionUrl = String.format(rssUrlFormat, slug);
+			String subscriptionUrl = url;
 			
 			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);
 			if (score != 0) {
-				result.put(url, new SearchAndGoResult(this, animeItem.getName(), url, imageUrl, SearchCapability.ANIME).score(score));
+				result.put(url, new SearchAndGoResult(this, animeItem.getName(), url, imageUrl, SearchCapability.ANIME) //
+						.score(score) //
+						.subscribableAt(subscriptionUrl) //
+				);
 			}
 		}
 		
@@ -221,7 +228,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	
 	@Override
 	public Subscriber createSubscriber() {
-		return new RssSubscriber();
+		return new SimpleItemComparatorSubscriber();
 	}
 	
 	/**

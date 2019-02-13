@@ -18,7 +18,7 @@ import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.string.StringUtils;
 
-public abstract class SubscriberStorageSolution {
+public class SubscriberStorageSolution {
 	
 	/* Constant */
 	public static final String EXTENSION = "json";
@@ -151,11 +151,13 @@ public abstract class SubscriberStorageSolution {
 	 *            Target result.
 	 * @param items
 	 *            {@link List} of {@link SubscriptionItem} to compare.
+	 * @param comparator
+	 *            {@link Comparator} used to sort {@link SubscriptionItem} from the oldest to the newest.
 	 * @return The items that were not already present in the local storage.
-	 * @see #compareWithLocal(List, boolean)
+	 * @see #compareWithLocal(SearchAndGoResult, List, Comparator, boolean)
 	 */
-	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items) {
-		return compareWithLocal(result, items, true);
+	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items, Comparator<SubscriptionItem> comparator) {
+		return compareWithLocal(result, items, comparator, true);
 	}
 	
 	/**
@@ -167,6 +169,8 @@ public abstract class SubscriberStorageSolution {
 	 *            Target result.
 	 * @param items
 	 *            {@link List} of {@link SubscriptionItem} to compare.
+	 * @param comparator
+	 *            {@link Comparator} used to sort {@link SubscriptionItem} from the oldest to the newest.
 	 * @param autoUpdate
 	 *            If it should automatically update the local storage.
 	 * @return A {@link List} of newest {@link SubscriptionItem}.
@@ -174,11 +178,14 @@ public abstract class SubscriberStorageSolution {
 	 *             If the <code>result</code> is null.
 	 * @throws NullPointerException
 	 *             If the <code>items</code> {@link List} is null.
+	 * @throws NullPointerException
+	 *             If the <code>comparator</code> is null.
 	 * @see #updateLocalStorageItems(SearchAndGoResult, List)
 	 */
-	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items, boolean autoUpdate) {
+	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items, Comparator<SubscriptionItem> comparator, boolean autoUpdate) {
 		Objects.requireNonNull(result, "Result can't be null.");
 		Objects.requireNonNull(items, "Items can't be null.");
+		Objects.requireNonNull(comparator, "Compartor can't be null.");
 		
 		List<SubscriptionItem> localItems = getLocalStorageItems(result);
 		List<SubscriptionItem> newestItems = new ArrayList<>();
@@ -203,18 +210,7 @@ public abstract class SubscriberStorageSolution {
 			updateLocalStorageItems(result, items);
 		}
 		
-		Collections.sort(newestItems, new Comparator<SubscriptionItem>() {
-			@SuppressWarnings("deprecation")
-			@Override
-			public int compare(SubscriptionItem o1, SubscriptionItem o2) {
-				try {
-					return new Date(o1.getDate()).compareTo(new Date(o2.getDate()));
-				} catch (Exception exception) {
-					exception.printStackTrace();
-					return 0;
-				}
-			}
-		});
+		Collections.sort(newestItems, comparator);
 		
 		return newestItems;
 	}

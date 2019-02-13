@@ -12,6 +12,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.subscription.item.Subscription
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.SubscriberManager;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.SubscriberStorageSolution;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.RssSubscriber;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.test.SimpleTestUnits;
 
@@ -62,7 +63,7 @@ public class SubscriberTestUnits extends SimpleTestUnits {
 				);
 			}
 			
-			dumpList(storageSolution.compareWithLocal(result, items), "COMPARED ITEMS");
+			dumpList(storageSolution.compareWithLocal(result, items, new RssSubscriber().createSubscriptionItemComparator()), "COMPARED ITEMS");
 		}
 		
 	}

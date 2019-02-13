@@ -258,9 +258,12 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	 * 
 	 * @param url
 	 *            Target subscribable url (like RSS or directly html).
+	 * @return Itsef.
 	 */
-	public void subscribableAt(String url) {
+	public SearchAndGoResult subscribableAt(String url) {
 		this.subscriberTargetUrl = url;
+		
+		return this;
 	}
 	
 	/**
@@ -307,6 +310,7 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 		public static final String JSON_KEY_IMAGE_URL = "image_url";
 		public static final String JSON_KEY_URL = "url";
 		public static final String JSON_KEY_TYPE = "type";
+		public static final String JSON_KEY_SUBSCRIPTION_TARGET_URL = "subscription_target_url";
 		
 		@Override
 		protected JsonObject convert(SearchAndGoResult item) {
@@ -317,6 +321,10 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 			jsonObject.put(JSON_KEY_IMAGE_URL, item.getImageUrl());
 			jsonObject.put(JSON_KEY_URL, item.getUrl());
 			jsonObject.put(JSON_KEY_TYPE, item.getType().toString());
+			
+			if (item.isSubscribable()) {
+				jsonObject.put(JSON_KEY_SUBSCRIPTION_TARGET_URL, item.getSubscriberTargetUrl());
+			}
 			
 			return jsonObject;
 		}
@@ -335,7 +343,15 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 			String url = source.getString(JSON_KEY_URL);
 			SearchCapability type = SearchCapability.fromString(source.getString(JSON_KEY_TYPE));
 			
-			return new SearchAndGoResult(parentProvider, name, url, imageUrl, type);
+			SearchAndGoResult searchAndGoResult = new SearchAndGoResult(parentProvider, name, url, imageUrl, type);
+			
+			if (source.containsKey(JSON_KEY_SUBSCRIPTION_TARGET_URL)) {
+				String subscriptionTargetUrl = source.getString(JSON_KEY_SUBSCRIPTION_TARGET_URL);
+				
+				searchAndGoResult.subscribableAt(subscriptionTargetUrl);
+			}
+			
+			return searchAndGoResult;
 		}
 		
 		@Override
