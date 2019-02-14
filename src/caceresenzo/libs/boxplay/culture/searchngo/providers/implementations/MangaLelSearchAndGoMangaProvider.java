@@ -35,10 +35,10 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur\\(s\\)";
 	public static final String ADDITIONAL_DATA_KEY_ARTISTS = "Artist\\(s\\)";
 	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Date de sortie";
-	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Catégories";
+	public static final String ADDITIONAL_DATA_KEY_GENDERS = "CatÃ©gories";
 	public static final String ADDITIONAL_DATA_KEY_VIEWS = "Vues";
 	public static final String ADDITIONAL_DATA_KEY_RATING = "Note";
-	public static final String ADDITIONAL_DATA_KEY_RESUME = "Résumé";
+	public static final String ADDITIONAL_DATA_KEY_RESUME = "RÃ©sumÃ©";
 	
 	private final String listApiUrl;
 	private final String imageUrlFormat;
