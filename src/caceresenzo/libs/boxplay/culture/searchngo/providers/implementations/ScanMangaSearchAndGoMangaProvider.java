@@ -27,6 +27,9 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.parser.JsonException;
@@ -34,7 +37,7 @@ import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
-public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, INovelContentProvider {
+public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, INovelContentProvider, Subscribable {
 	
 	public static final int API_RESULT_INDEX_NAME = 0;
 	public static final int API_RESULT_INDEX_URL = 1;
@@ -46,14 +49,14 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	public static final String API_IMAGE_REDIRECTOR_URL_FORMAT = "http://caceresenzo.esy.es/api/v3/helper/mangascan/image.php?url=%s";
 	
 	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur/Artiste";
-	public static final String ADDITIONAL_DATA_KEY_TYPE = "Catégorie";
+	public static final String ADDITIONAL_DATA_KEY_TYPE = "CatÃ©gorie";
 	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genres";
-	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Année";
-	public static final String ADDITIONAL_DATA_KEY_PUBLISHERS = "Éditeur original";
+	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "AnnÃ©e";
+	public static final String ADDITIONAL_DATA_KEY_PUBLISHERS = "Ã‰diteur original";
 	public static final String ADDITIONAL_DATA_KEY_LAST_CHAPTER = "Dernier chapitre";
 	public static final String ADDITIONAL_DATA_KEY_STATUS = "Statut";
 	public static final String ADDITIONAL_DATA_KEY_TRADUCTION_TEAM = "Team";
-	public static final String ADDITIONAL_DATA_KEY_RATING = "Popularité";
+	public static final String ADDITIONAL_DATA_KEY_RATING = "PopularitÃ©";
 	public static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis";
 	
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
@@ -116,7 +119,10 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 			
 			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);
 			if (score != 0) {
-				result.put(url, new SearchAndGoResult(this, name, url, imageUrl, SearchCapability.MANGA).score(score));
+				result.put(url, new SearchAndGoResult(this, name, url, imageUrl, SearchCapability.MANGA) //
+						.score(score) //
+						.subscribableAt(url) //
+				);
 			}
 		}
 		
@@ -342,6 +348,11 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { GenericScanMangaChapterExtractor.class };
+	}
+	
+	@Override
+	public Subscriber createSubscriber() {
+		return new SimpleItemComparatorSubscriber();
 	}
 	
 	@Override

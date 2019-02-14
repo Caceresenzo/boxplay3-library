@@ -20,10 +20,13 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
-public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
+public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, Subscribable {
 	
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
 	
@@ -103,7 +106,10 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 			
 			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);
 			if (score != 0) {
-				result.put(url, new SearchAndGoResult(this, mangaLelItem.getName(), url, imageUrl, SearchCapability.MANGA).score(score));
+				result.put(url, new SearchAndGoResult(this, mangaLelItem.getName(), url, imageUrl, SearchCapability.MANGA) //
+						.score(score) //
+						.subscribableAt(url) //
+				);
 			}
 		}
 		
@@ -239,6 +245,11 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { GenericMangaLelChapterExtractor.class };
+	}
+	
+	@Override
+	public Subscriber createSubscriber() {
+		return new SimpleItemComparatorSubscriber();
 	}
 	
 	@Override

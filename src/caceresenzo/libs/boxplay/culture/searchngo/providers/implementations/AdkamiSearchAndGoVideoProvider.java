@@ -22,6 +22,9 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.iterator.ByteArrayIterator;
@@ -30,7 +33,7 @@ import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
 @SuppressWarnings("unused")
-public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider, IHentaiVideoContentProvider {
+public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implements IVideoContentProvider, IHentaiVideoContentProvider, Subscribable {
 	
 	/* Provider Settings: Use full page instead of adkami's search bar, will be much longer but more precise (name only) */
 	public static final boolean SEARCH_USING_FULL_PAGE = false;
@@ -213,6 +216,11 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 	}
 	
 	@Override
+	public Subscriber createSubscriber() {
+		return new SimpleItemComparatorSubscriber();
+	}
+	
+	@Override
 	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
 		List<String> urls = new ArrayList<>();
 		
@@ -294,7 +302,10 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 			
 			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);
 			if (score != 0) {
-				actualWorkmap.put(url, new SearchAndGoResult(this, adkamiItem.getName(), url, imageUrl, type).score(score));
+				actualWorkmap.put(url, new SearchAndGoResult(this, adkamiItem.getName(), url, imageUrl, type) //
+						.score(score) //
+						.subscribableAt(url) //
+				);
 			}
 		}
 	}

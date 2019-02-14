@@ -21,6 +21,9 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.json.JsonArray;
@@ -29,7 +32,7 @@ import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
-public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
+public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, Subscribable {
 	
 	/* Constants */
 	public static final String SEARCH_JSON_KEY_NAME = "name";
@@ -99,7 +102,11 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 			
 			int score = getHelper().getSearchEngine().applySearchStrategy(searchQuery, name);
 			if (score != 0) {
-				result.put(url, new SearchAndGoResult(this, name, url, imageUrl, SearchCapability.MANGA).score(score).describe(description));
+				result.put(url, new SearchAndGoResult(this, name, url, imageUrl, SearchCapability.MANGA) //
+						.score(score) //
+						.describe(description) //
+						.subscribableAt(url) //
+				);
 			}
 		}
 		
@@ -259,6 +266,11 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { GenericMangaNeloChapterExtractor.class };
+	}
+	
+	@Override
+	public Subscriber createSubscriber() {
+		return new SimpleItemComparatorSubscriber();
 	}
 	
 	@Override

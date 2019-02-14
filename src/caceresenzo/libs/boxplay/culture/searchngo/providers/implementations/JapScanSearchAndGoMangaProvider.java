@@ -19,6 +19,9 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.requirements.implementations.CloudflareRequirement;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.json.JsonArray;
@@ -26,7 +29,7 @@ import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.string.StringUtils;
 
-public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
+public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, Subscribable {
 	
 	/* Constants */
 	public static final String SEARCH_JSON_KEY_NAME = "name";
@@ -44,7 +47,7 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 		COMMON_DATA_CORRESPONDANCES.put("Type(s):", AdditionalDataType.TYPE);
 		COMMON_DATA_CORRESPONDANCES.put("Artiste(s):", AdditionalDataType.ARTISTS);
 		COMMON_DATA_CORRESPONDANCES.put("Auteur(s):", AdditionalDataType.AUTHORS);
-		// COMMON_DATA_CORRESPONDANCES.put("Adaptation En Animé:", AdditionalDataType.NULL);
+		// COMMON_DATA_CORRESPONDANCES.put("Adaptation En Animï¿½:", AdditionalDataType.NULL);
 		// COMMON_DATA_CORRESPONDANCES.put("Abonnement RSS:", AdditionalDataType.NULL);
 	}
 	
@@ -263,6 +266,11 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 	@Override
 	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
 		return new Class[] { GenericJapScanChapterExtractor.class };
+	}
+	
+	@Override
+	public Subscriber createSubscriber() {
+		return new SimpleItemComparatorSubscriber();
 	}
 	
 	@Override
