@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import caceresenzo.libs.boxplay.models.premium.adult.AdultVideo;
 import caceresenzo.libs.cryptography.Base64;
+import caceresenzo.libs.random.RandomString;
 
 public class AdultFactory extends AbstractFactory {
 	
@@ -17,7 +18,8 @@ public class AdultFactory extends AbstractFactory {
 	/*
 	 * Remplace: - id: %id% - server: %server%
 	 */
-	public static final String SITE_VIDEO_UNFORMATTED = new String(Base64.decode("aHR0cDovL20udmVwb3Jucy5jb20vYWpheC5waHA/cGFnZT12aWRlb19wbGF5JmlkPSVpZCUmc2VydmVyPSVzZXJ2ZXIl")); // http://m.site.com/video/...
+	public static final String SITE_VIDEO_UNFORMATTED = new String(Base64.decode("aHR0cDovL20udmVwb3Jucy5jb20vYWpheC5waHA/cGFnZT12aWRlb19wbGF5JmFjb2RlPSVhY29kZSUmaWQ9JWlkJSZzZXJ2ZXI9JXNlcnZlciU=")); // http://m.site.com/video/...
+	public static final String REPLACE_VIDEO_ACODE = "%acode%";
 	public static final String REPLACE_VIDEO_ID = "%id%";
 	public static final String REPLACE_VIDEO_SERVER = "%server%";
 	
@@ -269,7 +271,10 @@ public class AdultFactory extends AbstractFactory {
 	}
 	
 	public static String formatAjaxVideoTargetUrl(Object id, Object server) {
-		return SITE_VIDEO_UNFORMATTED.replace(REPLACE_VIDEO_ID, String.valueOf(id)).replace(REPLACE_VIDEO_SERVER, String.valueOf(server));
+		return SITE_VIDEO_UNFORMATTED //
+				.replace(REPLACE_VIDEO_ACODE, new RandomString(20).nextString()) //
+				.replace(REPLACE_VIDEO_ID, String.valueOf(id)) //
+				.replace(REPLACE_VIDEO_SERVER, String.valueOf(server));
 	}
 	
 	public static String formatWebToMobileUrl(String videoUrl) {
