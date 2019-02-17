@@ -3,10 +3,12 @@ package caceresenzo.libs.boxplay.culture.searchngo.result;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderManager;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.boxplay.models.element.Imagable;
 import caceresenzo.libs.boxplay.mylist.MyListable;
 import caceresenzo.libs.boxplay.mylist.binder.ListItemBinder;
@@ -34,6 +36,7 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	private String description;
 	
 	private String subscriberTargetUrl;
+	private Subscriber customSubscriberInstance;
 	
 	/**
 	 * Create a new {@link SearchAndGoResult} instance
@@ -259,9 +262,26 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 	 * @param url
 	 *            Target subscribable url (like RSS or directly html).
 	 * @return Itsef.
+	 * @see #subscribableAt(Subscriber, String) Subscribable with a custom provider (test only).
 	 */
 	public SearchAndGoResult subscribableAt(String url) {
-		this.subscriberTargetUrl = url;
+		return subscribableAt(null, url);
+	}
+	
+	/**
+	 * Make this {@link SearchAndGoResult} subscribable.<br>
+	 * <i color=red><b>IT SHOULD BE USED ONLY FOR TESTING!</b></i>
+	 * 
+	 * @param url
+	 *            Target subscribable url (like RSS or directly html).
+	 * @param customSubscriber
+	 *            Use a custom provider for this specific result.
+	 * @return Itsef.
+	 * @see #subscribableAt(String)
+	 */
+	public SearchAndGoResult subscribableAt(Subscriber customSubscriber, String url) {
+		this.customSubscriberInstance = customSubscriber;
+		this.subscriberTargetUrl = Objects.requireNonNull(url, "A subscription url should not be null.");
 		
 		return this;
 	}
@@ -274,8 +294,25 @@ public class SearchAndGoResult extends Imagable implements MyListable {
 		return subscriberTargetUrl != null;
 	}
 	
+	/**
+	 * @return The subscription target url attached to this result.
+	 */
 	public String getSubscriberTargetUrl() {
 		return subscriberTargetUrl;
+	}
+	
+	/**
+	 * @return Weather or not this result has a custom {@link Subscriber} instance attached to it.
+	 */
+	public boolean hasCustomSubscriber() {
+		return customSubscriberInstance != null;
+	}
+	
+	/**
+	 * @return The custom {@link Subscriber} instance attached to this result.
+	 */
+	public Subscriber getCustomSubscriber() {
+		return customSubscriberInstance;
 	}
 	
 	@Override

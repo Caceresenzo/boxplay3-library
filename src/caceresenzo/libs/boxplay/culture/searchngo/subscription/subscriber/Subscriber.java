@@ -38,8 +38,8 @@ public abstract class Subscriber {
 			if (storageSolution.hasStorage(result)) {
 				List<SubscriptionItem> newItems = storageSolution.compareWithLocal(result, resolvedItems, createSubscriptionItemComparator());
 				
-				if (!newItems.isEmpty()) {
-					onNewContent(newItems.get(0), callback);
+				if (!newItems.isEmpty()) {					
+					onNewContent(newItems.get(newItems.size() - 1), callback);
 				}
 			} else {
 				storageSolution.updateLocalStorageItems(result, resolvedItems);

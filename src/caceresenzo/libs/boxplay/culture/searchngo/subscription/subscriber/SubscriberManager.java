@@ -56,7 +56,9 @@ public class SubscriberManager {
 					subscribers.put(clazz, subscribable.createSubscriber());
 				}
 			} else {
-				results.remove(result);
+				if (!result.hasCustomSubscriber()) {
+					results.remove(result);
+				}
 			}
 		}
 		
@@ -80,6 +82,10 @@ public class SubscriberManager {
 		
 		for (SearchAndGoResult result : results) {
 			Subscriber subscribable = subscribers.get(result.getParentProvider().getClass());
+			
+			if (result.hasCustomSubscriber()) {
+				subscribable = result.getCustomSubscriber();
+			}
 			
 			try {
 				subscribable.fetch(storageSolution, result, callback);

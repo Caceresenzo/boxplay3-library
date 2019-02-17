@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -191,6 +190,8 @@ public class SubscriberStorageSolution {
 		List<SubscriptionItem> newestItems = new ArrayList<>();
 		
 		newestItems.addAll(items);
+		Collections.sort(newestItems, comparator);
+		
 		if (!localItems.isEmpty()) {
 			for (SubscriptionItem item : localItems) {
 				String itemContent = item.getContent();
@@ -209,8 +210,6 @@ public class SubscriberStorageSolution {
 		if (autoUpdate) {
 			updateLocalStorageItems(result, items);
 		}
-		
-		Collections.sort(newestItems, comparator);
 		
 		return newestItems;
 	}

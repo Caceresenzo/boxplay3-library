@@ -1,6 +1,7 @@
 package caceresenzo.libs.boxplay.culture.searchngo.test;
 
 import java.io.File;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,14 +14,15 @@ import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscr
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.SubscriberManager;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.SubscriberStorageSolution;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.RssSubscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.test.SimpleTestUnits;
+import caceresenzo.libs.thread.ThreadUtils;
 
 public class SubscriberTestUnits extends SimpleTestUnits {
 	
 	public static SubscriberStorageSolution createTestStorageSolution() {
-		return new SubscriberStorageSolution(new File("./test/subscription/subscribers/")) {
-		};
+		return new SubscriberStorageSolution(new File("./test/subscription/subscribers/"));
 	}
 	
 	public static void dumpList(List<SubscriptionItem> items, String message) {
@@ -68,33 +70,56 @@ public class SubscriberTestUnits extends SimpleTestUnits {
 		
 	}
 	
-	public static class RealCaseRssTestUnit extends SubscriberTestUnits {
+	public static abstract class RealCaseTestUnit<T extends Subscriber> implements Subscriber.SubscriberCallback {
 		
-		/**
-		 * Remove some items after getting the newest one to alaways get new items, only for test purposes.
-		 */
+		protected SubscriberStorageSolution storageSolution;
+		protected SubscriberManager subscriberManager;
+		
+		public RealCaseTestUnit() {
+			this.storageSolution = createTestStorageSolution();
+			this.subscriberManager = new SubscriberManager(storageSolution);
+			
+			test();
+		}
+		
+		public abstract void test();
+		
+		public SearchAndGoResult createDummySearchAndGoResult(String subscriptionUrl) {
+			return new SearchAndGoResult(ProviderManager.JETANIME.create(), "Tensei Shitara Slime Datta Ken", "https://www.jetanime.co/anime/tensei-shitara-slime-datta-ken/") //
+					.subscribableAt(createSubscriber(), subscriptionUrl) //
+			;
+		}
+		
+		public Subscriber createSubscriber() {
+			try {
+				return (Subscriber) ((Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).newInstance();
+			} catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		}
+		
+		@Override
+		public void onNewContent(SubscriptionItem item) {
+			Logger.info("New content -> %s", item.getContent());
+		}
+		
+		@Override
+		public void onException(SearchAndGoResult result, Exception exception) {
+			Logger.exception(exception, "With result: %s", result.toUniqueString());
+		}
+		
+	}
+	
+	public static class RealCaseRssTestUnit extends RealCaseTestUnit<RssSubscriber> {
+		
+		/** Remove some items after getting the newest one to alaways get new items, only for test purposes. */
 		public static final boolean DEBUG_REMOVE_SOME_ITEMS = true;
 		
-		public static void main(String[] args) {
-			SubscriberStorageSolution storageSolution = createTestStorageSolution();
+		@Override
+		public void test() {
+			SearchAndGoResult result = createDummySearchAndGoResult("https://www.jetanime.co/rss/tensei-shitara-slime-datta-ken/");
 			
-			SearchAndGoProvider provider = ProviderManager.JETANIME.create();
-			
-			SearchAndGoResult result = new SearchAndGoResult(provider, "Tensei Shitara Slime Datta Ken", "https://www.jetanime.co/anime/tensei-shitara-slime-datta-ken/");
-			result.subscribableAt("https://www.jetanime.co/rss/tensei-shitara-slime-datta-ken/");
-			
-			SubscriberManager subscriberManager = new SubscriberManager(storageSolution);
-			subscriberManager.load(Arrays.asList(result)).fetchAll(new Subscriber.SubscriberCallback() {
-				@Override
-				public void onNewContent(SubscriptionItem item) {
-					Logger.info("New content -> %s", item.getContent());
-				}
-				
-				@Override
-				public void onException(SearchAndGoResult result, Exception exception) {
-					Logger.exception(exception, "With result: %s", result.toUniqueString());
-				}
-			});
+			subscriberManager.load(Arrays.asList(result)).fetchAll(this);
 			
 			if (DEBUG_REMOVE_SOME_ITEMS) {
 				List<SubscriptionItem> localItems = storageSolution.getLocalStorageItems(result);
@@ -106,6 +131,30 @@ public class SubscriberTestUnits extends SimpleTestUnits {
 				
 				storageSolution.updateLocalStorageItems(result, localItems);
 			}
+		}
+		
+		public static void main(String[] args) {
+			new RealCaseRssTestUnit();
+		}
+		
+	}
+	
+	public static class RealCaseSimpleItemComparatorTestUnit extends RealCaseTestUnit<SimpleItemComparatorSubscriber> {
+		
+		@Override
+		public void test() {
+			SearchAndGoResult result = createDummySearchAndGoResult("https://www.jetanime.co/anime/tensei-shitara-slime-datta-ken/");
+			
+			for (int i = 0; i < 10; i++) {
+				subscriberManager.load(Arrays.asList(result)).fetchAll(this);
+				
+				/* Wait file unlock */
+				ThreadUtils.sleep(50L);
+			}
+		}
+		
+		public static void main(String[] args) {
+			new RealCaseSimpleItemComparatorTestUnit();
 		}
 		
 	}
