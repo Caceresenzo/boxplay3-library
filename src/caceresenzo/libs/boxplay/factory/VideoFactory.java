@@ -16,6 +16,7 @@ import caceresenzo.libs.boxplay.models.store.video.enums.VideoType;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.parse.ParseUtils;
 
+@Deprecated
 public class VideoFactory extends AbstractFactory {
 	
 	public VideoFactory() {

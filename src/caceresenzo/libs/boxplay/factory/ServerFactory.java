@@ -8,6 +8,7 @@ import caceresenzo.libs.boxplay.models.server.ServerHosting;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.parse.ParseUtils;
 
+@Deprecated
 public class ServerFactory extends AbstractFactory {
 	
 	public ServerFactory() {

@@ -17,6 +17,7 @@ import caceresenzo.libs.boxplay.models.store.music.enums.MusicRessourceType;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.parse.ParseUtils;
 
+@Deprecated
 public class MusicFactory extends AbstractFactory {
 	
 	public MusicFactory() {

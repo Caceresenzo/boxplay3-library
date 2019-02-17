@@ -1,5 +1,6 @@
 package caceresenzo.libs.boxplay.factory;
 
+@Deprecated
 public class AbstractFactory {
 	
 	protected static final int IMPOSSIBLE_VALUE = Integer.MAX_VALUE;

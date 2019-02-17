@@ -7,6 +7,7 @@ import caceresenzo.libs.boxplay.models.premium.adult.AdultVideo;
 import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.random.RandomString;
 
+@Deprecated
 public class AdultFactory extends AbstractFactory {
 	
 	/*
@@ -90,28 +91,6 @@ public class AdultFactory extends AbstractFactory {
 			String url = matcher.group(1);
 			
 			return url;
-		}
-		return null;
-	}
-	
-	public String extractOpenloadJSKeyGeneratorFromHtml(String html) {
-		Matcher matcher = getOpenloadVideoLinkGeneratorExtractorMatcher(html);
-		
-		while (matcher.find()) {
-			String url = matcher.group(1);
-			
-			return url;
-		}
-		return null;
-	}
-	
-	public String extractOpenloadVideoLinkFromJSExecutedHtmlPage(String html) {
-		Matcher matcher = getOpenloadVideoLinkFromVideoPageExtractorMatcher(html);
-		
-		while (matcher.find()) {
-			String link = matcher.group(3);
-			
-			return link;
 		}
 		return null;
 	}
@@ -220,52 +199,6 @@ public class AdultFactory extends AbstractFactory {
 		return matcher;
 	}
 	
-	/**
-	 * https://regex101.com/r/diwjDA/1
-	 * 
-	 * @Information
-	 * 				
-	 * 				chinese emojy js-code
-	 * 
-	 * @Instruction
-	 * 				
-	 * 				Group 1: all js-code
-	 * 
-	 *              You will need to add the basics openload html element
-	 */
-	public static Matcher getOpenloadVideoLinkGeneratorExtractorMatcher(String html) {
-		String regex = "\\<script\\ssrc=\\\"\\/assets\\/js\\/video-js\\/.*?\\\"\\>\\<\\/script\\>[ \\t\\n]*\\<script\\stype=\\\"text\\/javascript\\\"\\>[ \\t\\n]*(.*?)[ \\t\\n]*\\<\\/script\\>[ \\t\\n]*\\<\\/body\\>[ \\t\\n]*\\<\\/html\\>";
-		
-		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
-		Matcher matcher = pattern.matcher(html);
-		
-		return matcher;
-	}
-	
-	/**
-	 * https://regex101.com/r/rG7Oze/2
-	 * 
-	 * @Information
-	 * 				
-	 * 				html....... openload file path .......html
-	 * 
-	 * @Instruction
-	 * 				
-	 * 				Group 1: key-id
-	 * 
-	 *              Group 2: key-content
-	 * 
-	 *              Group 3: generated-key (only usable after executing js)
-	 */
-	public static Matcher getOpenloadVideoLinkFromVideoPageExtractorMatcher(String html) {
-		String regex = "\\<div\\sclass=\\\"\\\"\\sstyle=\\\"display:none;\\\"\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sid=\\\"(.*?)\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]*\\<p\\sstyle=\\\"\\\"\\sclass=\\\"\\\"\\sid=\\\"DtsBlkVFQx\\\"\\>(.*?)\\<\\/p\\>[ \\t\\n]\\<\\/div\\>";
-		
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(html);
-		
-		return matcher;
-	}
-	
 	public static String formatHomepageUrl(int page) {
 		return SITE_HOMEPAGE_UNFORMATTED.replace(REPLACE_HOMEPAGE_PAGE, String.valueOf(page));
 	}
@@ -279,34 +212,6 @@ public class AdultFactory extends AbstractFactory {
 	
 	public static String formatWebToMobileUrl(String videoUrl) {
 		return videoUrl.replace("://www", "://m");
-	}
-	
-	public static String formatOpenloadJsCodeExecutor(String htmlDom, String js) {
-		return "<html><script src=\"https://oload.download/assets/js/jquery.min.js\"></script>" + htmlDom + "<script>function myFunction() {" + js + "}; myFunction();</script>" + "</html>";
-	}
-	
-	public String formatHtmlDomForJsKeyGenerator(String openloadHtml) {
-		Matcher matcher = getOpenloadVideoLinkFromVideoPageExtractorMatcher(openloadHtml);
-		
-		while (matcher.find()) {
-			String keyId = matcher.group(1);
-			String keyContent = matcher.group(2);
-			String filepath = matcher.group(3);
-			
-			return ("<div class=\"\" style=\"display:none;\">\r\n" + //
-					"<p style=\"\" id=\"%keyid%\">%keycontent%</p>\r\n" + //
-					"<p style=\"\" class=\"\" id=\"DtsBlkVFQx\">%filepath%</p>\r\n" + //
-					"</div>") //
-							.replace("%keyid%", keyId) //
-							.replace("%keycontent%", keyContent) //
-							.replace("%filepath%", filepath) //
-			; //
-		}
-		return null;
-	}
-	
-	public static String formatOpenloadDirectLinkVideoUrl(String key) {
-		return BASE_OPENLOAD_VIDEO_URL_UNFORMATTED.replace(REPLACE_OPENLOAD_VIDEO_URL_GENERATED, key);
 	}
 	
 }
