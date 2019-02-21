@@ -12,6 +12,10 @@ import caceresenzo.libs.rss.RssFeedParser;
 
 public class RssSubscriber extends Subscriber {
 	
+	public RssSubscriber() {
+		super(false);
+	}
+
 	@Override
 	public List<SubscriptionItem> resolveItems(SearchAndGoResult result) {
 		List<SubscriptionItem> resolvedItems = new ArrayList<>();
@@ -32,6 +36,11 @@ public class RssSubscriber extends Subscriber {
 		}
 		
 		return resolvedItems;
+	}
+	
+	@Override
+	public boolean shouldNameBeReformatted() {
+		return false;
 	}
 	
 }

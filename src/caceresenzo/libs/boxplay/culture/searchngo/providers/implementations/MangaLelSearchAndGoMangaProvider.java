@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -241,15 +239,9 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 		return additionals;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericMangaLelChapterExtractor.class };
-	}
-	
 	@Override
 	public Subscriber createSubscriber() {
-		return new SimpleItemComparatorSubscriber();
+		return new SimpleItemComparatorSubscriber(true);
 	}
 	
 	@Override

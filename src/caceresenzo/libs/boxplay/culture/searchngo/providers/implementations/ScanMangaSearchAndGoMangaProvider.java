@@ -10,9 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.text.INovelContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
@@ -27,9 +25,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.parser.JsonException;
@@ -37,7 +32,7 @@ import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
-public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, INovelContentProvider, Subscribable {
+public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, INovelContentProvider {
 	
 	public static final int API_RESULT_INDEX_NAME = 0;
 	public static final int API_RESULT_INDEX_URL = 1;
@@ -45,8 +40,6 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	public static final int API_RESULT_INDEX_AUTHOR = 3;
 	public static final int API_RESULT_INDEX_BASE_IMAGE_URL = 4;
 	public static final int API_RESULT_INDEX_LAST_CHAPTER_URL = 5;
-	
-	public static final String API_IMAGE_REDIRECTOR_URL_FORMAT = "http://caceresenzo.esy.es/api/v3/helper/mangascan/image.php?url=%s";
 	
 	public static final String ADDITIONAL_DATA_KEY_AUTHORS = "Auteur/Artiste";
 	public static final String ADDITIONAL_DATA_KEY_TYPE = "Catégorie";
@@ -342,17 +335,6 @@ public class ScanMangaSearchAndGoMangaProvider extends SearchAndGoProvider imple
 		}
 		
 		return additionals;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericScanMangaChapterExtractor.class };
-	}
-	
-	@Override
-	public Subscriber createSubscriber() {
-		return new SimpleItemComparatorSubscriber();
 	}
 	
 	@Override

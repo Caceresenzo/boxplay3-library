@@ -24,7 +24,7 @@ public class ProviderSearchCapability implements Serializable {
 	 * @throws IllegalArgumentException
 	 *             If capabilities is empty or null
 	 */
-	public ProviderSearchCapability(SearchCapability[] capabilities) {
+	public ProviderSearchCapability(SearchCapability... capabilities) {
 		if (capabilities == null || capabilities.length == 0) {
 			throw new IllegalArgumentException("Capability array can't be null or empty");
 		}

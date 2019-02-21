@@ -9,10 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -34,21 +31,21 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 	
 	/* Additionals Data Keys: for Movies */
 	protected static final String ADDITIONAL_DATA_KEY_RELEASE_DATE_AND_DURATION = "Date de sortie";
-	protected static final String ADDITIONAL_DATA_KEY_DIRECTOR = "Réalisateur";
-	protected static final String ADDITIONAL_DATA_KEY_GENDERS = "Catégorie";
+	protected static final String ADDITIONAL_DATA_KEY_DIRECTOR = "Rï¿½alisateur";
+	protected static final String ADDITIONAL_DATA_KEY_GENDERS = "Catï¿½gorie";
 	protected static final String ADDITIONAL_DATA_KEY_ACTORS = "Avec";
 	protected static final String ADDITIONAL_DATA_KEY_QUALITY = "Film en Version";
-	protected static final String ADDITIONAL_DATA_KEY_RESUME = "Résumé Du Film";
+	protected static final String ADDITIONAL_DATA_KEY_RESUME = "Rï¿½sumï¿½ Du Film";
 	
 	/* Additionals Data Keys: for Series */
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_AUTHOR = "Créé par";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_AUTHOR = "Crï¿½ï¿½ par";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_ACTORS = "Avec";
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_RELEASE_DATE = "Année de création";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_RELEASE_DATE = "Annï¿½e de crï¿½ation";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_GENDERS = "Genre";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_STATUS = "Statut";
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_CHANNEL = "Chaîne";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_CHANNEL = "Chaï¿½ne";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_VERSION = "Version";
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_RESUME = "Résumé de la série";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_RESUME = "Rï¿½sumï¿½ de la sï¿½rie";
 	
 	/* Additionals Data Correspondance: for Series */
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_SERIES = new EnumMap<>(AdditionalDataType.class);
@@ -427,12 +424,6 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 	@Override
 	public boolean hasMoreThanOnePlayer() {
 		return true;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericOpenloadVideoExtractor.class, GenericVidozaVideoExtractor.class };
 	}
 	
 	private String makeRequestByCategory(String searchQuery, String category) {

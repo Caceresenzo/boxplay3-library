@@ -14,15 +14,11 @@ import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscr
 
 public class SimpleItemComparatorSubscriber extends Subscriber {
 	
-	/* Variables */
-	/** If <code>true</code>, string will only be sorted if they are the same length. **/
-	private boolean sortIgnoreLength;
-	
 	/* Constructor */
-	public SimpleItemComparatorSubscriber() {
-		this.sortIgnoreLength = false;
+	public SimpleItemComparatorSubscriber(boolean shouldReverseList) {
+		super(shouldReverseList);
 	}
-	
+
 	@Override
 	public List<SubscriptionItem> resolveItems(SearchAndGoResult result) throws Exception {
 		List<SubscriptionItem> resolvedItems = new ArrayList<>();
@@ -54,21 +50,15 @@ public class SimpleItemComparatorSubscriber extends Subscriber {
 		return resolvedItems;
 	}
 	
+	/** Keep the original order from the provider */
+	@Override
+	public boolean isItemSortingNeeded() {
+		return false;
+	}
+	
 	@Override
 	public Comparator<SubscriptionItem> createSubscriptionItemComparator() {
-		return new Comparator<SubscriptionItem>() {
-			@Override
-			public int compare(SubscriptionItem item1, SubscriptionItem item2) {
-				int length1 = item1.getContent().length();
-				int length2 = item2.getContent().length();
-				
-				if (!sortIgnoreLength && length1 == length2) {
-					return item1.getContent().compareTo(item2.getContent());
-				}
-				
-				return length1 - length2;
-			}
-		};
+		throw new IllegalStateException("Comparator not available.");
 	}
 	
 }

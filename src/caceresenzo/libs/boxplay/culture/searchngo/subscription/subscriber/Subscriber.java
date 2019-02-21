@@ -1,5 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -8,8 +9,21 @@ import java.util.Objects;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderHelper;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.item.SubscriptionItem;
+import caceresenzo.libs.list.ListUtils;
 
 public abstract class Subscriber {
+	
+	/* Variable */
+	private boolean shouldReverseList;
+	
+	/* Constructor */
+	/**
+	 * @param shouldReverseList
+	 *            Weather or not the list should be reversed after being processed.
+	 */
+	public Subscriber(boolean shouldReverseList) {
+		this.shouldReverseList = shouldReverseList;
+	}
 	
 	/**
 	 * Fetch a specific <code>result</code>.<br>
@@ -36,10 +50,19 @@ public abstract class Subscriber {
 		
 		if (resolvedItems != null) {
 			if (storageSolution.hasStorage(result)) {
-				List<SubscriptionItem> newItems = storageSolution.compareWithLocal(result, resolvedItems, createSubscriptionItemComparator());
+				if (isListShouldBeReversed()) {
+					Collections.reverse(resolvedItems);
+				}
 				
-				if (!newItems.isEmpty()) {					
-					onNewContent(newItems.get(newItems.size() - 1), callback);
+				if (isItemSortingNeeded()) {
+					Collections.sort(resolvedItems, createSubscriptionItemComparator());
+				}
+				
+				SubscriptionItem lastestItem = ListUtils.getLastestItem(resolvedItems);
+				List<SubscriptionItem> newItems = storageSolution.compareWithLocal(result, resolvedItems);
+				
+				if (!newItems.isEmpty()) {
+					onNewContent(callback, newItems, lastestItem);
 				}
 			} else {
 				storageSolution.updateLocalStorageItems(result, resolvedItems);
@@ -61,13 +84,14 @@ public abstract class Subscriber {
 	/**
 	 * Callback delegate function that can be intercepted.
 	 * 
-	 * @param item
-	 *            Lastest item available.
+	 * @param items
+	 *            {@link List} of the newest item available.
 	 * @param callback
 	 *            Progression callback.
+	 * @see SubscriberCallback#onNewContent(List, SubscriptionItem)
 	 */
-	protected void onNewContent(SubscriptionItem item, SubscriberCallback callback) {
-		callback.onNewContent(item);
+	protected void onNewContent(SubscriberCallback callback, List<SubscriptionItem> items, SubscriptionItem lastestItem) {
+		callback.onNewContent(items, lastestItem);
 	}
 	
 	/**
@@ -97,6 +121,27 @@ public abstract class Subscriber {
 	 */
 	protected String downloadResult(SearchAndGoResult result) {
 		return ProviderHelper.getStaticHelper().downloadPage(result.getSubscriberTargetUrl(), result.getRequireHeaders(), result.getParentProvider().getWorkingCharset());
+	}
+	
+	/**
+	 * @return Weather or not the item should be sorted while processing. Default value is <code>true</code>.
+	 */
+	public boolean isItemSortingNeeded() {
+		return true;
+	}
+	
+	/**
+	 * @return Weather or not the {@link List} should be reversed after the processing.
+	 */
+	public boolean isListShouldBeReversed() {
+		return shouldReverseList;
+	}
+	
+	/**
+	 * @return Weather or not the final name that is notified to the user need to be reformatted or not.
+	 */
+	public boolean shouldNameBeReformatted() {
+		return true;
 	}
 	
 	/**
@@ -131,10 +176,10 @@ public abstract class Subscriber {
 		/**
 		 * Called when a new item is available.
 		 * 
-		 * @param item
-		 *            This will alaways be the lastest item (excluding items in local storage).
+		 * @param items
+		 *            Newest items available (excluding items in local storage).
 		 */
-		void onNewContent(SubscriptionItem item);
+		void onNewContent(List<SubscriptionItem> items, SubscriptionItem lastestItem);
 		
 		/**
 		 * Called when an unhandled exception has occured.

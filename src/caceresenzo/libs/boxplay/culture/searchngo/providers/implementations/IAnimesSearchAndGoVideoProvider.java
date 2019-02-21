@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.modifiers.IHentaiVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
@@ -17,8 +15,8 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.Categor
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
-import caceresenzo.libs.boxplay.culture.searchngo.requirements.implementations.CloudflareRequirement;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.requirements.implementations.CloudflareRequirement;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.http.client.webb.Webb;
@@ -35,7 +33,7 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 		COMMON_DATA_CORRESPONDANCES.put("Titre original :", AdditionalDataType.ORIGINAL_NAME);
 		COMMON_DATA_CORRESPONDANCES.put("Genre :", AdditionalDataType.GENDERS);
 		COMMON_DATA_CORRESPONDANCES.put("Date de Diffusion :", AdditionalDataType.RELEASE_DATE);
-		COMMON_DATA_CORRESPONDANCES.put("Durée par épisode :", AdditionalDataType.DURATION); /* Seems not to work */
+		COMMON_DATA_CORRESPONDANCES.put("Durï¿½e par ï¿½pisode :", AdditionalDataType.DURATION); /* Seems not to work */
 		COMMON_DATA_CORRESPONDANCES.put("Studio d'animation :", AdditionalDataType.ANIMATION_STUDIO);
 		COMMON_DATA_CORRESPONDANCES.put("Sous licence :", AdditionalDataType.UNDER_LICENSE);
 		COMMON_DATA_CORRESPONDANCES.put("Editeurs :", AdditionalDataType.PUBLISHERS);
@@ -293,12 +291,6 @@ public class IAnimesSearchAndGoVideoProvider extends SearchAndGoProvider impleme
 		}
 		
 		return additionals;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericOpenloadVideoExtractor.class };
 	}
 	
 	@Override

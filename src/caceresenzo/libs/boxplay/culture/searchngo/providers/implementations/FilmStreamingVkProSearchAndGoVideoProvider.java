@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -27,13 +25,13 @@ public class FilmStreamingVkProSearchAndGoVideoProvider extends SearchAndGoProvi
 	
 	public static final String ADDITIONAL_DATA_KEY_ORIGINAL_NAME = "Titre Original:";
 	public static final String ADDITIONAL_DATA_KEY_GENDERS = "Genre:";
-	public static final String ADDITIONAL_DATA_KEY_QUALITY = "Qualité:";
+	public static final String ADDITIONAL_DATA_KEY_QUALITY = "Qualitï¿½:";
 	public static final String ADDITIONAL_DATA_KEY_VERSION = "Version:";
-	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Année:";
+	public static final String ADDITIONAL_DATA_KEY_RELEASE_DATE = "Annï¿½e:";
 	public static final String ADDITIONAL_DATA_KEY_COUNTRY = "Pays:";
 	public static final String ADDITIONAL_DATA_KEY_DIRECTOR = "Directeur:";
 	public static final String ADDITIONAL_DATA_KEY_ACTORS = "Acteurs:";
-	public static final String ADDITIONAL_DATA_KEY_DURATION = "Durée:";
+	public static final String ADDITIONAL_DATA_KEY_DURATION = "Durï¿½e:";
 	public static final String ADDITIONAL_DATA_KEY_RESUME = "Synopsis";
 	
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_FOR_URL_EXTRATCTION = new EnumMap<>(AdditionalDataType.class);
@@ -225,12 +223,6 @@ public class FilmStreamingVkProSearchAndGoVideoProvider extends SearchAndGoProvi
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericOpenloadVideoExtractor.class };
-	}
-	
 	private List<VoirFilmBzItem> extractVideoFromHtml(String html) {
 		List<VoirFilmBzItem> items = new ArrayList<>();
 		
@@ -250,7 +242,7 @@ public class FilmStreamingVkProSearchAndGoVideoProvider extends SearchAndGoProvi
 	 * Extract common data on the VOIRFILM.bz information container
 	 * 
 	 * @param dataKey
-	 *            Something like "Genre:" or "Qualité:", a key that will used as a line identifier
+	 *            Something like "Genre:" or "Qualitï¿½:", a key that will used as a line identifier
 	 * @param htmlContainer
 	 *            A html container, source of data
 	 * @return Some extracted data, null if not found

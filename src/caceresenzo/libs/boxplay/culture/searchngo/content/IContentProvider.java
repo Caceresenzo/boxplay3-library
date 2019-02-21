@@ -6,6 +6,4 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 
 public interface IContentProvider extends Serializable {
 	
-	Class<? extends ContentExtractor>[] getCompatibleExtractorClass();
-	
 }

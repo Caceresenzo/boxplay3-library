@@ -65,7 +65,7 @@ public class SubscriberTestUnits extends SimpleTestUnits {
 				);
 			}
 			
-			dumpList(storageSolution.compareWithLocal(result, items, new RssSubscriber().createSubscriptionItemComparator()), "COMPARED ITEMS");
+			dumpList(storageSolution.compareWithLocal(result, items, false), "COMPARED ITEMS");
 		}
 		
 	}
@@ -98,9 +98,16 @@ public class SubscriberTestUnits extends SimpleTestUnits {
 			}
 		}
 		
-		@Override
 		public void onNewContent(SubscriptionItem item) {
-			Logger.info("New content -> %s", item.getContent());
+		}
+		
+		@Override
+		public void onNewContent(List<SubscriptionItem> items, SubscriptionItem lastestItem) {
+			Logger.info("Lastest item -> %s", lastestItem.getContent());
+			
+			for (SubscriptionItem subscriptionItem : items) {
+				Logger.info("New item -> %s", subscriptionItem.getContent());
+			}
 		}
 		
 		@Override
@@ -151,6 +158,11 @@ public class SubscriberTestUnits extends SimpleTestUnits {
 				/* Wait file unlock */
 				ThreadUtils.sleep(50L);
 			}
+		}
+		
+		@Override
+		public Subscriber createSubscriber() {
+			return new SimpleItemComparatorSubscriber(true);
 		}
 		
 		public static void main(String[] args) {

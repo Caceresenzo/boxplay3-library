@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.modifiers.IHentaiVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
@@ -17,7 +15,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.CategoryResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.additional.RatingResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.FakeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
@@ -28,7 +25,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implem
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
 import caceresenzo.libs.iterator.ByteArrayIterator;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.StringUtils;
 
@@ -209,15 +205,9 @@ public class AdkamiSearchAndGoVideoProvider extends SearchAndGoProvider implemen
 		return additionals;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericOpenloadVideoExtractor.class };
-	}
-	
 	@Override
 	public Subscriber createSubscriber() {
-		return new SimpleItemComparatorSubscriber();
+		return new SimpleItemComparatorSubscriber(true);
 	}
 	
 	@Override

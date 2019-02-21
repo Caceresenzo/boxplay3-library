@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -220,15 +218,9 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericOpenloadVideoExtractor.class };
-	}
-	
 	@Override
 	public Subscriber createSubscriber() {
-		return new SimpleItemComparatorSubscriber();
+		return new SimpleItemComparatorSubscriber(true);
 	}
 	
 	/**

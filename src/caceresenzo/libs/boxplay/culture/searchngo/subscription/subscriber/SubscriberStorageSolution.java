@@ -2,7 +2,6 @@ package caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -150,13 +149,11 @@ public class SubscriberStorageSolution {
 	 *            Target result.
 	 * @param items
 	 *            {@link List} of {@link SubscriptionItem} to compare.
-	 * @param comparator
-	 *            {@link Comparator} used to sort {@link SubscriptionItem} from the oldest to the newest.
 	 * @return The items that were not already present in the local storage.
 	 * @see #compareWithLocal(SearchAndGoResult, List, Comparator, boolean)
 	 */
-	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items, Comparator<SubscriptionItem> comparator) {
-		return compareWithLocal(result, items, comparator, true);
+	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items) {
+		return compareWithLocal(result, items, true);
 	}
 	
 	/**
@@ -168,8 +165,6 @@ public class SubscriberStorageSolution {
 	 *            Target result.
 	 * @param items
 	 *            {@link List} of {@link SubscriptionItem} to compare.
-	 * @param comparator
-	 *            {@link Comparator} used to sort {@link SubscriptionItem} from the oldest to the newest.
 	 * @param autoUpdate
 	 *            If it should automatically update the local storage.
 	 * @return A {@link List} of newest {@link SubscriptionItem}.
@@ -177,20 +172,14 @@ public class SubscriberStorageSolution {
 	 *             If the <code>result</code> is null.
 	 * @throws NullPointerException
 	 *             If the <code>items</code> {@link List} is null.
-	 * @throws NullPointerException
-	 *             If the <code>comparator</code> is null.
 	 * @see #updateLocalStorageItems(SearchAndGoResult, List)
 	 */
-	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items, Comparator<SubscriptionItem> comparator, boolean autoUpdate) {
+	public List<SubscriptionItem> compareWithLocal(SearchAndGoResult result, List<SubscriptionItem> items, boolean autoUpdate) {
 		Objects.requireNonNull(result, "Result can't be null.");
 		Objects.requireNonNull(items, "Items can't be null.");
-		Objects.requireNonNull(comparator, "Compartor can't be null.");
 		
 		List<SubscriptionItem> localItems = getLocalStorageItems(result);
-		List<SubscriptionItem> newestItems = new ArrayList<>();
-		
-		newestItems.addAll(items);
-		Collections.sort(newestItems, comparator);
+		List<SubscriptionItem> newestItems = new ArrayList<>(items);
 		
 		if (!localItems.isEmpty()) {
 			for (SubscriptionItem item : localItems) {

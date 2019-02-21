@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaNeloChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -25,7 +23,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.http.client.webb.Webb;
-import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonParser;
@@ -76,7 +73,7 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 		Map<String, SearchAndGoResult> result = createEmptyWorkMap();
 		
 		String jsonString = Webb.create().post(searchApiUrl) //
-				.header(WebbConstante.HDR_USER_AGENT, WebbConstante.DEFAULT_USER_AGENT) //
+				.chromeUserAgent() //
 				.param("searchword", searchQuery.replace(" ", "_")) //
 				.param("search_style", "tentruyen") //
 				.asString().getBody();
@@ -262,15 +259,9 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 		return additionals;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericMangaNeloChapterExtractor.class };
-	}
-	
 	@Override
 	public Subscriber createSubscriber() {
-		return new SimpleItemComparatorSubscriber();
+		return new SimpleItemComparatorSubscriber(true);
 	}
 	
 	@Override

@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericJapScanChapterExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.image.implementations.IMangaContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -262,15 +260,9 @@ public class JapScanSearchAndGoMangaProvider extends SearchAndGoProvider impleme
 		return additionals;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericJapScanChapterExtractor.class };
-	}
-	
 	@Override
 	public Subscriber createSubscriber() {
-		return new SimpleItemComparatorSubscriber();
+		return new SimpleItemComparatorSubscriber(true);
 	}
 	
 	@Override

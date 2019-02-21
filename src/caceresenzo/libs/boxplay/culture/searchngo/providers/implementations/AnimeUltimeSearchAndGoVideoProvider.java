@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.html.HtmlCommonExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericAnimeUltimateVideoExtractor;
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
@@ -16,13 +14,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
-import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
-import caceresenzo.libs.http.client.webb.Response;
 import caceresenzo.libs.http.client.webb.Webb;
-import caceresenzo.libs.http.client.webb.WebbUtils;
-import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 @SuppressWarnings("unused")
@@ -181,12 +173,6 @@ public class AnimeUltimeSearchAndGoVideoProvider extends SearchAndGoProvider imp
 	@Override
 	public boolean hasMoreThanOnePlayer() {
 		return false;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<? extends ContentExtractor>[] getCompatibleExtractorClass() {
-		return new Class[] { GenericAnimeUltimateVideoExtractor.class };
 	}
 	
 	public static List<AnimeUltimeItem> extractItemsFromHtmlByType(String mainSearchResultHtmlContainer, SearchCapability type) {
