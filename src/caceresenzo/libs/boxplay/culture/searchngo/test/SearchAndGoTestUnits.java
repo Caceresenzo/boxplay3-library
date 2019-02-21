@@ -16,8 +16,8 @@ import caceresenzo.libs.boxplay.common.extractor.ContentExtractionManager.Extrac
 import caceresenzo.libs.boxplay.common.extractor.ContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.MangaChapterContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.NovelChapterContentExtractor;
-import caceresenzo.libs.boxplay.common.extractor.video.VideoQualityContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.VideoContentExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.VideoQualityContentExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.model.VideoQuality;
 import caceresenzo.libs.boxplay.common.extractor.video.modifiers.IHentaiVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.callback.delegate.implementations.LoggingCallbackDelegate;
@@ -71,7 +71,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "trinity";
+		private static final String QUERY = "slime";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -89,6 +89,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.HDSS_TO.create());
 			// providers.add(ProviderManager.MANGANELO.create());
 			// providers.add(ProviderManager.IANIMES.create());
+			providers.add(ProviderManager.MANGAROCK.create());
 			
 			for (SearchAndGoProvider provider : providers) {
 				if (provider instanceof IHentaiVideoContentProvider) {

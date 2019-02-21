@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericJapScanChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaLelChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaNeloChapterExtractor;
+import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericMangaRockChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.implementations.GenericScanMangaNovelChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericAnimeUltimateVideoExtractor;
@@ -45,6 +46,7 @@ public class ContentExtractionManager {
 		bindExtractor(ExtractorType.MANGA, GenericScanMangaChapterExtractor.class, new GenericScanMangaChapterExtractor());
 		bindExtractor(ExtractorType.MANGA, GenericJapScanChapterExtractor.class, new GenericJapScanChapterExtractor());
 		bindExtractor(ExtractorType.MANGA, GenericMangaNeloChapterExtractor.class, new GenericMangaNeloChapterExtractor());
+		bindExtractor(ExtractorType.MANGA, GenericMangaRockChapterExtractor.class, new GenericMangaRockChapterExtractor());
 		
 		/* Novel */
 		bindExtractor(ExtractorType.NOVEL, GenericScanMangaNovelChapterExtractor.class, new GenericScanMangaNovelChapterExtractor());

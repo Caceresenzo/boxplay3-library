@@ -359,22 +359,23 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	}
 	
 	/**
-	 * Enable auto-sorting
+	 * Enable auto-sorting.
 	 */
 	public void autosort() {
 		autosort(true);
 	}
 	
 	/**
-	 * Enable or disable auto-sorting
-	 * 
-	 * Default: TRUE
+	 * Enable or disable auto-sorting. Default value is <code>true</code>.
 	 * 
 	 * @param autosort
-	 *            New value
+	 *            New value.
+	 * @return Itself.
 	 */
-	public void autosort(boolean autosort) {
+	public SearchAndGoProvider autosort(boolean autosort) {
 		this.autosort = autosort;
+		
+		return this;
 	}
 	
 	/**

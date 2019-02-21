@@ -11,6 +11,7 @@ public enum AdditionalDataType {
 	TYPE, //
 	QUALITY,
 	VERSION,
+	RANK,
 	TRADUCTION_TEAM, //
 	GENDERS, //
 	LAST_CHAPTER, //

@@ -25,21 +25,23 @@ public class ResultScoreSorter {
 	}
 	
 	/**
-	 * Will clear and refill the workmap sorted, removing all under-score result
+	 * Will clear and refill the workmap sorted, removing all under-score result.
 	 * 
 	 * @param workmap
-	 *            Target workmap
+	 *            Target workmap.
 	 * @param query
-	 *            Original query string
+	 *            Original query string.
 	 * @param searchEngine
-	 *            The provider {@link SearchEngine}
+	 *            The provider {@link SearchEngine}.
+	 * @throws IllegalArgumentException
+	 *             If the <code>workmap</code> is not a {@link LinkedHashMap}.
 	 */
 	public static void sortWorkmap(final Map<String, SearchAndGoResult> workmap, String query, SearchEngine searchEngine) {
 		if (!(workmap instanceof LinkedHashMap)) {
 			throw new IllegalArgumentException("The workmap must be a LinkedHashMap or it will lost his order");
 		}
 		
-		final List<String> keys = new ArrayList<>();
+		List<String> keys = new ArrayList<>();
 		
 		for (Entry<String, SearchAndGoResult> entry : workmap.entrySet()) {
 			int score = searchEngine.applySearchStrategy(query, entry.getValue().getName());
@@ -56,14 +58,17 @@ public class ResultScoreSorter {
 				SearchAndGoResult result1 = workmap.get(key1);
 				SearchAndGoResult result2 = workmap.get(key2);
 				
-				int compare = result2.score() - result1.score(); // Sort by score
+				/* Sort by score */
+				int compare = result2.score() - result1.score();
 				
+				/* Score by length */
 				if (compare == 0) {
-					compare = result1.getName().length() - result2.getName().length(); // Score by length
+					compare = result1.getName().length() - result2.getName().length();
 				}
 				
+				/* Sort by name */
 				if (compare == 0) {
-					compare = result1.getName().compareTo(result2.getName()); // Sort by name
+					compare = result1.getName().compareTo(result2.getName());
 				}
 				
 				return compare;

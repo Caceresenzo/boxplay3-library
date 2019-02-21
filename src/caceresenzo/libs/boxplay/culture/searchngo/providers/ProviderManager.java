@@ -1,6 +1,6 @@
 package caceresenzo.libs.boxplay.culture.searchngo.providers;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -14,11 +14,12 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JapS
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaNeloSearchAndGoMangaProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaRockSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ScanMangaSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchStrategy;
 
 /**
- * Manager class to easily create context and get all provider currently available
+ * Manager class to easily create context and get all provider currently available.
  * 
  * @author Enzo CACERES
  */
@@ -39,11 +40,12 @@ public enum ProviderManager {
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //
 	SCANMANGA(ScanMangaSearchAndGoMangaProvider.class), //
 	JAPSCAN(JapScanSearchAndGoMangaProvider.class), //
-	MANGANELO(MangaNeloSearchAndGoMangaProvider.class); //
+	MANGANELO(MangaNeloSearchAndGoMangaProvider.class), //
+	MANGAROCK(MangaRockSearchAndGoMangaProvider.class); //
 	
 	/* Variables */
 	private final Class<? extends SearchAndGoProvider> providerClass;
-	private WeakReference<SearchAndGoProvider> weakInstance;
+	private SoftReference<SearchAndGoProvider> softInstance;
 	
 	/* Constructor */
 	private ProviderManager(Class<? extends SearchAndGoProvider> providerClass) {
@@ -51,16 +53,16 @@ public enum ProviderManager {
 	}
 	
 	/**
-	 * Create a new {@link SearchAndGoProvider} instance.
+	 * Create a new {@link SearchAndGoProvider} instance or get it from a previously created one.
 	 * 
-	 * @return The {@link SearchAndGoProvider} instance
+	 * @return The {@link SearchAndGoProvider} instance.
 	 */
 	public SearchAndGoProvider create() {
-		if (weakInstance != null && weakInstance.get() != null) {
-			return weakInstance.get();
+		if (softInstance != null && softInstance.get() != null) {
+			return softInstance.get();
 		}
 		
-		return (weakInstance = new WeakReference<SearchAndGoProvider>(SearchAndGoProvider.createContext(providerClass))).get();
+		return (softInstance = new SoftReference<SearchAndGoProvider>(SearchAndGoProvider.createContext(providerClass))).get();
 	}
 	
 	/**
@@ -73,7 +75,7 @@ public enum ProviderManager {
 	/**
 	 * Create every {@link SearchAndGoProvider} actually available.
 	 * 
-	 * @return A list containing all {@link SearchAndGoProvider} instanced
+	 * @return A list containing all {@link SearchAndGoProvider} instanced.
 	 */
 	public static List<SearchAndGoProvider> createAll() {
 		return createAll(EnumSet.noneOf(ProviderFlags.class));
@@ -82,7 +84,7 @@ public enum ProviderManager {
 	/**
 	 * Create every {@link SearchAndGoProvider} and return it in a list.
 	 * 
-	 * @return A list of all {@link SearchAndGoProvider} available
+	 * @return A list of all {@link SearchAndGoProvider} available.
 	 */
 	public static List<SearchAndGoProvider> createAll(Set<ProviderFlags> flags) {
 		List<SearchAndGoProvider> providers = new ArrayList<>();
@@ -100,9 +102,9 @@ public enum ProviderManager {
 	 * Apply the same {@link SearchStrategy} to a list of {@link SearchAndGoProvider}.
 	 * 
 	 * @param providers
-	 *            Your {@link SearchAndGoProvider} list
+	 *            Your {@link SearchAndGoProvider} list.
 	 * @param newSearchStrategy
-	 *            The new {@link SearchStrategy} you want to apply
+	 *            The new {@link SearchStrategy} you want to apply.
 	 */
 	public static void applySearchStrategy(List<SearchAndGoProvider> providers, SearchStrategy newSearchStrategy) {
 		for (SearchAndGoProvider provider : providers) {
