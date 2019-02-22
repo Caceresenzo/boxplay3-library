@@ -2,6 +2,7 @@ package caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.imple
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.item.SubscriptionItem;
@@ -21,7 +22,7 @@ public class RssSubscriber extends Subscriber {
 		List<SubscriptionItem> resolvedItems = new ArrayList<>();
 		
 		try {
-			RssFeedParser parser = new RssFeedParser(downloadResult(result));
+			RssFeedParser parser = new RssFeedParser(Objects.requireNonNull(downloadResult(result)));
 			Feed feed = parser.readFeed();
 			
 			for (FeedMessage message : feed.getMessages()) {

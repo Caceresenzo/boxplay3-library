@@ -26,6 +26,10 @@ public class SimpleItemComparatorSubscriber extends Subscriber {
 		try {
 			List<AdditionalResultData> items = result.getParentProvider().fetchContent(result);
 			
+			if (items.isEmpty()) {
+				throw new NullPointerException();
+			}
+			
 			for (AdditionalResultData item : items) {
 				SimpleUrlData urlData = (SimpleUrlData) item.getData();
 				
