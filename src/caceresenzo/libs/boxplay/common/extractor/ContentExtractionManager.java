@@ -11,6 +11,7 @@ import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.Gen
 import caceresenzo.libs.boxplay.common.extractor.image.manga.implementations.GenericScanMangaChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.text.novel.implementations.GenericScanMangaNovelChapterExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericAnimeUltimateVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericFreshStreamVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericGoUnlimitedVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericStreamangoVideoExtractor;
@@ -31,30 +32,45 @@ public class ContentExtractionManager {
 		}
 		
 		/* Video */
-		bindExtractor(ExtractorType.VIDEO, GenericOpenloadVideoExtractor.class, new GenericOpenloadVideoExtractor());
-		bindExtractor(ExtractorType.VIDEO, GenericVidozaVideoExtractor.class, new GenericVidozaVideoExtractor());
-		bindExtractor(ExtractorType.VIDEO, GenericAnimeUltimateVideoExtractor.class, new GenericAnimeUltimateVideoExtractor());
-		bindExtractor(ExtractorType.VIDEO, GenericGoUnlimitedVideoExtractor.class, new GenericGoUnlimitedVideoExtractor());
-		bindExtractor(ExtractorType.VIDEO, GenericVidloxVideoExtractor.class, new GenericVidloxVideoExtractor());
-		bindExtractor(ExtractorType.VIDEO, GenericStreamangoVideoExtractor.class, new GenericStreamangoVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericOpenloadVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericVidozaVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericAnimeUltimateVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericGoUnlimitedVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericVidloxVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericStreamangoVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericFreshStreamVideoExtractor());
 		
 		/* Video with qualities */
-		bindExtractor(ExtractorType.VIDEO, GenericVevioVideoQualityExtractor.class, new GenericVevioVideoQualityExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericVevioVideoQualityExtractor());
 		
 		/* Manga */
-		bindExtractor(ExtractorType.MANGA, GenericMangaLelChapterExtractor.class, new GenericMangaLelChapterExtractor());
-		bindExtractor(ExtractorType.MANGA, GenericScanMangaChapterExtractor.class, new GenericScanMangaChapterExtractor());
-		bindExtractor(ExtractorType.MANGA, GenericJapScanChapterExtractor.class, new GenericJapScanChapterExtractor());
-		bindExtractor(ExtractorType.MANGA, GenericMangaNeloChapterExtractor.class, new GenericMangaNeloChapterExtractor());
-		bindExtractor(ExtractorType.MANGA, GenericMangaRockChapterExtractor.class, new GenericMangaRockChapterExtractor());
+		bindExtractor(ExtractorType.MANGA, new GenericMangaLelChapterExtractor());
+		bindExtractor(ExtractorType.MANGA, new GenericScanMangaChapterExtractor());
+		bindExtractor(ExtractorType.MANGA, new GenericJapScanChapterExtractor());
+		bindExtractor(ExtractorType.MANGA, new GenericMangaNeloChapterExtractor());
+		bindExtractor(ExtractorType.MANGA, new GenericMangaRockChapterExtractor());
 		
 		/* Novel */
-		bindExtractor(ExtractorType.NOVEL, GenericScanMangaNovelChapterExtractor.class, new GenericScanMangaNovelChapterExtractor());
+		bindExtractor(ExtractorType.NOVEL, new GenericScanMangaNovelChapterExtractor());
 	}
 	
 	/* Constructor */
 	private ContentExtractionManager() {
 		throw new IllegalStateException("This class can't be instanced.");
+	}
+	
+	/**
+	 * Same as {@link #bindExtractor(ExtractorType, Class, ContentExtractor)}, but getting the <code>extractorClass</code> from the provided <code>unusedExtractor</code> instance.
+	 * 
+	 * @param type
+	 *            {@link ContentExtractor} extracted data type.
+	 * @param unusedExtractor
+	 *            An instance that will not be used (only for {@link ContentExtractor#matchUrl(String)}).
+	 * @return Your new registered {@link ContentExtractor}.
+	 * @see #bindExtractor(ExtractorType, Class, ContentExtractor)
+	 */
+	public static ContentExtractor bindExtractor(ExtractorType type, ContentExtractor unusedExtractor) {
+		return bindExtractor(type, unusedExtractor.getClass(), unusedExtractor);
 	}
 	
 	/**
@@ -65,7 +81,7 @@ public class ContentExtractionManager {
 	 * @param extractorClass
 	 *            Base {@link ContentExtractor} class.
 	 * @param unusedExtractor
-	 *            An instance that will not be used (only for {@link ContentExtractor#matchUrl(String)})
+	 *            An instance that will not be used (only for {@link ContentExtractor#matchUrl(String)}).
 	 * @return Your new registered {@link ContentExtractor}.
 	 */
 	public static ContentExtractor bindExtractor(ExtractorType type, Class<? extends ContentExtractor> extractorClass, ContentExtractor unusedExtractor) {
