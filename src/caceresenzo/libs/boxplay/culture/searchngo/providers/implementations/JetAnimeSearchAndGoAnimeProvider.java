@@ -175,7 +175,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 			
 			while (itemMatcher.find()) {
 				String url = getSiteUrl() + itemMatcher.group(1);
-				String video = itemMatcher.group(3);
+				String video = itemMatcher.group(3).replaceAll(HtmlCommonExtractor.createTagReplacer("span"), "");
 				
 				additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new VideoItemResultData(this, url, video)));
 			}
