@@ -89,7 +89,8 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.HDSS_TO.create());
 			// providers.add(ProviderManager.MANGANELO.create());
 			// providers.add(ProviderManager.IANIMES.create());
-			providers.add(ProviderManager.MANGAROCK.create());
+			// providers.add(ProviderManager.MANGAROCK.create());
+			providers.add(ProviderManager.NEKOSAMA.create());
 			
 			for (SearchAndGoProvider provider : providers) {
 				if (provider instanceof IHentaiVideoContentProvider) {

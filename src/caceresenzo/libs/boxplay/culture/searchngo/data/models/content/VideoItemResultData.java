@@ -17,18 +17,18 @@ public class VideoItemResultData extends SimpleUrlData implements DisplayableStr
 	/* Variables */
 	private final IVideoContentProvider videoContentProvider;
 	protected final String name;
+	private String thumbnailImageUrl, videoDuration;
 	
 	/**
-	 * Constructor, create a new instance with parent content provider, an url and a name
-	 * 
-	 * These value will be {@link String#trim()}
+	 * Constructor, create a new instance with parent content provider, an url and a name.<br>
+	 * These value will be {@link String#trim()}.
 	 * 
 	 * @param videoContentProvider
-	 *            Parent provider used to call this constructor
+	 *            Parent provider used to call this constructor.
 	 * @param url
-	 *            Target video url
+	 *            Target video url.
 	 * @param name
-	 *            Traget video name
+	 *            Traget video name.
 	 */
 	public VideoItemResultData(IVideoContentProvider videoContentProvider, String url, String name) {
 		super(url);
@@ -37,21 +37,79 @@ public class VideoItemResultData extends SimpleUrlData implements DisplayableStr
 	}
 	
 	/**
-	 * Get the parent video content provider that has been used to generate this item
+	 * Get the parent video content provider that has been used to generate this item.
 	 * 
-	 * @return Parent provider
+	 * @return Parent provider.
 	 */
 	public IVideoContentProvider getVideoContentProvider() {
 		return videoContentProvider;
 	}
 	
 	/**
-	 * Get the name
+	 * Set a thumbnail for this video.
 	 * 
-	 * @return The name
+	 * @param imageUrl
+	 *            Target image url of the thumbnail.
+	 * @return Itself.
+	 */
+	public VideoItemResultData thumbnail(String imageUrl) {
+		this.thumbnailImageUrl = imageUrl;
+		
+		return this;
+	}
+	
+	/**
+	 * Set a (unparsed) duration for this video.
+	 * 
+	 * @param duration
+	 *            Target video duration.
+	 * @return Itself.
+	 */
+	public VideoItemResultData duration(String duration) {
+		this.videoDuration = duration;
+		
+		return this;
+	}
+	
+	/**
+	 * Get video's name.
+	 * 
+	 * @return The name.
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Get video's thumbnail image url (if any).
+	 * 
+	 * @return Image url for the thumbnail of this video.
+	 */
+	public String getThumbnailImageUrl() {
+		return thumbnailImageUrl;
+	}
+	
+	/**
+	 * @return Weather or not this video item has a non-<code>null</code> image url for his thumbnail.
+	 */
+	public boolean hasThumbnail() {
+		return thumbnailImageUrl != null;
+	}
+	
+	/**
+	 * Get video's duration (if any).
+	 * 
+	 * @return Unparsed video duration for this video.
+	 */
+	public String getVideoDuration() {
+		return videoDuration;
+	}
+	
+	/**
+	 * @return Weather or not this video item has a non-<code>null</code> video duration.
+	 */
+	public boolean hasDuration() {
+		return videoDuration != null;
 	}
 	
 	@Override

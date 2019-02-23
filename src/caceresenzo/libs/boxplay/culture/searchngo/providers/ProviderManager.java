@@ -15,6 +15,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetA
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaNeloSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaRockSearchAndGoMangaProvider;
+import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.NekoSamaSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.ScanMangaSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchStrategy;
 
@@ -29,6 +30,7 @@ public enum ProviderManager {
 	JETANIME(JetAnimeSearchAndGoAnimeProvider.class), //
 	ADKAMI(AdkamiSearchAndGoVideoProvider.class), //
 	ANIMEULTIME(AnimeUltimeSearchAndGoVideoProvider.class), //
+	NEKOSAMA(NekoSamaSearchAndGoVideoProvider.class), //
 	// IANIMES(IAnimesSearchAndGoVideoProvider.class), /* Broken, cloudflare bypass is not working */
 	
 	/* Movie / Series */

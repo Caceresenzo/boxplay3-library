@@ -25,6 +25,7 @@ import caceresenzo.libs.network.Downloader;
 public class ProviderHelper implements Serializable {
 	
 	/* Statics */
+	/** A static instance of the {@link ProviderHelper} class that meant to be used by other system, but do not provide feature like caching */
 	protected static ProviderHelper STATIC_HELPER = new ProviderHelper();
 	
 	/* Variables */
