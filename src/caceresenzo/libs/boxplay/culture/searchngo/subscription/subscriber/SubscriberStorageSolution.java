@@ -96,14 +96,28 @@ public class SubscriberStorageSolution {
 	
 	/**
 	 * Update items in the local storage.<br>
-	 * The target file will be deleted and re-created.
+	 * The target file will be deleted and re-created.<br>
+	 * <br>
+	 * Also, if the <code>lists</code> is empty, the code will simply return.
 	 * 
 	 * @param result
 	 *            Target result.
 	 * @param items
 	 *            Items to update.
+	 * @throws NullPointerException
+	 *             If the <code>result</code> is null.
+	 * @throws NullPointerException
+	 *             If the item list is null.
+	 * 
 	 */
 	public void updateLocalStorageItems(SearchAndGoResult result, List<SubscriptionItem> items) {
+		Objects.requireNonNull(result, "Can't update local storage if the result is null.");
+		Objects.requireNonNull(items, "Can't update local storage if the item list is null.");
+		
+		if (items.isEmpty()) {
+			return;
+		}
+		
 		File resultFile = toFile(result);
 		
 		try {

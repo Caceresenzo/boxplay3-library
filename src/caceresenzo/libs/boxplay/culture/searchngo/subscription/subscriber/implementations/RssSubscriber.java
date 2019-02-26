@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.SubscriptionException;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.item.SubscriptionItem;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 import caceresenzo.libs.rss.Feed;
@@ -33,7 +34,7 @@ public class RssSubscriber extends Subscriber {
 				);
 			}
 		} catch (Exception exception) {
-			;
+			throw new SubscriptionException(exception);
 		}
 		
 		return resolvedItems;

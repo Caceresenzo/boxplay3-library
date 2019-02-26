@@ -9,6 +9,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleUrlData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.ChapterItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.SubscriptionException;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.item.SubscriptionItem;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
 
@@ -48,13 +49,13 @@ public class SimpleItemComparatorSubscriber extends Subscriber {
 				);
 			}
 		} catch (Exception exception) {
-			;
+			throw new SubscriptionException(exception);
 		}
 		
 		return resolvedItems;
 	}
 	
-	/** Keep the original order from the provider */
+	/** Keep the original order from the provider. */
 	@Override
 	public boolean isItemSortingNeeded() {
 		return false;

@@ -46,27 +46,31 @@ public abstract class Subscriber {
 		Objects.requireNonNull(result, "Can't fetch new items from a null result.");
 		Objects.requireNonNull(callback, "Callback can't be null.");
 		
-		List<SubscriptionItem> resolvedItems = resolveItems(result);
-		
-		if (resolvedItems != null) {
-			if (storageSolution.hasStorage(result)) {
-				if (isListShouldBeReversed()) {
-					Collections.reverse(resolvedItems);
+		try {
+			List<SubscriptionItem> resolvedItems = resolveItems(result);
+			
+			if (resolvedItems != null) {
+				if (storageSolution.hasStorage(result)) {
+					if (isListShouldBeReversed()) {
+						Collections.reverse(resolvedItems);
+					}
+					
+					if (isItemSortingNeeded()) {
+						Collections.sort(resolvedItems, createSubscriptionItemComparator());
+					}
+					
+					SubscriptionItem lastestItem = ListUtils.getLastestItem(resolvedItems);
+					List<SubscriptionItem> newItems = storageSolution.compareWithLocal(result, resolvedItems);
+					
+					if (!newItems.isEmpty()) {
+						onNewContent(callback, newItems, lastestItem);
+					}
+				} else {
+					storageSolution.updateLocalStorageItems(result, resolvedItems);
 				}
-				
-				if (isItemSortingNeeded()) {
-					Collections.sort(resolvedItems, createSubscriptionItemComparator());
-				}
-				
-				SubscriptionItem lastestItem = ListUtils.getLastestItem(resolvedItems);
-				List<SubscriptionItem> newItems = storageSolution.compareWithLocal(result, resolvedItems);
-				
-				if (!newItems.isEmpty()) {
-					onNewContent(callback, newItems, lastestItem);
-				}
-			} else {
-				storageSolution.updateLocalStorageItems(result, resolvedItems);
 			}
+		} catch (Exception exception) {
+			callback.onException(result, exception);
 		}
 	}
 	
