@@ -15,6 +15,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscr
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.SubscriberStorageSolution;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.RssSubscriber;
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.TestSubscriber;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.test.SimpleTestUnits;
 import caceresenzo.libs.thread.ThreadUtils;
@@ -167,6 +168,58 @@ public class SubscriberTestUnits extends SimpleTestUnits {
 		
 		public static void main(String[] args) {
 			new RealCaseSimpleItemComparatorTestUnit();
+		}
+		
+	}
+	
+	public static class DuplicateItemTestUnit extends SubscriberTestUnits {
+		
+		public static final SearchAndGoProvider provider;
+		
+		public static final List<SubscriptionItem> fakeItems;
+		
+		static {
+			provider = null;
+			fakeItems = new ArrayList<>();
+			
+			for (int i = 0; i < 4; i++) {
+				fakeItems.add(new SubscriptionItem(provider) //
+						.setContent("duplicate item") //
+				);
+			}
+		}
+		
+		public static void main(String[] args) {
+			SubscriberStorageSolution storageSolution = createTestStorageSolution();
+			
+			SearchAndGoResult result = new SearchAndGoResult(provider, "Hello", "hello_world");
+			
+			/* Filling with some dummy items */
+			List<SubscriptionItem> items = new ArrayList<>();
+			for (int i = 0; i < 10; i++) {
+				items.add(new SubscriptionItem(provider) //
+						.setContent("hello " + i) //
+				);
+			}
+			items.addAll(fakeItems);
+			
+			storageSolution.updateLocalStorageItems(result, items);
+			
+			try {
+				new TestSubscriber(false, items).fetch(storageSolution, result, new Subscriber.SubscriberCallback() {
+					@Override
+					public void onNewContent(List<SubscriptionItem> items, SubscriptionItem lastestItem) {
+						dumpList(items, "RESULT");
+					}
+					
+					@Override
+					public void onException(SearchAndGoResult result, Exception exception) {
+						Logger.exception(exception);
+					}
+				});
+			} catch (Exception exception) {
+				Logger.exception(exception);
+			}
 		}
 		
 	}

@@ -204,7 +204,7 @@ public class SubscriberStorageSolution {
 					
 					if (itemContent.equals(subItemContent)) {
 						newestItems.remove(subItem);
-						break;
+						// break; /* Some provider has sometimes 2 time the same item, si we can't break here */
 					}
 				}
 			}
