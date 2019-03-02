@@ -1,4 +1,9 @@
-var _0x9495 = [ 'Zft', 'pow', 'tcV', 'EAk', 'QHb', 'charCodeAt', '11|12|13|0|14|3|2|9|16|1|4|8|5|6|15|10|7', 'split', 'xXM', 'length', 'jLa', 'substring', 'aZP', 'dOD', 'Poy', 'write', 'push', 'dkF', 'text', 'tjf', 'HIZ', 'WyX', 'faz', 'Gcy', 'ucs', '2|0|5|4|3|1', 'dhh', 'pQu', 'eMz', 'ZBD', 'Lnk', 'fromCharCode', 'DYl', '4|3|0|5|6|2|1', 'WOa', 'gzw', 'cBV' ];
+//<p id="FOKErwRAOQ" style="">b878c6240de264080b5589c873902bdcdf9ff870af56db8aeb08a5f63f47cdde5a0a63607764754042027d614d6b5f015977634414684a5d6121414c40614602747362427503415644467a02774e73526e015955794648017360674755027d7848794801</p>	
+
+window.cc_cc_cc = '' + 'FOKErwRAOQ';
+
+var _0x9495 = [ "Zft", "pow", "tcV", "EAk", "QHb", "charCodeAt", "11|12|13|0|14|3|2|9|16|1|4|8|5|6|15|10|7", "split", "xXM", "length", "jLa", "substring", "aZP", "dOD", "Poy", "write", "push", "dkF", "text", "tjf", "HIZ", "WyX", "faz", "Gcy", "ucs", "2|0|5|4|3|1", "dhh", "pQu", "eMz", "ZBD", "Lnk", "fromCharCode", "DYl", "4|3|0|5|6|2|1", "WOa", "gzw", "cBV" ];
+
 (function(_0x1f55fe, _0x45ae62) {
 	var _0x3d4039 = function(_0x32de24) {
 		while (--_0x32de24) {
@@ -7,11 +12,13 @@ var _0x9495 = [ 'Zft', 'pow', 'tcV', 'EAk', 'QHb', 'charCodeAt', '11|12|13|0|14|
 	};
 	_0x3d4039(++_0x45ae62);
 }(_0x9495, 0xbf));
+
 var _0x5949 = function(_0x1f55fe, _0x45ae62) {
 	_0x1f55fe = _0x1f55fe - 0x0;
 	var _0x3d4039 = _0x9495[_0x1f55fe];
 	return _0x3d4039;
 };
+
 $(document)['ready'](function() {
 	var _0x45ae41 = {
 	    'xXM' : function _0x184df4(_0x3f842b, _0x6062d8) {
@@ -90,6 +97,7 @@ $(document)['ready'](function() {
 		    return _0x177c9e >= _0x33caaa;
 	    }
 	};
+
 	function pt() {
 		try {
 			null[0]();
@@ -103,30 +111,30 @@ $(document)['ready'](function() {
 		}
 	}
 	;
-	var _0x23d67d = "11|12|13|0|14|3|2|9|16|1|4|8|5|6|15|10|7"["split"]('|'), _0x436e75 = 0x0;
+	var _0x23d67d = _0x5949('0x0')[_0x5949('0x1')]('|'), _0x436e75 = 0x0;
 	while (!![]) {
 		switch (_0x23d67d[_0x436e75++]) {
 			case '0':
 				var _0x1bf6e5 = '';
 				continue;
 			case '1':
-				for (i = 0x0; _0x45ae41["xXM"](i, _0x439a49["length"]); i += 0x8) {
-					_0x41e0ff = _0x45ae41["jLa"](i, 0x8);
-					var _0x40b427 = _0x439a49["substring"](i, _0x45ae41["aZP"](i, 0x8));
-					var _0x577716 = _0x45ae41["dOD"](parseInt, _0x40b427, 0x10);
+				for (i = 0x0; _0x45ae41[_0x5949('0x2')](i, _0x439a49[_0x5949('0x3')]); i += 0x8) {
+					_0x41e0ff = _0x45ae41[_0x5949('0x4')](i, 0x8);
+					var _0x40b427 = _0x439a49[_0x5949('0x5')](i, _0x45ae41[_0x5949('0x6')](i, 0x8));
+					var _0x577716 = _0x45ae41[_0x5949('0x7')](parseInt, _0x40b427, 0x10);
 					with (_0x31f4aa) {
-						if (!_0x45ae41["Poy"]("write", document) || !('toString' in Math.cos && Math.cos.toString().indexOf('[native code') != -1 && document.createTextNode.toString().indexOf('[native code') != -1)) {
+						if (!_0x45ae41[_0x5949('0x8')](_0x5949('0x9'), document) || !('toString' in Math.cos && Math.cos.toString().indexOf('[native code') != -1 && document.createTextNode.toString().indexOf('[native code') != -1)) {
 							_0x577716 = 0x0;
 						}
-						ke["push"](_0x577716);
+						ke[_0x5949('0xa')](_0x577716);
 					}
 				}
 				continue;
 			case '2':
-				var _0x439a49 = _0x5d72cd["substring"](0x0, _0x41e0ff);
+				var _0x439a49 = _0x5d72cd[_0x5949('0x5')](0x0, _0x41e0ff);
 				continue;
 			case '3':
-				var _0xccbe62 = _0x5d72cd["length"];
+				var _0xccbe62 = _0x5d72cd[_0x5949('0x3')];
 				continue;
 			case '4':
 				_0x3d7b02 = _0x31f4aa['ke'];
@@ -138,36 +146,36 @@ $(document)['ready'](function() {
 				;
 				continue;
 			case '5':
-				_0x5d72cd = _0x5d72cd["substring"](_0x41e0ff);
+				_0x5d72cd = _0x5d72cd[_0x5949('0x5')](_0x41e0ff);
 				continue;
 			case '6':
 				var _0x439a49 = 0x0;
 				continue;
 			case '7':
-				_0x45ae41["dkF"]($, '#DtsBlkVFQx')["text"](_0x1bf6e5);
+				_0x45ae41[_0x5949('0xb')]($, '#lqEH1')[_0x5949('0xc')](_0x1bf6e5);
 				continue;
 			case '8':
-				_0x41e0ff = _0x45ae41["jLa"](0x9, 0x8);
+				_0x41e0ff = _0x45ae41[_0x5949('0x4')](0x9, 0x8);
 				continue;
 			case '9':
 				var _0x3d7b02 = [];
 				continue;
 			case '10':
-				while (_0x45ae41["xXM"](_0x439a49, _0x5d72cd["length"])) {
-					var _0x138ee5 = '5|8|0|12|13|9|10|4|11|6|3|1|7|2'["split"]('|'), _0x2d6ce4 = 0x0;
+				while (_0x45ae41[_0x5949('0x2')](_0x439a49, _0x5d72cd[_0x5949('0x3')])) {
+					var _0x138ee5 = '5|8|0|12|13|9|10|4|11|6|3|1|7|2'[_0x5949('0x1')]('|'), _0x2d6ce4 = 0x0;
 					while (!![]) {
 						switch (_0x138ee5[_0x2d6ce4++]) {
 							case '0':
 								var _0x896767 = 0x0;
 								continue;
 							case '1':
-								var _0x2de433 = _0x45ae41["aZP"](_0x45ae41["tjf"](_0x5eb93a, 0x2), _0x37c346);
+								var _0x2de433 = _0x45ae41[_0x5949('0x6')](_0x45ae41[_0x5949('0xd')](_0x5eb93a, 0x2), _0x37c346);
 								continue;
 							case '2':
 								_0x145894 += 0x1;
 								continue;
 							case '3':
-								_0x30725e = _0x45ae41["HIZ"](_0x45ae41["WyX"](_0x30725e, (parseInt('257147517172', 8) - 101 + 0x4 - 1) / (22 - 0x8)), _1x4bfb36);
+								_0x30725e = _0x45ae41[_0x5949('0xe')](_0x45ae41[_0x5949('0xf')](_0x30725e, (parseInt('535104316770', 8) - 837 + 0x4 - 3) / (20 - 0x8)), _1x4bfb36);
 								continue;
 							case '4':
 								var _0x59ce16 = 0x28a28dec;
@@ -176,31 +184,31 @@ $(document)['ready'](function() {
 								var _0x5eb93a = 0x40;
 								continue;
 							case '6':
-								var _0x30725e = _0x45ae41["faz"](_0x896767, _0x3d7b02[_0x45ae41["Gcy"](_0x145894, 0x9)]);
+								var _0x30725e = _0x45ae41[_0x5949('0x10')](_0x896767, _0x3d7b02[_0x45ae41[_0x5949('0x11')](_0x145894, 0x9)]);
 								continue;
 							case '7':
-								for (i = 0x0; _0x45ae41["ucs"](i, 0x4); i++) {
-									var _0x444853 = "2|0|5|4|3|1"["split"]('|'), _0x3d6c21 = 0x0;
+								for (i = 0x0; _0x45ae41[_0x5949('0x12')](i, 0x4); i++) {
+									var _0x444853 = _0x5949('0x13')[_0x5949('0x1')]('|'), _0x3d6c21 = 0x0;
 									while (!![]) {
 										switch (_0x444853[_0x3d6c21++]) {
 											case '0':
-												var _0x1a0e90 = _0x45ae41["dhh"](_0x45ae41["pQu"](_0x41e0ff, 0x9), i);
+												var _0x1a0e90 = _0x45ae41[_0x5949('0x14')](_0x45ae41[_0x5949('0x15')](_0x41e0ff, 0x9), i);
 												continue;
 											case '1':
-												_0x2de433 = _0x45ae41["eMz"](_0x2de433, _0x45ae41["pQu"](_0x41e0ff, 0x9));
+												_0x2de433 = _0x45ae41[_0x5949('0x16')](_0x2de433, _0x45ae41[_0x5949('0x15')](_0x41e0ff, 0x9));
 												continue;
 											case '2':
-												var _0x1a9381 = _0x45ae41["ZBD"](_0x30725e, _0x2de433);
+												var _0x1a9381 = _0x45ae41[_0x5949('0x17')](_0x30725e, _0x2de433);
 												continue;
 											case '3':
-												if (_0x45ae41["Lnk"](_0x3fa834, '$'))
+												if (_0x45ae41[_0x5949('0x18')](_0x3fa834, '$'))
 													_0x1bf6e5 += _0x3fa834;
 												continue;
 											case '4':
-												var _0x3fa834 = String["fromCharCode"](_0x1a9381 - 1);
+												var _0x3fa834 = String[_0x5949('0x19')](_0x1a9381 - 1);
 												continue;
 											case '5':
-												_0x1a9381 = _0x45ae41["DYl"](_0x1a9381, _0x1a0e90);
+												_0x1a9381 = _0x45ae41[_0x5949('0x1a')](_0x1a9381, _0x1a0e90);
 												continue;
 										}
 										break;
@@ -218,7 +226,7 @@ $(document)['ready'](function() {
 								continue;
 							case '10':
 								do {
-									var _0x1fb52e = "4|3|0|5|6|2|1"["split"]('|'), _0x204cab = 0x0;
+									var _0x1fb52e = _0x5949('0x1b')[_0x5949('0x1')]('|'), _0x204cab = 0x0;
 									while (!![]) {
 										switch (_0x1fb52e[_0x204cab++]) {
 											case '0':
@@ -229,24 +237,24 @@ $(document)['ready'](function() {
 												continue;
 											case '2':
 												with (_0x31f4aa) {
-													if (!_0x45ae41["WOa"]("write", document) || !($ == window.jQuery)) {
+													if (!_0x45ae41[_0x5949('0x1c')](_0x5949('0x9'), document) || !(window['$'] == window['jQuery'])) {
 														_0x3d9c8e += 10;
 														xx = 0x11;
 													}
-													if (_0x45ae41["gzw"](_0x1a873b, _0x45ae41["dhh"](0x6, 0x5))) {
-														var _0x332549 = _0x45ae41["ZBD"](_0x3d9c8e, xx);
-														_0x896767 += _0x45ae41["cBV"](_0x332549, _0x1a873b);
+													if (_0x45ae41[_0x5949('0x1d')](_0x1a873b, _0x45ae41[_0x5949('0x14')](0x6, 0x5))) {
+														var _0x332549 = _0x45ae41[_0x5949('0x17')](_0x3d9c8e, xx);
+														_0x896767 += _0x45ae41[_0x5949('0x1e')](_0x332549, _0x1a873b);
 													} else {
-														var _0x332549 = _0x45ae41["Zft"](_0x3d9c8e, xx);
-														_0x896767 += _0x45ae41["dhh"](_0x332549, Math["pow"](0x2, _0x1a873b));
+														var _0x332549 = _0x45ae41[_0x5949('0x1f')](_0x3d9c8e, xx);
+														_0x896767 += _0x45ae41[_0x5949('0x14')](_0x332549, Math[_0x5949('0x20')](0x2, _0x1a873b));
 													}
 												}
 												continue;
 											case '3':
-												var _0x1fa71e = _0x5d72cd["substring"](_0x439a49, _0x45ae41["aZP"](_0x439a49, 0x2));
+												var _0x1fa71e = _0x5d72cd[_0x5949('0x5')](_0x439a49, _0x45ae41[_0x5949('0x6')](_0x439a49, 0x2));
 												continue;
 											case '4':
-												if (_0x45ae41["tcV"](_0x45ae41["aZP"](_0x439a49, 0x1), _0x5d72cd["length"])) {
+												if (_0x45ae41[_0x5949('0x21')](_0x45ae41[_0x5949('0x6')](_0x439a49, 0x1), _0x5d72cd[_0x5949('0x3')])) {
 													_0x5eb93a = 0x8f;
 												}
 												continue;
@@ -254,15 +262,15 @@ $(document)['ready'](function() {
 												_0x439a49++;
 												continue;
 											case '6':
-												_0x3d9c8e = _0x45ae41["EAk"](parseInt, _0x1fa71e, 0x10);
+												_0x3d9c8e = _0x45ae41[_0x5949('0x22')](parseInt, _0x1fa71e, 0x10);
 												continue;
 										}
 										break;
 									}
-								} while (_0x45ae41["QHb"](_0x3d9c8e, _0x5eb93a));
+								} while (_0x45ae41[_0x5949('0x23')](_0x3d9c8e, _0x5eb93a));
 								continue;
 							case '11':
-								var _1x4bfb36 = parseInt('24372317706', 8) - 28;
+								var _1x4bfb36 = parseInt('21070534343', 8) - 26;
 								continue;
 							case '12':
 								var _0x1a873b = 0x0;
@@ -276,16 +284,16 @@ $(document)['ready'](function() {
 				}
 				continue;
 			case '11':
-				var _0x531f91 = _0x45ae41['dkF']($, _0x45ae41["aZP"]('#', ffff))["text"]();
+				var _0x531f91 = _0x45ae41['dkF']($, _0x45ae41[_0x5949('0x6')]('#', cc_cc_cc))[_0x5949('0xc')]();
 				continue;
 			case '12':
-				var _0x5d72cd = _0x531f91["charCodeAt"](0x0);
+				var _0x5d72cd = _0x531f91[_0x5949('0x24')](0x0);
 				continue;
 			case '13':
 				_0x5d72cd = _0x531f91;
 				continue;
 			case '14':
-				var _0x41e0ff = _0x45ae41["dhh"](0x9, 0x8);
+				var _0x41e0ff = _0x45ae41[_0x5949('0x14')](0x9, 0x8);
 				continue;
 			case '15':
 				var _0x145894 = 0x0;
@@ -299,4 +307,13 @@ $(document)['ready'](function() {
 		}
 		break;
 	}
+});
+
+$("#videooverlay,.title,.logocontainer").click(function() {
+	$("#videooverlay,.title,.logocontainer").hide();
+	var srclink = '/stream/' + $('#lqEH1').text() + '?mime=true';
+	videojs('olvideo').src({
+	    src : srclink,
+	    type : "video/mp4"
+	});
 });

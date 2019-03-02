@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.string.StringUtils;
 
 public class JsBreakdown {
@@ -13,7 +14,7 @@ public class JsBreakdown {
 	public static String lines;
 	
 	public static void main(String[] args) throws IOException {
-		lines = StringUtils.fromFile("./research/openload/sample1.js");
+		lines = StringUtils.fromFile("./research/openload/sample2.js");
 		
 		breakJs();
 		callQuicker();
@@ -36,7 +37,7 @@ public class JsBreakdown {
 			}
 			already.add(syntax);
 			
-//			Logger.info("escaping: %s to %s", value, character);
+			// Logger.info("escaping: %s to %s", value, character);
 			
 			lines = lines.replace(syntax, String.valueOf(character));
 		}
@@ -58,7 +59,7 @@ public class JsBreakdown {
 			}
 			already.add(syntax);
 			
-//			Logger.info("escaping: %s to %s", value, call);
+			Logger.info("escaping: %s to %s", value, call);
 			
 			lines = lines.replace(syntax, String.format("\"%s\"", call));
 		}
