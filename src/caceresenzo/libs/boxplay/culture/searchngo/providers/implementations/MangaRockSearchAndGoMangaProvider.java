@@ -26,13 +26,16 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapabi
 import caceresenzo.libs.boxplay.culture.searchngo.providers.ProviderSearchCapability.SearchCapability;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.SearchAndGoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.Subscribable;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscriber;
+import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.json.JsonArray;
 import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.json.parser.JsonParser;
 import caceresenzo.libs.string.StringUtils;
 
-public class MangaRockSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider {
+public class MangaRockSearchAndGoMangaProvider extends SearchAndGoProvider implements IMangaContentProvider, Subscribable {
 	
 	/* Constants */
 	public static final String API_VERSION = "401";
@@ -239,6 +242,11 @@ public class MangaRockSearchAndGoMangaProvider extends SearchAndGoProvider imple
 	@Override
 	public String extractMangaPageUrl(ChapterItemResultData chapterItemResult) {
 		return chapterItemResult.getUrl();
+	}
+	
+	@Override
+	public Subscriber createSubscriber() {
+		return new SimpleItemComparatorSubscriber(false);
 	}
 	
 	/**
