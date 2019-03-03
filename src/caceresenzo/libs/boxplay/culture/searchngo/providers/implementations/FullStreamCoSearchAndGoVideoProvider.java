@@ -31,21 +31,21 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 	
 	/* Additionals Data Keys: for Movies */
 	protected static final String ADDITIONAL_DATA_KEY_RELEASE_DATE_AND_DURATION = "Date de sortie";
-	protected static final String ADDITIONAL_DATA_KEY_DIRECTOR = "R�alisateur";
-	protected static final String ADDITIONAL_DATA_KEY_GENDERS = "Cat�gorie";
+	protected static final String ADDITIONAL_DATA_KEY_DIRECTOR = "Réalisateur";
+	protected static final String ADDITIONAL_DATA_KEY_GENDERS = "Catégorie";
 	protected static final String ADDITIONAL_DATA_KEY_ACTORS = "Avec";
 	protected static final String ADDITIONAL_DATA_KEY_QUALITY = "Film en Version";
-	protected static final String ADDITIONAL_DATA_KEY_RESUME = "R�sum� Du Film";
+	protected static final String ADDITIONAL_DATA_KEY_RESUME = "Résumé Du Film";
 	
 	/* Additionals Data Keys: for Series */
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_AUTHOR = "Cr�� par";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_AUTHOR = "Créé par";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_ACTORS = "Avec";
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_RELEASE_DATE = "Ann�e de cr�ation";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_RELEASE_DATE = "Année de création";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_GENDERS = "Genre";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_STATUS = "Statut";
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_CHANNEL = "Cha�ne";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_CHANNEL = "Chaîne";
 	protected static final String ADDITIONAL_DATA_KEY_SERIES_VERSION = "Version";
-	protected static final String ADDITIONAL_DATA_KEY_SERIES_RESUME = "R�sum� de la s�rie";
+	protected static final String ADDITIONAL_DATA_KEY_SERIES_RESUME = "Résumé de la série";
 	
 	/* Additionals Data Correspondance: for Series */
 	protected final Map<AdditionalDataType, String> ADDITIONAL_DATA_CORRESPONDANCE_SERIES = new EnumMap<>(AdditionalDataType.class);
