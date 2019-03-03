@@ -8,7 +8,6 @@ import java.util.Set;
 
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AdkamiSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AnimeUltimeSearchAndGoVideoProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FilmStreamingVkProSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JapScanSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
@@ -34,7 +33,6 @@ public enum ProviderManager {
 	// IANIMES(IAnimesSearchAndGoVideoProvider.class), /* Broken, cloudflare bypass is not working */
 	
 	/* Movie / Series */
-	FILMSTREAMINGVK_PRO(FilmStreamingVkProSearchAndGoVideoProvider.class), //
 	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
 	// HDSS_TO(HdssToSearchAndGoVideoProvider.class), /* Broken, no extractor available */
 	
