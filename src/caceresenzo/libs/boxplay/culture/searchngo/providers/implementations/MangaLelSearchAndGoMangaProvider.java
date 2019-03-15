@@ -135,10 +135,6 @@ public class MangaLelSearchAndGoMangaProvider extends SearchAndGoProvider implem
 			String extractedData = extractCommonData(dataKey, htmlContainer);
 			
 			if (extractedData != null) {
-				if (type.equals(AdditionalDataType.TYPE)) {
-					extractedData = StringUtils.capitalize(extractedData);
-				}
-				
 				additionals.add(new AdditionalResultData(type, extractedData.trim()));
 			}
 		}
