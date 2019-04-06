@@ -12,7 +12,7 @@ import caceresenzo.libs.string.StringUtils;
 public class JsBreaker {
 	
 	public static void main(String[] args) throws IOException {
-		String lines = StringUtils.fromFile("./research/openload/sample1.js");
+		String lines = StringUtils.fromFile("./research/openload/sample2.js");
 		
 		// String parsed = lines.replaceAll("\\x[\d]{1,2}", )
 		Matcher matcher = Pattern.compile("\\\\x([\\w]{1,2})").matcher(lines);

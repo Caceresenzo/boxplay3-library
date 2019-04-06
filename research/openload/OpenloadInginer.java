@@ -12,7 +12,7 @@ public class OpenloadInginer {
 	public static void main(String[] args) throws IOException {
 		JavaScriptLanguage language = new JavaScriptLanguage();
 		
-		String lines = StringUtils.fromFile("./research/openload/working.js");
+		String lines = StringUtils.fromFile("./research/openload/sample2.js");
 		lines = language.reverseCallerFunction(lines, "var _0x9495 = (.*?);", "_0x5949");
 		
 		List<SimpleFunction> functions = language.parseSimpleFunction(lines, "var _0x45ae41 = \\{([\\w\\W]*?)\\};");
