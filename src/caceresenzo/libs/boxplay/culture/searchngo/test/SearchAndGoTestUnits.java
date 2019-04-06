@@ -71,7 +71,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "slime";
+		private static final String QUERY = "game";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -90,7 +90,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.MANGANELO.create());
 			// providers.add(ProviderManager.IANIMES.create());
 			// providers.add(ProviderManager.MANGAROCK.create());
-			providers.add(ProviderManager.NEKOSAMA.create());
+			// providers.add(ProviderManager.NEKOSAMA.create());
 			
 			for (SearchAndGoProvider provider : providers) {
 				if (provider instanceof IHentaiVideoContentProvider) {

@@ -39,7 +39,7 @@ public enum ProviderManager {
 	/* Manga */
 	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //
 	SCANMANGA(ScanMangaSearchAndGoMangaProvider.class), //
-	JAPSCAN(JapScanSearchAndGoMangaProvider.class), //
+	// JAPSCAN(JapScanSearchAndGoMangaProvider.class), // /* Cloudflare extractor is broken */
 	MANGANELO(MangaNeloSearchAndGoMangaProvider.class), //
 	MANGAROCK(MangaRockSearchAndGoMangaProvider.class); //
 	
