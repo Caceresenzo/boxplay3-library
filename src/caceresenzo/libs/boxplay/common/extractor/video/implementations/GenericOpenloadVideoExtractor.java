@@ -12,7 +12,7 @@ import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.string.StringUtils;
 
 /**
- * Implementation of a ContentExtractor for Openload
+ * Implementation of a VideoContentExtractor for Openload.
  * 
  * @author Enzo CACERES
  */
@@ -119,7 +119,7 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 	 * <br>
 	 * Please put it in a try catch block, this function will throw plenty of error if anything goes not as espected.
 	 * 
-	 * @version 2
+	 * @version 3
 	 * @author Enzo CACERES
 	 */
 	@SuppressWarnings("all")
@@ -162,9 +162,9 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 			String sourceKey;
 			try {
 				String decodedScript0 = AADecoder.decode(aaEncodedScripts.get(0));
-				String htmlDivId = helper.extract("\\+'(.*?)';", decodedScript0);
+				String htmlDivId = helper.extract("\\='(.*?)';", decodedScript0);
 				
-				sourceKey = helper.extract(String.format("<p id=\".*?\" style=\"\">(.*?)<\\/p>", htmlDivId), html);
+				sourceKey = helper.extract(String.format("<p style=\"\" id=\".*?\">(.*?)<\\/p>", htmlDivId), html);
 			} catch (Exception exception) {
 				throw new IllegalStateException("Failed to extract source key.", exception);
 			}
