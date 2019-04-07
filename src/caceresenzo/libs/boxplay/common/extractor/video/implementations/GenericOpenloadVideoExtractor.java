@@ -33,7 +33,7 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 		
 		if (baseUrlMarcher.find()) {
 			// https://<domain>/stream/<extracted>?mime=true
-			baseUrlFormat = baseUrlMarcher.group(1) + baseUrlMarcher.group(2) + "/stream/%s??mime=true";
+			baseUrlFormat = baseUrlMarcher.group(1) + baseUrlMarcher.group(2) + "/stream/%s?mime=true";
 		} else {
 			Exception exception = new Exception("Base url not found.");
 			
@@ -109,8 +109,7 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 	
 	@Override
 	public boolean matchUrl(String baseUrl) {
-		/* Custom from provider: full-stream/, belike1.stream/ */
-		return baseUrl.matches(".*?(oload\\..+|openload\\.co|oloadcdn\\.net|full-stream\\.co\\/|belike1\\.stream\\/).*?");
+		return baseUrl.matches(".*?(oload\\..+|openload\\.co|oloadcdn\\.net).*?");
 	}
 	
 	/**

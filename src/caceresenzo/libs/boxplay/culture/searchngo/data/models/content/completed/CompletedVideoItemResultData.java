@@ -12,15 +12,16 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemR
  */
 public class CompletedVideoItemResultData extends VideoItemResultData {
 	
+	/* Variables */
 	private final List<String> playerUrls;
+	private boolean requireMoreProcessing;
 	
 	/**
-	 * Constructor, same as {@link VideoItemResultData} but with player's urls ready to be extracted
-	 * 
+	 * Constructor, same as {@link VideoItemResultData} but with player's urls ready to be extracted.<br>
 	 * Also, no need to provider any page url for this item, it will be considered as null.
 	 * 
 	 * @param playerUrls
-	 *            Player's URL ready to be extracted
+	 *            Player's URL ready to be extracted.
 	 */
 	public CompletedVideoItemResultData(IVideoContentProvider videoContentProvider, String name, List<String> playerUrls) {
 		super(videoContentProvider, null, name);
@@ -29,19 +30,27 @@ public class CompletedVideoItemResultData extends VideoItemResultData {
 	}
 	
 	/**
-	 * Get already get player urls
+	 * If call, this item should be processed again before getting real link.
 	 * 
-	 * @return {@link List} of urls ready to be extracted
+	 * @return Itself.
 	 */
+	public CompletedVideoItemResultData requireMoreProcessing() {
+		requireMoreProcessing = true;
+		
+		return this;
+	}
+	
+	/** @return Weather or not this item require more processing. */
+	public boolean isMoreProcessingRequired() {
+		return requireMoreProcessing;
+	}
+	
+	/** @return {@link List} of urls ready to be extracted. */
 	public List<String> getPlayerUrls() {
 		return playerUrls;
 	}
 	
-	/**
-	 * Get already get player urls
-	 * 
-	 * @return {@link List} of urls ready to be extracted as a {@link String} array
-	 */
+	/** @return {@link List} of urls ready to be extracted as a {@link String} array. */
 	public String[] getPlayerUrlsAsArray() {
 		String[] array = new String[playerUrls.size()];
 		return playerUrls.toArray(array);

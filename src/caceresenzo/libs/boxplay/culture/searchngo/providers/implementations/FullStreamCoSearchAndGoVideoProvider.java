@@ -371,7 +371,7 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 						if (!urls.isEmpty()) {
 							String episode = String.format(VIDEO_NAME_FORMAT, AdditionalResultData.escapeHtmlChar(actualItem.getEpisodeString()), language);
 							
-							additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new CompletedVideoItemResultData(this, episode, urls)));
+							additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new CompletedVideoItemResultData(this, episode, urls).requireMoreProcessing()));
 						}
 					}
 					
@@ -399,7 +399,7 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 						if (extractedSource != null) {
 							String episode = String.format(VIDEO_NAME_FORMAT, episodeItem.getEpisodeString(), language);
 							
-							additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new CompletedVideoItemResultData(this, episode, Arrays.asList(extractedSource))));
+							additionals.add(new AdditionalResultData(AdditionalDataType.ITEM_VIDEO, new CompletedVideoItemResultData(this, episode, Arrays.asList(extractedSource)).requireMoreProcessing()));
 						}
 					}
 					
@@ -418,7 +418,29 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 	
 	@Override
 	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
-		return ((CompletedVideoItemResultData) videoItemResult).getPlayerUrlsAsArray();
+		if (!(videoItemResult instanceof CompletedVideoItemResultData)) {
+			throw new IllegalStateException("Should only have completed item.");
+		}
+		
+		String[] playerUrls = ((CompletedVideoItemResultData) videoItemResult).getPlayerUrlsAsArray();
+		
+		for (int i = 0; i < playerUrls.length; i++) {
+			String playerUrl = playerUrls[i];
+			
+			if (playerUrl.startsWith(getSiteUrl())) {
+				try {
+					String newLocation = Webb.create().get(playerUrl).followRedirects(false).chromeUserAgent().asVoid().getHeaderField("Location");
+					
+					if (StringUtils.validate(newLocation)) {
+						playerUrls[i] = newLocation;
+					}
+				} catch (Exception exception) {
+					; /* Ignore */
+				}
+			}
+		}
+		
+		return playerUrls;
 	}
 	
 	@Override
@@ -559,7 +581,7 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 				return null;
 			}
 			
-			Matcher functionMatcher = getStaticHelper().regex("(.*?)\\(\\'(.*?)\\'\\);", onClickJavascript);
+			Matcher functionMatcher = getStaticHelper().regex(";[\\s](.*?)\\(\\'(.*?)\\'\\);", onClickJavascript);
 			
 			if (functionMatcher.find()) {
 				String function = functionMatcher.group(1);

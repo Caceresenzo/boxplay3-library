@@ -84,7 +84,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
-			// providers.add(ProviderManager.FULLSTREAM_CO.create());
+			providers.add(ProviderManager.FULLSTREAM_CO.create());
 			// providers.add(ProviderManager.ANIMEULTIME.create());
 			// providers.add(ProviderManager.HDSS_TO.create());
 			// providers.add(ProviderManager.MANGANELO.create());
@@ -148,10 +148,15 @@ public class SearchAndGoTestUnits {
 					Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
 					
 					if (provider instanceof IVideoContentProvider) {
-						
 						String[] urls;
 						if (additionalData.getData() instanceof CompletedVideoItemResultData) {
-							urls = ((CompletedVideoItemResultData) additionalData.getData()).getPlayerUrlsAsArray();
+							CompletedVideoItemResultData completedVideoItemResultData = ((CompletedVideoItemResultData) additionalData.getData());
+							
+							if (completedVideoItemResultData.isMoreProcessingRequired()) {
+								urls = ((IVideoContentProvider) provider).extractVideoPageUrl(completedVideoItemResultData);
+							} else {
+								urls = completedVideoItemResultData.getPlayerUrlsAsArray();
+							}
 						} else if (additionalData.getData() instanceof VideoItemResultData) {
 							urls = ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData());
 						} else {

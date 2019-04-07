@@ -9,7 +9,6 @@ import java.util.Set;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AdkamiSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AnimeUltimeSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JapScanSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaNeloSearchAndGoMangaProvider;

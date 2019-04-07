@@ -95,7 +95,7 @@ public class GenericStreamangoVideoExtractor extends VideoContentExtractor {
 	
 	@Override
 	public boolean matchUrl(String baseUrl) {
-		return baseUrl.matches(".*?(streamango\\.com|fruithosts\\.net).*?");
+		return baseUrl.matches(".*?(streamango\\.com|fruithosts\\.net|streamcherry\\.com).*?");
 	}
 	
 	@SuppressWarnings("all")
