@@ -246,7 +246,7 @@ public class MangaNeloSearchAndGoMangaProvider extends SearchAndGoProvider imple
 			return additionals;
 		}
 		
-		Matcher chapterMatcher = getHelper().regex("\\<div\\sclass\\=\\\"row\\\"\\>[\\s]*\\<span\\>\\<a\\shref\\=\\\"(.*?)\\\".*?\\>(.*?)\\<\\/a\\>\\<\\/span\\>[\\s]*\\<span\\>(.*?)\\<\\/span\\>[\\s]*\\<span\\>(.*?)\\<\\/span\\>[\\s]*\\<\\/div\\>", htmlContainer);
+		Matcher chapterMatcher = getHelper().regex("\\<div\\sclass\\=\\\"row\\\"\\>[\\s]*\\<span\\>\\<a\\shref\\=\\\"(.*?)\\\".*?\\>(.*?)\\<\\/a\\>\\<\\/span\\>[\\s]*\\<span\\>(.*?)\\<\\/span\\>[\\s]*\\<span.*?\\>(.*?)\\<\\/span\\>[\\s]*\\<\\/div\\>", htmlContainer);
 		while (chapterMatcher.find()) {
 			String url = chapterMatcher.group(1);
 			String chapter = chapterMatcher.group(2);
