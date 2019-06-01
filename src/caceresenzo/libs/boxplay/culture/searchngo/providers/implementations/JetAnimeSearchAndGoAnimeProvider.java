@@ -22,6 +22,7 @@ import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.Subscr
 import caceresenzo.libs.boxplay.culture.searchngo.subscription.subscriber.implementations.SimpleItemComparatorSubscriber;
 import caceresenzo.libs.boxplay.utils.Sandbox;
 import caceresenzo.libs.cryptography.Base64;
+import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.reversing.cloudflare.CloudflareUtils;
 import caceresenzo.libs.string.StringUtils;
 
@@ -185,8 +186,7 @@ public class JetAnimeSearchAndGoAnimeProvider extends SearchAndGoProvider implem
 	}
 	
 	@Override
-	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {
-		
+	public String[] extractVideoPageUrl(VideoItemResultData videoItemResult) {		
 		String html = getHelper().downloadPageCache(videoItemResult.getUrl());
 		String formContainer = getHelper().extract("\\<form\\>[\\s]*(\\<input\\stype\\=\\\"hidden\\\".*?)\\<\\/form\\>", html);
 		
