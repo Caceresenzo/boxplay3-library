@@ -93,7 +93,7 @@ public class GenericVeryStreamVideoExtractor extends VideoContentExtractor {
 	
 	@Override
 	public boolean matchUrl(String baseUrl) {
-		return baseUrl.matches(".*?(verystream\\.com).*?");
+		return baseUrl.matches(".*?(verystream\\.com|woof\\.tube).*?");
 	}
 	
 }
