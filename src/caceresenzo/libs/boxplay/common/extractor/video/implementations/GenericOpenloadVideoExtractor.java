@@ -27,13 +27,12 @@ public class GenericOpenloadVideoExtractor extends VideoContentExtractor {
 			progressCallback.onDownloadingUrl(url);
 		}
 		
-		Matcher baseUrlMarcher = getStaticHelper().regex("(http:\\/\\/|ftp:\\/\\/|https:\\/\\/)(.*?)(?:\\/)", url);
-		
+		String baseUrl = getStaticHelper().extractBaseUrl(url);
 		String baseUrlFormat;
 		
-		if (baseUrlMarcher.find()) {
+		if (baseUrl != null) {
 			// https://<domain>/stream/<extracted>?mime=true
-			baseUrlFormat = baseUrlMarcher.group(1) + baseUrlMarcher.group(2) + "/stream/%s?mime=true";
+			baseUrlFormat = baseUrl + "/stream/%s?mime=true";
 		} else {
 			Exception exception = new Exception("Base url not found.");
 			

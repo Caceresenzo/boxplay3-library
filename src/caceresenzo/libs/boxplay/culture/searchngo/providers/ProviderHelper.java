@@ -279,6 +279,26 @@ public class ProviderHelper implements Serializable {
 	}
 	
 	/**
+	 * Get the base url from any url.
+	 * 
+	 * @param url Target url.
+	 * @return The protocol with the domain of the url only. <code>null</code> if not found.
+	 */
+	public String extractBaseUrl(String url) {
+		Matcher matcher = regex("(http:\\/\\/|ftp:\\/\\/|https:\\/\\/)(.*?)(?:\\/)", url);
+		
+		if (!matcher.find())
+		{
+			return null;
+		}
+		
+		String protocol = matcher.group(1);
+		String domain = matcher.group(2);
+		
+		return protocol + domain;
+	}
+	
+	/**
 	 * Internal function to throw an exception if the parent provider is null.
 	 * 
 	 * @throws IllegalArgumentException

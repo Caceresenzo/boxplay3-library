@@ -15,6 +15,7 @@ import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericFr
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericGoUnlimitedVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericOpenloadVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericStreamangoVideoExtractor;
+import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVeryStreamVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVevioVideoQualityExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidloxVideoExtractor;
 import caceresenzo.libs.boxplay.common.extractor.video.implementations.GenericVidozaVideoExtractor;
@@ -39,6 +40,7 @@ public class ContentExtractionManager {
 		bindExtractor(ExtractorType.VIDEO, new GenericVidloxVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, new GenericStreamangoVideoExtractor());
 		bindExtractor(ExtractorType.VIDEO, new GenericFreshStreamVideoExtractor());
+		bindExtractor(ExtractorType.VIDEO, new GenericVeryStreamVideoExtractor());
 		
 		/* Video with qualities */
 		bindExtractor(ExtractorType.VIDEO, new GenericVevioVideoQualityExtractor());
