@@ -65,7 +65,8 @@ public class GenericGoUnlimitedVideoExtractor extends VideoContentExtractor {
 			
 			return directUrl;
 		} catch (Exception exception) {
-			getLogger().appendln("Failed to extract url: " + exception.getLocalizedMessage());
+			getLogger().appendln("Failed to extract url: " + exception.getLocalizedMessage() + " (" + exception.getClass().getSimpleName() + ")");
+			getLogger().appendln(StringUtils.fromException(exception));
 			
 			return null;
 		}
@@ -99,6 +100,8 @@ public class GenericGoUnlimitedVideoExtractor extends VideoContentExtractor {
 			}
 			
 			while (c-- != 0) {
+				if (c >= k.length)
+					continue ;
 				if (StringUtils.validate(k[c])) {
 					p = p.replaceAll(String.format("\\b%s\\b", Integer.toString(c, a)), k[c]);
 				}

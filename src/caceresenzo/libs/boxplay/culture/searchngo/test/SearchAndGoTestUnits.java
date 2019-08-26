@@ -71,7 +71,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "phantom trigger";
+		private static final String QUERY = "Renai Boukun";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
