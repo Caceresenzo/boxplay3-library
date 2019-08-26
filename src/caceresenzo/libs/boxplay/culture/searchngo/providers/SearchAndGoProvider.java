@@ -15,7 +15,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.content.IContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalDataType;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.exceptions.ProviderException;
-import caceresenzo.libs.boxplay.culture.searchngo.requirements.BaseSystemRequirement;
 import caceresenzo.libs.boxplay.culture.searchngo.result.ResultScoreSorter;
 import caceresenzo.libs.boxplay.culture.searchngo.result.SearchAndGoResult;
 import caceresenzo.libs.boxplay.culture.searchngo.search.SearchEngine;
@@ -50,7 +49,6 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	private final ProviderSearchCapability searchCapability;
 	private final ProviderHelper helper;
 	private boolean autosort;
-	private List<BaseSystemRequirement> requirements;
 	private byte selectedCorrespondenceMapIndex;
 	private Map<Byte, Map<AdditionalDataType, String>> dataCorrespondence;
 	
@@ -85,46 +83,6 @@ public abstract class SearchAndGoProvider implements IContentProvider {
 	/** @return Get the provider's special {@link ProviderHelper}. */
 	public ProviderHelper getHelper() {
 		return helper;
-	}
-	
-	/**
-	 * Add to the local provider's requirements list a specified requirement.
-	 * 
-	 * @param requirementClass
-	 *            Target requirement class.
-	 */
-	protected void require(Class<? extends BaseSystemRequirement> requirementClass) {
-		if (requirements == null) {
-			requirements = new ArrayList<>();
-		}
-		
-		try {
-			requirements.add(requirementClass.newInstance());
-		} catch (Exception exception) {
-			throw new IllegalStateException(exception);
-		}
-	}
-	
-	/**
-	 * Get requirement instance by its class.
-	 * 
-	 * @param requirementClass
-	 *            Target requirement class.
-	 * @return Target instance.
-	 * @throws IllegalStateException
-	 *             If you try to get a requirement without calling {@link #require(Class)} in the constructor before.
-	 */
-	@SuppressWarnings("unchecked")
-	protected <T extends BaseSystemRequirement> T getRequirement(Class<T> requirementClass) {
-		if (requirements != null) {
-			for (BaseSystemRequirement requirement : requirements) {
-				if (requirement.getClass().equals(requirementClass)) {
-					return (T) requirement;
-				}
-			}
-		}
-		
-		throw new IllegalStateException("Can't get a requirement that has not been required before.");
 	}
 	
 	/**

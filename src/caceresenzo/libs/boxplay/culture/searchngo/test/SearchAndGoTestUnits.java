@@ -60,7 +60,7 @@ public class SearchAndGoTestUnits {
 	
 	public static final boolean ALLOW_HENTAI = true;
 	
-	public static final boolean ENABLED_MANGA_DOWNLOAD = false;
+	public static final boolean ENABLED_MANGA_DOWNLOAD = true;
 	
 	public static final int MAX_THREAD_COUNT = 3;
 	public static final int MAX_THREAD_DOWNLOAD_FAIL = 5;
@@ -71,24 +71,22 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "Renai Boukun";
+		private static final String QUERY = "game";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
 			
 			List<SearchAndGoProvider> providers = new ArrayList<>();
 			
-			providers.add(ProviderManager.JETANIME.create());
+			// providers.add(ProviderManager.JETANIME.create());
 			// providers.add(ProviderManager.JAPSCAN.create());
 			// providers.add(ProviderManager.FILMSTREAMINGVK_PRO.create());
-			// providers.add(ProviderManager.MANGALEL.create());
 			// providers.add(ProviderManager.ADKAMI.create());
 			// providers.add(ProviderManager.SCANMANGA.create());
 			// providers.add(ProviderManager.FULLSTREAM_CO.create());
 			// providers.add(ProviderManager.ANIMEULTIME.create());
 			// providers.add(ProviderManager.HDSS_TO.create());
 			// providers.add(ProviderManager.MANGANELO.create());
-			// providers.add(ProviderManager.IANIMES.create());
 			// providers.add(ProviderManager.MANGAROCK.create());
 			// providers.add(ProviderManager.NEKOSAMA.create());
 			

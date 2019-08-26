@@ -10,7 +10,6 @@ import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.Adka
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AnimeUltimeSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaLelSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaNeloSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaRockSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.NekoSamaSearchAndGoVideoProvider;
@@ -29,16 +28,13 @@ public enum ProviderManager {
 	ADKAMI(AdkamiSearchAndGoVideoProvider.class), //
 	ANIMEULTIME(AnimeUltimeSearchAndGoVideoProvider.class), //
 	NEKOSAMA(NekoSamaSearchAndGoVideoProvider.class), //
-	// IANIMES(IAnimesSearchAndGoVideoProvider.class), /* Broken, cloudflare bypass is not working */
 	
 	/* Movie / Series */
 	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
 	// HDSS_TO(HdssToSearchAndGoVideoProvider.class), /* Broken, no extractor available */
 	
 	/* Manga */
-	MANGALEL(MangaLelSearchAndGoMangaProvider.class), //
 	SCANMANGA(ScanMangaSearchAndGoMangaProvider.class), //
-	// JAPSCAN(JapScanSearchAndGoMangaProvider.class), // /* Cloudflare extractor is broken */
 	MANGANELO(MangaNeloSearchAndGoMangaProvider.class), //
 	MANGAROCK(MangaRockSearchAndGoMangaProvider.class); //
 	
