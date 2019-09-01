@@ -45,6 +45,7 @@ import caceresenzo.libs.http.client.webb.Request;
 import caceresenzo.libs.http.client.webb.Webb;
 import caceresenzo.libs.http.client.webb.WebbConstante;
 import caceresenzo.libs.iterator.ByteArrayIterator;
+import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.stream.StreamUtils;
 import caceresenzo.libs.string.StringUtils;
@@ -71,7 +72,7 @@ public class SearchAndGoTestUnits {
 	public static int THREAD_COUNT = 0;
 	
 	public static class ExtractionTest {
-		private static final String QUERY = "game";
+		private static final String QUERY = "re zero";
 		
 		public static void main(String[] args) {
 			// redirectConsoleOutput();
@@ -87,7 +88,7 @@ public class SearchAndGoTestUnits {
 			// providers.add(ProviderManager.ANIMEULTIME.create());
 			// providers.add(ProviderManager.HDSS_TO.create());
 			// providers.add(ProviderManager.MANGANELO.create());
-			// providers.add(ProviderManager.MANGAROCK.create());
+			providers.add(ProviderManager.MANGAROCK.create());
 			// providers.add(ProviderManager.NEKOSAMA.create());
 			
 			for (SearchAndGoProvider provider : providers) {
@@ -134,7 +135,11 @@ public class SearchAndGoTestUnits {
 				
 				List<AdditionalResultData> additionalResult = result.getParentProvider().fetchMoreData(result);
 				for (AdditionalResultData additionalData : additionalResult) {
-					Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
+					// Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
+					JsonObject obj = new JsonObject();
+					obj.put("type", additionalData.getType());
+					obj.put("value", additionalData.getData());
+					System.out.println(obj + ", ");
 				}
 				
 				/* Content */
@@ -143,109 +148,120 @@ public class SearchAndGoTestUnits {
 				
 				List<AdditionalResultData> additionalContent = result.getParentProvider().fetchContent(result);
 				for (AdditionalResultData additionalData : additionalContent) {
-					Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
+					// Logger.$("\t- %-20s >> %s", additionalData.getType(), additionalData.convert());
 					
-					if (provider instanceof IVideoContentProvider) {
-						String[] urls;
-						if (additionalData.getData() instanceof CompletedVideoItemResultData) {
-							CompletedVideoItemResultData completedVideoItemResultData = ((CompletedVideoItemResultData) additionalData.getData());
-							
-							if (completedVideoItemResultData.isMoreProcessingRequired()) {
-								urls = ((IVideoContentProvider) provider).extractVideoPageUrl(completedVideoItemResultData);
-							} else {
-								urls = completedVideoItemResultData.getPlayerUrlsAsArray();
-							}
-						} else if (additionalData.getData() instanceof VideoItemResultData) {
-							urls = ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData());
-						} else {
-							throw new IllegalStateException("Invalid data class provided by a IVideoContentProvider: " + additionalData.getData().getClass().getSimpleName());
-						}
-						
-						for (String url : urls) {
-							Logger.$("\t\tIVideoContentProvider: " + url);
-							
-							ContentExtractor contentExtractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.VIDEO, url);
-							
-							Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
-							
-							if (contentExtractor instanceof VideoContentExtractor) {
-								Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
-								
-								// Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
-							} else if (contentExtractor instanceof VideoQualityContentExtractor) {
-								List<VideoQuality> qualities = ((VideoQualityContentExtractor) contentExtractor).extractVideoQualities(url);
-								
-								if (qualities != null) {
-									if (qualities.isEmpty()) {
-										Logger.info("\t\t\t | -> NO QUALITY AVAILABLE");
-									} else {
-										for (VideoQuality quality : qualities) {
-											Logger.info("\t\t\t | -> %-20s --> %s", quality.getResolution(), quality.getVideoUrl());
-										}
-									}
-								} else {
-									Logger.info("\t\t\t | -> NO QUALITY FOUND");
-								}
-							} else {
-								if (contentExtractor != null) {
-									throw new IllegalStateException("Not handled video content extractor.");
-								}
-							}
-						}
-						
-						Logger.$("");
-					} else if (provider instanceof IMangaContentProvider && additionalData.getData() instanceof ChapterItemResultData) {
-						Logger.$("IMangaContentProvider: " + ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()));
-						Logger.$("");
-						
-						ChapterItemResultData chapterItem = (ChapterItemResultData) additionalData.getData();
-						String pageUrl = ((IMangaContentProvider) provider).extractMangaPageUrl(chapterItem);
-						ContentExtractor extractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.fromChapterType(chapterItem.getChapterType()), result.getUrl());
-						
-						Logger.$("\t\t | -> %s", extractor != null ? extractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
-						
-						if (extractor instanceof MangaChapterContentExtractor) { /* If null; it will skip */
-							int pageCount = 1;
-							for (String url : ((MangaChapterContentExtractor) extractor).getImageUrls(pageUrl)) {
-								Logger.$(" |- Image URL: " + url);
-								
-								if (ENABLED_MANGA_DOWNLOAD) {
-									String formattedPage = String.valueOf(pageCount++);
-									while (formattedPage.length() < MANGA_DOWNLOAD_PAGE_MIN_CHARACTERS_COUNT) {
-										formattedPage = 0 + formattedPage;
-									}
-									
-									/* Target: <manga> / <volume - chapter> / Page <page>.<image extension> */
-									String subfilePath = String.format("%s/%s/%s/%s/Page %s.%s", //
-											"WEBB", FileUtils.replaceIllegalChar(result.getParentProvider().getSiteName()).trim(), //
-											FileUtils.replaceIllegalChar(result.getName()).trim(), //
-											FileUtils.replaceIllegalChar(additionalData.convert()).replaceAll("[\\.]{2,}", " ").trim(), //
-											FileUtils.replaceIllegalChar(formattedPage).trim(), //
-											FileUtils.replaceIllegalChar(FileUtils.getExtension(UrlUtils.parseRessource(url)).replace(".", "")).trim() //
-									);
-									
-									File file = new File(MANGA_DOWNLOAD_BASE_PATH, subfilePath);
-									
-									if (!file.exists()) {
-										while (THREAD_COUNT >= MAX_THREAD_COUNT) {
-											ThreadUtils.sleep(100L);
-										}
-										
-										THREAD_COUNT++;
-										new DownloadWorker().applyData(chapterItem, file, url).start();
-									}
-								}
-							}
-						} else if (extractor instanceof NovelChapterContentExtractor) {
-							String novel = ((NovelChapterContentExtractor) extractor).extractNovel(chapterItem);
-							
-							if (novel != null) {
-								Logger.$(" |- Novel (cut a 200): " + StringUtils.cutIfTooLong(novel, 200));
-							}
-						}
-						
-						Logger.$("");
-					}
+					JsonObject a = new JsonObject();
+					a.put("url", ((VideoItemResultData) additionalData.getData()).getUrl());
+					a.put("name", ((VideoItemResultData) additionalData.getData()).getName());
+					
+					JsonObject obj = new JsonObject();
+					obj.put("type", additionalData.getType().toString());
+					obj.put("value", a);
+					System.out.println(obj + ", ");
+					
+					continue;
+					
+					// if (provider instanceof IVideoContentProvider) {
+					// String[] urls;
+					// if (additionalData.getData() instanceof CompletedVideoItemResultData) {
+					// CompletedVideoItemResultData completedVideoItemResultData = ((CompletedVideoItemResultData) additionalData.getData());
+					//
+					// if (completedVideoItemResultData.isMoreProcessingRequired()) {
+					// urls = ((IVideoContentProvider) provider).extractVideoPageUrl(completedVideoItemResultData);
+					// } else {
+					// urls = completedVideoItemResultData.getPlayerUrlsAsArray();
+					// }
+					// } else if (additionalData.getData() instanceof VideoItemResultData) {
+					// urls = ((IVideoContentProvider) provider).extractVideoPageUrl((VideoItemResultData) additionalData.getData());
+					// } else {
+					// throw new IllegalStateException("Invalid data class provided by a IVideoContentProvider: " + additionalData.getData().getClass().getSimpleName());
+					// }
+					//
+					// for (String url : urls) {
+					// Logger.$("\t\tIVideoContentProvider: " + url);
+					//
+					// ContentExtractor contentExtractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.VIDEO, url);
+					//
+					// Logger.$("\t\t | -> %s", contentExtractor != null ? contentExtractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
+					//
+					// if (contentExtractor instanceof VideoContentExtractor) {
+					// Logger.info("\t\t\t | -> %s", ((VideoContentExtractor) contentExtractor).extractDirectVideoUrl(url));
+					//
+					// // Logger.info("\t\t\t | -> LOGGER OUTPUT: %s", ((VideoContentExtractor) contentExtractor).getLogger().getContent());
+					// } else if (contentExtractor instanceof VideoQualityContentExtractor) {
+					// List<VideoQuality> qualities = ((VideoQualityContentExtractor) contentExtractor).extractVideoQualities(url);
+					//
+					// if (qualities != null) {
+					// if (qualities.isEmpty()) {
+					// Logger.info("\t\t\t | -> NO QUALITY AVAILABLE");
+					// } else {
+					// for (VideoQuality quality : qualities) {
+					// Logger.info("\t\t\t | -> %-20s --> %s", quality.getResolution(), quality.getVideoUrl());
+					// }
+					// }
+					// } else {
+					// Logger.info("\t\t\t | -> NO QUALITY FOUND");
+					// }
+					// } else {
+					// if (contentExtractor != null) {
+					// throw new IllegalStateException("Not handled video content extractor.");
+					// }
+					// }
+					// }
+					//
+					// Logger.$("");
+					// } else if (provider instanceof IMangaContentProvider && additionalData.getData() instanceof ChapterItemResultData) {
+					// Logger.$("IMangaContentProvider: " + ((IMangaContentProvider) provider).extractMangaPageUrl((ChapterItemResultData) additionalData.getData()));
+					// Logger.$("");
+					//
+					// ChapterItemResultData chapterItem = (ChapterItemResultData) additionalData.getData();
+					// String pageUrl = ((IMangaContentProvider) provider).extractMangaPageUrl(chapterItem);
+					// ContentExtractor extractor = ContentExtractionManager.getExtractorFromBaseUrl(ExtractorType.fromChapterType(chapterItem.getChapterType()), result.getUrl());
+					//
+					// Logger.$("\t\t | -> %s", extractor != null ? extractor.getClass().getSimpleName() : "NO_COMPATIBLE_PROVIDER");
+					//
+					// if (extractor instanceof MangaChapterContentExtractor) { /* If null; it will skip */
+					// int pageCount = 1;
+					// for (String url : ((MangaChapterContentExtractor) extractor).getImageUrls(pageUrl)) {
+					// Logger.$(" |- Image URL: " + url);
+					//
+					// if (ENABLED_MANGA_DOWNLOAD) {
+					// String formattedPage = String.valueOf(pageCount++);
+					// while (formattedPage.length() < MANGA_DOWNLOAD_PAGE_MIN_CHARACTERS_COUNT) {
+					// formattedPage = 0 + formattedPage;
+					// }
+					//
+					// /* Target: <manga> / <volume - chapter> / Page <page>.<image extension> */
+					// String subfilePath = String.format("%s/%s/%s/%s/Page %s.%s", //
+					// "WEBB", FileUtils.replaceIllegalChar(result.getParentProvider().getSiteName()).trim(), //
+					// FileUtils.replaceIllegalChar(result.getName()).trim(), //
+					// FileUtils.replaceIllegalChar(additionalData.convert()).replaceAll("[\\.]{2,}", " ").trim(), //
+					// FileUtils.replaceIllegalChar(formattedPage).trim(), //
+					// FileUtils.replaceIllegalChar(FileUtils.getExtension(UrlUtils.parseRessource(url)).replace(".", "")).trim() //
+					// );
+					//
+					// File file = new File(MANGA_DOWNLOAD_BASE_PATH, subfilePath);
+					//
+					// if (!file.exists()) {
+					// while (THREAD_COUNT >= MAX_THREAD_COUNT) {
+					// ThreadUtils.sleep(100L);
+					// }
+					//
+					// THREAD_COUNT++;
+					// new DownloadWorker().applyData(chapterItem, file, url).start();
+					// }
+					// }
+					// }
+					// } else if (extractor instanceof NovelChapterContentExtractor) {
+					// String novel = ((NovelChapterContentExtractor) extractor).extractNovel(chapterItem);
+					//
+					// if (novel != null) {
+					// Logger.$(" |- Novel (cut a 200): " + StringUtils.cutIfTooLong(novel, 200));
+					// }
+					// }
+					//
+					// Logger.$("");
+					// }
 				}
 				
 				Logger.$(" ------------------------------------- ");
@@ -384,6 +400,10 @@ public class SearchAndGoTestUnits {
 			
 			for (SearchCapability capability : SearchCapability.values()) {
 				System.out.println(String.format("enumCacheTranslation.put(%s.%s, boxPlayApplication.getString(R.string.boxplay_culture_searchngo_search_result_type_%s));", capability.getClass().getSimpleName(), capability.toString(), capability.toString().toLowerCase()));
+			}
+			
+			for (AdditionalDataType resultType : AdditionalDataType.values()) {
+				System.out.println(String.format("\"%s\": \"%s\", ", resultType.toString().toUpperCase(), resultType.toString()));
 			}
 		}
 		

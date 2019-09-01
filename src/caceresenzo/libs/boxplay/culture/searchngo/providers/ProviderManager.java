@@ -8,7 +8,6 @@ import java.util.Set;
 
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AdkamiSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.AnimeUltimeSearchAndGoVideoProvider;
-import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.FullStreamCoSearchAndGoVideoProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.JetAnimeSearchAndGoAnimeProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaNeloSearchAndGoMangaProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.providers.implementations.MangaRockSearchAndGoMangaProvider;
@@ -30,7 +29,7 @@ public enum ProviderManager {
 	NEKOSAMA(NekoSamaSearchAndGoVideoProvider.class), //
 	
 	/* Movie / Series */
-	FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
+	// FULLSTREAM_CO(FullStreamCoSearchAndGoVideoProvider.class), //
 	// HDSS_TO(HdssToSearchAndGoVideoProvider.class), /* Broken, no extractor available */
 	
 	/* Manga */

@@ -53,7 +53,7 @@ public class FullStreamCoSearchAndGoVideoProvider extends SearchAndGoProvider im
 	private final String searchBaseUrl;
 	
 	public FullStreamCoSearchAndGoVideoProvider() {
-		super("Full-Stream.co", "https://ww1.full-stream.co");
+		super("Full-Stream.co", "https://full-stream.gs/");
 		
 		this.searchBaseUrl = getSiteUrl() + "/index.php?do=search";
 		

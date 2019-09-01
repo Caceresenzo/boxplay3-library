@@ -3,8 +3,17 @@ package caceresenzo.libs.boxplay.models.element;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleData;
 
 public abstract class Imagable extends SimpleData {
+
+	/* Constants */
+	public static final String KIND = "target_url";
 	
+	/* Variables */
 	protected String imageUrl, imageHdUrl, defaultImageUrl;
+	
+	/* Constructor */
+	public Imagable() {
+		super(KIND);
+	}
 	
 	public String getImageUrl() {
 		return imageUrl;

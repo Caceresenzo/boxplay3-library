@@ -4,64 +4,64 @@ import java.util.Iterator;
 import java.util.List;
 
 import caceresenzo.libs.boxplay.culture.searchngo.content.ContentViewerType;
+import caceresenzo.libs.json.JsonAware;
+import caceresenzo.libs.json.JsonObject;
 
 /**
- * Holder class to hold data for a common result
+ * Holder class to hold data for a common result.
  * 
  * @author Enzo CACERES
  */
-public class AdditionalResultData {
+public class AdditionalResultData implements JsonAware {
 	
+	/* Json Key */
+	public static final String JSON_KEY_TYPE = "type";
+	public static final String JSON_KEY_VALUE = "value";
+	
+	/* Constants */
 	public static final String DATA_SEPARATOR = ", ";
 	
+	/* Variables */
 	private final AdditionalDataType type;
 	private final Object data;
 	
 	/**
-	 * Constructor, create a new instance with the object only, {@link AdditionalDataType} will be interpreted as {@link AdditionalDataType#NULL}
+	 * Create a new instance with the object only, {@link AdditionalDataType} will be interpreted as {@link AdditionalDataType#NULL}.
 	 * 
 	 * @param data
-	 *            Your data
+	 *            Data to hold.
 	 */
 	public AdditionalResultData(Object data) {
 		this(AdditionalDataType.NULL, data);
 	}
 	
 	/**
-	 * Constructor, create a new instance with a {@link AdditionalDataType} and an object
+	 * Create a new instance with a {@link AdditionalDataType} and an object.
 	 * 
 	 * @param type
-	 *            Your {@link AdditionalDataType}
+	 *            {@link AdditionalDataType Type} of the data.
 	 * @param data
-	 *            Your data, and if this is an instance of string, auto escaping will be applied
+	 *            Data to hold. (if this is an instance of string, auto escaping will be applied)
 	 */
 	public AdditionalResultData(AdditionalDataType type, Object data) {
 		this.type = type;
 		this.data = data instanceof String ? escapeHtmlChar(String.valueOf(data)) : data;
 	}
 	
-	/**
-	 * Get the {@link AdditionalDataType} of this result
-	 * 
-	 * @return The type
-	 */
+	/** @return Data's {@link AdditionalDataType type}. */
 	public AdditionalDataType getType() {
 		return type;
 	}
 	
-	/**
-	 * Get the object
-	 * 
-	 * @return The data
-	 */
+	/** @return Data object. */
 	public Object getData() {
 		return data;
 	}
 	
 	/**
-	 * Automaticly convert this data result to a readable string
+	 * Automatically convert this data result to a readable string.
 	 * 
-	 * @return A readable string
+	 * @return A readable string.
 	 */
 	public String convert() {
 		String converted = "";
@@ -91,18 +91,18 @@ public class AdditionalResultData {
 	}
 	
 	/**
-	 * Static function to escape most known (during developpement) html custom/encoded char
+	 * Static function to escape most known (during developpement) HTML custom/encoded char.
 	 * 
 	 * @param string
 	 *            Source string
-	 * @return Escaped string
+	 * @return Escaped string.
 	 */
 	public static String escapeHtmlChar(String string) {
 		return escapeDoubleSpace(string //
 				.replace("&#039;", "'") //
 				.replace("&#39;", "'") //
-				.replace("&eacute;", "é") //
-				.replace("&Eacute;", "É")
+				.replace("&eacute;", "ï¿½") //
+				.replace("&Eacute;", "ï¿½")
 				.replace("&quot;", "\"") //
 				.replace("&amp;amp;", "&") //
 				.replace("&amp;", "&") //
@@ -114,23 +114,30 @@ public class AdditionalResultData {
 	}
 	
 	/**
-	 * Static function to escape every double space till no remain
+	 * Static function to escape every double space till no remain.
 	 * 
 	 * @param string
-	 *            Source string
-	 * @return Escaped string
+	 *            Source string.
+	 * @return Escaped string.
 	 */
 	public static String escapeDoubleSpace(String string) {
-		while (string.contains(" " + " ")) {
+		while (string.contains("  ")) {
 			string = string.replace("  ", " ");
 		}
 		
 		return string;
 	}
 	
-	/**
-	 * To String
-	 */
+	@Override
+	public String toJsonString() {
+		JsonObject jsonObject = new JsonObject();
+		
+		jsonObject.put(JSON_KEY_TYPE, type.toString());
+		jsonObject.put(JSON_KEY_VALUE, data);
+		
+		return jsonObject.toJsonString();
+	}
+	
 	@Override
 	public String toString() {
 		return "AdditionalResultData[type=" + type + ", data=" + data + "]";
