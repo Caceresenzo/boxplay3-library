@@ -4,20 +4,24 @@ import java.util.List;
 
 import caceresenzo.libs.boxplay.culture.searchngo.content.video.IVideoContentProvider;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.content.VideoItemResultData;
+import caceresenzo.libs.json.JsonObject;
 
 /**
- * Same thing as a classic {@link VideoItemResultData} but this one already contain all of player's url found on his page
+ * Same thing as a classic {@link VideoItemResultData} but this one already contain all of player's url found on his page.
  * 
  * @author Enzo CACERES
  */
 public class CompletedVideoItemResultData extends VideoItemResultData {
+	
+	/* Json Key */
+	public static final String JSON_KEY_PLAYER_URLS = "player_urls";
 	
 	/* Variables */
 	private final List<String> playerUrls;
 	private boolean requireMoreProcessing;
 	
 	/**
-	 * Constructor, same as {@link VideoItemResultData} but with player's urls ready to be extracted.<br>
+	 * Same as {@link VideoItemResultData} but with player's urls ready to be extracted.<br>
 	 * Also, no need to provider any page url for this item, it will be considered as null.
 	 * 
 	 * @param playerUrls
@@ -59,6 +63,16 @@ public class CompletedVideoItemResultData extends VideoItemResultData {
 	@Override
 	public String getUrl() {
 		throw new IllegalStateException("Get a direct url from a CompletedVideoItemResultData is not possible.");
+	}
+	
+	@Override
+	public JsonObject toJsonObject() {
+		JsonObject jsonObject = super.toJsonObject();
+		
+		jsonObject.remove(JSON_KEY_URL);
+		jsonObject.put(JSON_KEY_PLAYER_URLS, playerUrls);
+		
+		return jsonObject;
 	}
 	
 	@Override

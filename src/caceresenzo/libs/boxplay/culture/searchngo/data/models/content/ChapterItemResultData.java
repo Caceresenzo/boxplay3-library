@@ -6,14 +6,25 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.ViewableContent;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleUrlData;
+import caceresenzo.libs.json.JsonObject;
 import caceresenzo.libs.string.StringUtils;
 
 /**
- * Holder class to contain an url and a name of a Chapter.
+ * Holder class to contain an url and a name of a chapter.
  * 
  * @author Enzo CACERES
  */
 public class ChapterItemResultData extends SimpleUrlData implements DisplayableString, ViewableContent {
+	
+	/* Json Key */
+	public static final String JSON_KEY_CONTENT_PROVIDER_CLASS = "content_provider_class";
+	public static final String JSON_KEY_NAME = "name";
+	public static final String JSON_KEY_TITLE = "title";
+	public static final String JSON_KEY_DISPLAYABLE = "displayable";
+	public static final String JSON_KEY_TYPE = "type";
+	
+	/* Constants */
+	public static final String KIND = "item_chapter";
 	
 	/* Variables */
 	private final IImageContentProvider imageContentProvider;
@@ -21,36 +32,36 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 	private final ChapterType chapterType;
 	
 	/**
-	 * Constructor, create a new instance with an url and a name only, title will be considered as null.<br>
+	 * Create a new instance with an url and a name only, title will be considered as null.<br>
 	 * These value will be {@link String#trim()}.
 	 * 
 	 * @param imageContentProvider
-	 *            Parent provider used to call this constructor
+	 *            Parent provider used to call this constructor.
 	 * @param url
-	 *            Target chapter url
+	 *            Target chapter url.
 	 * @param name
-	 *            Target chapter name
+	 *            Target chapter name.
 	 * @param chapterType
-	 *            Change chapter type, if null, default is {@link ChapterType#IMAGE_ARRAY}
+	 *            Change chapter type, if null, default is {@link ChapterType#IMAGE_ARRAY}.
 	 */
 	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name, ChapterType chapterType) {
 		this(imageContentProvider, url, name, null, chapterType);
 	}
 	
 	/**
-	 * Constructor, create a new instance with an url and a name.<br>
+	 * Create a new instance with an url and a name.<br>
 	 * These value will be {@link String#trim()}.
 	 * 
 	 * @param imageContentProvider
-	 *            Parent provider used to call this constructor
+	 *            Parent provider used to call this constructor.
 	 * @param url
-	 *            Target chapter url
+	 *            Target chapter url.
 	 * @param name
-	 *            Target chapter name
+	 *            Target chapter name.
 	 * @param title
-	 *            Target chapter title
+	 *            Target chapter title.
 	 * @param chapterType
-	 *            Change chapter type, if null, default is {@link ChapterType#IMAGE_ARRAY}
+	 *            Change chapter type, if null, default is {@link ChapterType#IMAGE_ARRAY}.
 	 */
 	public ChapterItemResultData(IImageContentProvider imageContentProvider, String url, String name, String title, ChapterType chapterType) {
 		super(url);
@@ -60,38 +71,22 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 		this.chapterType = chapterType == null ? ChapterType.IMAGE_ARRAY : chapterType;
 	}
 	
-	/**
-	 * Get the parent image content provider that has been used to generate this item.
-	 * 
-	 * @return Parent provider
-	 */
+	/** @return Parent provider that has been used to generate this item. */
 	public IImageContentProvider getImageContentProvider() {
 		return imageContentProvider;
 	}
 	
-	/**
-	 * Get the name.
-	 * 
-	 * @return The name
-	 */
+	/** @return Chapter's name. */
 	public String getName() {
 		return name;
 	}
 	
-	/**
-	 * Get the chapter's title.
-	 * 
-	 * @return The title
-	 */
+	/** @return Chapter's title. */
 	public String getTitle() {
 		return title;
 	}
 	
-	/*
-	 * Get the {@link ChapterType} of this item.
-	 * 
-	 * @return Chapter type
-	 */
+	/** @return Chapter's {@link ChapterType type}. */
 	public ChapterType getChapterType() {
 		return chapterType;
 	}
@@ -114,9 +109,19 @@ public class ChapterItemResultData extends SimpleUrlData implements DisplayableS
 		return ContentViewerType.IMAGE;
 	}
 	
-	/**
-	 * To String
-	 */
+	@Override
+	public JsonObject toJsonObject() {
+		JsonObject jsonObject = super.toJsonObject();
+		
+		jsonObject.put(JSON_KEY_CONTENT_PROVIDER_CLASS, imageContentProvider.getClass().getSimpleName());
+		jsonObject.put(JSON_KEY_NAME, name);
+		jsonObject.put(JSON_KEY_TITLE, title);
+		jsonObject.put(JSON_KEY_DISPLAYABLE, convertToDisplayableString());
+		jsonObject.put(JSON_KEY_TYPE, chapterType.toString());
+		
+		return jsonObject;
+	}
+	
 	@Override
 	public String toString() {
 		return "ChapterItemResultData[url=" + url + ", name=" + name + ", type=" + chapterType + "]";

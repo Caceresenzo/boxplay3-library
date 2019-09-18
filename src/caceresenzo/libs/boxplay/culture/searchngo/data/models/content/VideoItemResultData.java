@@ -6,13 +6,23 @@ import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.DisplayableString;
 import caceresenzo.libs.boxplay.culture.searchngo.data.AdditionalResultData.ViewableContent;
 import caceresenzo.libs.boxplay.culture.searchngo.data.models.SimpleUrlData;
+import caceresenzo.libs.json.JsonObject;
 
 /**
- * Holder class to contain an url and a name of a Video
+ * Holder class to contain an url and a name of a video.
  * 
  * @author Enzo CACERES
  */
 public class VideoItemResultData extends SimpleUrlData implements DisplayableString, ViewableContent {
+	
+	/* Json Key */
+	public static final String JSON_KEY_CONTENT_PROVIDER_CLASS = "content_provider_class";
+	public static final String JSON_KEY_NAME = "name";
+	public static final String JSON_KEY_THUMBNAIL_IMAGE_URL = "thumbnail";
+	public static final String JSON_KEY_RAW_VIDEO_DURATION = "duration";
+	
+	/* Constants */
+	public static final String KIND = "item_video";
 	
 	/* Variables */
 	private final IVideoContentProvider videoContentProvider;
@@ -20,7 +30,7 @@ public class VideoItemResultData extends SimpleUrlData implements DisplayableStr
 	private String thumbnailImageUrl, videoDuration;
 	
 	/**
-	 * Constructor, create a new instance with parent content provider, an url and a name.<br>
+	 * Create a new instance with parent content provider, an url and a name.<br>
 	 * These value will be {@link String#trim()}.
 	 * 
 	 * @param videoContentProvider
@@ -31,16 +41,12 @@ public class VideoItemResultData extends SimpleUrlData implements DisplayableStr
 	 *            Traget video name.
 	 */
 	public VideoItemResultData(IVideoContentProvider videoContentProvider, String url, String name) {
-		super(url);
+		super(KIND, url);
 		this.videoContentProvider = videoContentProvider;
 		this.name = name != null ? AdditionalResultData.escapeHtmlChar(name.trim()) : name;
 	}
 	
-	/**
-	 * Get the parent video content provider that has been used to generate this item.
-	 * 
-	 * @return Parent provider.
-	 */
+	/** @return Parent provider that has been used to generate this item. */
 	public IVideoContentProvider getVideoContentProvider() {
 		return videoContentProvider;
 	}
@@ -71,43 +77,27 @@ public class VideoItemResultData extends SimpleUrlData implements DisplayableStr
 		return this;
 	}
 	
-	/**
-	 * Get video's name.
-	 * 
-	 * @return The name.
-	 */
+	/** @return Video's name. */
 	public String getName() {
 		return name;
 	}
 	
-	/**
-	 * Get video's thumbnail image url (if any).
-	 * 
-	 * @return Image url for the thumbnail of this video.
-	 */
+	/** @return Image url for the thumbnail of this video (or <code>null</code> if no one has been provided). */
 	public String getThumbnailImageUrl() {
 		return thumbnailImageUrl;
 	}
 	
-	/**
-	 * @return Weather or not this video item has a non-<code>null</code> image url for his thumbnail.
-	 */
+	/** @return Weather or not this video item has a non-<code>null</code> image url for his thumbnail. */
 	public boolean hasThumbnail() {
 		return thumbnailImageUrl != null;
 	}
 	
-	/**
-	 * Get video's duration (if any).
-	 * 
-	 * @return Unparsed video duration for this video.
-	 */
+	/** @return Unparsed video's duration (or <code>null</code> if no one has been provided). */
 	public String getVideoDuration() {
 		return videoDuration;
 	}
 	
-	/**
-	 * @return Weather or not this video item has a non-<code>null</code> video duration.
-	 */
+	/** @return Weather or not this video item has a non-<code>null</code> video duration. */
 	public boolean hasDuration() {
 		return videoDuration != null;
 	}
@@ -122,9 +112,18 @@ public class VideoItemResultData extends SimpleUrlData implements DisplayableStr
 		return ContentViewerType.VIDEO;
 	}
 	
-	/**
-	 * To String
-	 */
+	@Override
+	public JsonObject toJsonObject() {
+		JsonObject jsonObject = super.toJsonObject();
+		
+		jsonObject.put(JSON_KEY_CONTENT_PROVIDER_CLASS, videoContentProvider.getClass().getSimpleName());
+		jsonObject.put(JSON_KEY_NAME, name);
+		jsonObject.put(JSON_KEY_THUMBNAIL_IMAGE_URL, thumbnailImageUrl);
+		jsonObject.put(JSON_KEY_RAW_VIDEO_DURATION, videoDuration);
+		
+		return jsonObject;
+	}
+	
 	@Override
 	public String toString() {
 		return "VideoItemResultData[url=" + url + ", name=" + name + "]";
